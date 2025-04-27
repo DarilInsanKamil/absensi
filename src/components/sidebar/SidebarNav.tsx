@@ -1,4 +1,3 @@
-import { Calendar, Home, BookCheck, Search, School, UsersRound } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -10,47 +9,15 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-const items = [
-  {
-    title: "Home",
-    url: "/dashboard",
-    icon: Home,
-  },
-  {
-    title: "Siswa",
-    url: "/dashboard/siswa",
-    icon: UsersRound,
-  },
-  {
-    title: "Kelas",
-    url: "/dashboard/kelas",
-    icon: School,
-  },
-  {
-    title: "Absensi",
-    url: "/dashboard/absensi",
-    icon: BookCheck,
-  },
-  {
-    title: "Jadwal Guru",
-    url: "/dashboard/jadwalguru",
-    icon: Calendar,
-  },
-  {
-    title: "Jadwal Mata Pelajaran",
-    url: "/dashboard/jadwal",
-    icon: Calendar,
-  },
-];
-export function AppSidebar() {
+export function SidebarNav({ items }: { items: any }) {
   return (
-    <Sidebar variant="floating">
+    <Sidebar className="bg-white">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>SMK TECHNO MEDIA</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {items.map((item: any) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>

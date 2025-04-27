@@ -2,7 +2,7 @@
 import { notFound, useParams, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import Loading from "../../loading";
-import { TableSiswa } from "@/components/table-siswa";
+import { TableSiswa } from "@/components/tableui/table-siswa";
 import { TableAbsenSiswa } from "@/components/table-absen-siswa";
 
 const Page = () => {

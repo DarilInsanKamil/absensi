@@ -1,8 +1,9 @@
+import GuruForm from '@/components/guru-form'
 import React from 'react'
 
 const Page = () => {
   return (
-    <div>Page</div>
+    <div><GuruForm/></div>
   )
 }
 

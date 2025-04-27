@@ -1,8 +1,8 @@
 import React from "react";
 
-import { queryLength } from "../libs/features/queryLength";
 import { KelasIcon, SiswaIcon, TeacherIcon } from "@/components/icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { queryLength } from "@/app/libs/features/queryLength";
 const Page = async () => {
   const res = await queryLength();
 
@@ -10,9 +10,11 @@ const Page = async () => {
     <section className="w-full px-6 mt-10">
       <Card>
         <CardHeader>
-          <h1 className="text-2xl font-bold">Selamat Datang di Dasbor Absensi Sekolah!</h1>
+          <h1 className="text-2xl font-bold">
+            Selamat Datang di Dasbor Absensi Sekolah!
+          </h1>
           <p className="text-base text-muted-foreground">
-          Ringkasan informasi terkini dan akses cepat ke berbagai fitur.
+            Ringkasan informasi terkini dan akses cepat ke berbagai fitur.
           </p>
         </CardHeader>
         <CardContent className="flex gap-4 items-center mt-5 md:flex-row flex-col">

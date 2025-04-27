@@ -26,9 +26,9 @@ export function TableAbsenSiswa({ children }: { children: any[] }) {
               <td className="px-4 py-2">{child.nis}</td>
               <td className="px-4 py-2">{formatStatus(child.status_aktif)}</td>
               <td className="px-4 py-2">
-                <Button variant="outline">H</Button>
-                <Button variant="default">I</Button>
-                <Button variant="destructive">A</Button>
+                <Button>H</Button>
+                <Button>I</Button>
+                <Button>A</Button>
               </td>
             </tr>
           ))}
