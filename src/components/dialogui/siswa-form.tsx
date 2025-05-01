@@ -1,45 +1,107 @@
+"use client";
+
+import { useCreateSiswa } from "@/app/libs/action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import Form from "next/form";
+import { useState } from "react";
+import { toast } from "sonner";
 
-export function DialogSiswaForm() {
+export function DialogSiswaForm({ dataKelas, onSuccess }: { dataKelas: any, onSuccess?: ()=> void }) {
+  const [open, setOpen] = useState(false);
+  const handleSubmit = async (formData: FormData) => {
+    try {
+      const result = await useCreateSiswa(formData);
+
+      toast.success("Berhasil", {
+        description: "Data siswa berhasil ditambahkan.",
+      });
+
+      if (onSuccess) onSuccess();
+
+      setOpen(false);
+    } catch (error) {
+      toast.error("Gagal", {
+        description: "Terjadi kesalahan saat menambahkan data siswa.",
+      });
+    }
+  };
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Tambah Siswa</Button>
+        <Button onClick={() => setOpen(true)}>Tambah Siswa</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Input Data Siswa</DialogTitle>
-          <DialogDescription>
-            Make changes data siswa. Click save when you're done.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 bg-amber-200 items-center gap-4">
-            <label htmlFor="name" className="text-right">
-              Name
-            </label>
-            <Input id="name" className="col-span-3" />
+        <DialogTitle>Input Data Siswa</DialogTitle>
+        <Form action={handleSubmit} className="grid gap-2 py-4">
+          <div>
+            <label>NISN</label>
+            <Input placeholder="masukan nip atau nisn" name="nis" />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <label htmlFor="username" className="text-right">
-              Username
-            </label>
-            <Input id="username" className="col-span-3" />
+          <div>
+            <label>Nama Lengkap</label>
+            <Input placeholder="masukan nip atau nisn" name="nama" />
           </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
+          <div>
+            <label>Jenis Kelamin</label>
+            <div className="flex gap-3">
+              <div className="flex gap-1">
+                <input name="jenis_kelamin" type="radio" value="L" />
+                <label>Laki-laki</label>
+              </div>
+              <div className="flex gap-1">
+                <input name="jenis_kelamin" type="radio" value="P" />
+                <label>Perempuan</label>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label>Tanggal Lahir</label>
+            <Input type="date" name="ttl" />
+          </div>
+          <div>
+            <label>Alamat</label>
+            <Input placeholder="masukan alamat" type="text" name="alamat" />
+          </div>
+          <div>
+            <label>No Telepon</label>
+            <Input
+              placeholder="masukan no telepon"
+              type="number"
+              name="no_telepon"
+            />
+          </div>
+          <div>
+            <label>Email</label>
+            <Input placeholder="masukan email" type="email" name="email" />
+          </div>
+          <div>
+            <label>Kelas</label>
+            <br></br>
+            <select
+              name="kelas"
+              id="kelas"
+              className="w-full bg-white outline-2 p-2 rounded-sm"
+            >
+              {dataKelas.map((res: any, idx: number) => {
+                return (
+                  <option key={idx} value={res.id}>
+                    {res.nama_kelas}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <Button type="submit" className="mt-5">
+            Tambah Siswa
+          </Button>
+        </Form>
       </DialogContent>
     </Dialog>
   );

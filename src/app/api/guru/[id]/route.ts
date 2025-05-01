@@ -1,9 +1,8 @@
 import { deleteGuruById, getGuruById, updateGuru } from "@/app/libs/features/queryGuru";
 import { NextRequest } from "next/server";
-import bcrypt from 'bcrypt';
 
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET({ params }: { params: Promise<{ id: string }> }) {
     const id = (await params).id;
     try {
         const result = await getGuruById(parseInt(id));
@@ -82,7 +81,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
                 }
             })
         }
-        const { nip, nama, jenis_kelamin, alamat, no_telepon, email, username, password } = body;
+        const { nip, nama, jenis_kelamin, alamat, no_telepon, email } = body;
 
         const updatedGuru = {
             ...existingGuru[0],
@@ -92,8 +91,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
             alamat: alamat ?? existingGuru[0].alamat,
             no_telepon: no_telepon ?? existingGuru[0].no_telepon,
             email: email ?? existingGuru[0].email,
-            username: username ?? existingGuru[0].username,
-            password: password ? await bcrypt.hash(password, 10) : existingGuru[0].password
         }
 
         const guruBaru = await updateGuru(parseInt(id), updatedGuru);

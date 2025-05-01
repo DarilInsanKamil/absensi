@@ -12,9 +12,9 @@ export async function getGuruById(id: number) {
 }
 
 export async function createGuru(guru: Guru) {
-    const { nip, nama, jenis_kelamin, alamat, no_telepon, email, username, hashedPassword } = guru;
+    const { nip, nama, jenis_kelamin, alamat, no_telepon, email } = guru;
     try {
-        const result = await connectionPool.query('INSERT INTO "GURU" ("nip", "nama", "jenis_kelamin", "alamat", "no_telepon", "email", "username", "password") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', [nip, nama, jenis_kelamin, alamat, no_telepon, email, username, hashedPassword]);
+        const result = await connectionPool.query('INSERT INTO "GURU" ("nip", "nama", "jenis_kelamin", "alamat", "no_telepon", "email") VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [nip, nama, jenis_kelamin, alamat, no_telepon, email]);
         return result.rows;
     } catch (err) {
         console.error('Error inserting data into GURU table', err);
@@ -28,9 +28,9 @@ export async function deleteGuruById(id: number) {
 }
 
 export async function updateGuru(id: number, guru: UpdatedGuru) {
-    const { nip, nama, jenis_kelamin, alamat, no_telepon, email, username, password } = guru;
+    const { nip, nama, jenis_kelamin, alamat, no_telepon, email } = guru;
     try {
-        const result = await connectionPool.query('UPDATE "GURU" SET "nip" = $1, "nama" = $2, "jenis_kelamin" = $3, "alamat" = $4, "no_telepon" = $5, "email" = $6, "username" = $7, "password" = $8 WHERE "id" = $9 RETURNING *', [nip, nama, jenis_kelamin, alamat, no_telepon, email, username, password, id]);
+        const result = await connectionPool.query('UPDATE "GURU" SET "nip" = $1, "nama" = $2, "jenis_kelamin" = $3, "alamat" = $4, "no_telepon" = $5, "email" = $6 WHERE "id" = $9 RETURNING *', [nip, nama, jenis_kelamin, alamat, no_telepon, email, id]);
         return result.rows;
     } catch (err) {
         console.error('Error updating data in GURU table', err);

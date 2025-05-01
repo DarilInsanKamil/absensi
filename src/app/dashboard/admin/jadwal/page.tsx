@@ -1,10 +1,23 @@
 "use client";
 
-import { JadwalPerKelas } from "@/definitions";
-import { useEffect, useState } from "react";
+import { DialogJadwalForm } from "@/components/dialogui/jadwal-form";
+import { TableJadwal } from "@/components/tableui/table-jadwal";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ResponseTableJadwal } from "@/definitions";
+import { Suspense, useEffect, useState } from "react";
 
 const Page = () => {
-  const [jadwal, setJadwal] = useState<JadwalPerKelas>({});
+  const [jadwal, setJadwal] = useState<ResponseTableJadwal[]>([]);
+  const [refresh, setRefresh] = useState(false);
+  
+  const refreshData = () => setRefresh(prev => !prev);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,30 +28,33 @@ const Page = () => {
     };
 
     fetchData();
-  }, []);
+  }, [refresh]);
 
   return (
-    <div>
-      {Object.keys(jadwal).map((kelas) => (
-        <div key={kelas} className="mt-6">
-          <h1 className="text-xl font-bold">{kelas}</h1>
-          {Object.keys(jadwal[kelas]).map((hari) => (
-            <div key={hari} className="mt-4">
-              <h2 className="text-lg font-semibold">{hari}</h2>
-              {jadwal[kelas][hari].map((item: any) => (
-                <div key={item.id} className="mt-2">
-                  <h3>{item.mata_pelajaran}</h3>
-                  <p>{item.guru}</p>
-                  <p>
-                    {item.jam_mulai} - {item.jam_selesai}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      ))}
-    </div>
+    <section className="px-6 mt-10 ">
+      <Card className="flex md:flex-row flex-col justify-between relative">
+        <CardHeader className="w-full ">
+          <h1 className="text-2xl font-bold">Manajemen Data Jadwal</h1>
+          <p className="text-base text-muted-foreground -mt-2">
+            Atur dan kelola jadwal, serta informasi penting lainnya.
+          </p>
+        </CardHeader>
+        <CardFooter>
+          <DialogJadwalForm onSuccess={refreshData}/>
+        </CardFooter>
+      </Card>
+      <div className="flex gap-5 mt-10 mb-5">
+        <Input placeholder="search.." />
+        <Button>Search</Button>
+      </div>
+      <Card className="overflow-y-scroll">
+        <Suspense fallback={<p>Loading...</p>}>
+          <CardContent className="overflow-auto">
+            <TableJadwal children={jadwal} onDelete={refreshData}/>
+          </CardContent>
+        </Suspense>
+      </Card>
+    </section>
   );
 };
 export default Page;

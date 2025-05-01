@@ -1,5 +1,6 @@
 import { Calendar, Home, BookCheck } from "lucide-react";
 import { SidebarNav } from "./SidebarNav";
+
 export function GuruSidebar() {
   const items = [
     {
@@ -9,12 +10,12 @@ export function GuruSidebar() {
     },
     {
       title: "Absensi",
-      url: "/dashboard/absensi",
+      url: "/dashboard/guru/absensi",
       icon: BookCheck,
     },
     {
       title: "Jadwal Mata Pelajaran",
-      url: "/dashboard/jadwal",
+      url: "/dashboard/guru/jadwal",
       icon: Calendar,
     },
   ];

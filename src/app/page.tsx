@@ -1,6 +1,8 @@
-import SignupForm from "@/components/signup-form";
-import Image from "next/image";
 
-export default async function Home() {
-  return <SignupForm />;
+import { LoginForm } from "@/components/authui/login-form";
+
+export default function Page() {
+  return (
+    <LoginForm/>
+  );
 }

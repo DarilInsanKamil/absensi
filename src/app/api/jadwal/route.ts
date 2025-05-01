@@ -1,6 +1,7 @@
 import { createJadwal, getJadwal } from "@/app/libs/features/queryJadwal";
+import { NextRequest } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
     try {
         const allJadwal = await getJadwal();
         return new Response(JSON.stringify(allJadwal), {
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
 
         const buatJadwal = await createJadwal({ mata_pelajaran_id, kelas_id, guru_id, tahun_ajaran_id, hari, jam_mulai, jam_selesai })
 
-        return new Response(JSON.stringify({buatJadwal, meesage: "create data success"}), {
+        return new Response(JSON.stringify({ buatJadwal, meesage: "create data success" }), {
             status: 201,
             headers: {
                 'Content-type': "application/json"

@@ -1,7 +1,6 @@
 import { createGuru, getGuru } from "@/app/libs/features/queryGuru";
-import bcrypt from 'bcrypt';
 
-export async function GET(req: Request) {
+export async function GET() {
     try {
         const siswa = await getGuru();
         return new Response(JSON.stringify(siswa), {
@@ -30,11 +29,10 @@ export async function POST(req: Request) {
 
         const body = await req.json();
 
-        const { nip, nama, jenis_kelamin, alamat, no_telepon, email, username, password } = body;
+        const { nip, nama, jenis_kelamin, alamat, no_telepon, email, status_aktif } = body;
 
-        const hashedPassword = await bcrypt.hash(password, 10);
 
-        const guruBaru = await createGuru({ nip, nama, jenis_kelamin, alamat, no_telepon, email, username, hashedPassword });
+        const guruBaru = await createGuru({ nip, nama, jenis_kelamin, alamat, no_telepon, email, status_aktif });
 
         return new Response(JSON.stringify(guruBaru), {
             status: 201,

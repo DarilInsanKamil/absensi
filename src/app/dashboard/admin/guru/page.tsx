@@ -1,6 +1,6 @@
 "use client";
 
-import { DialogSiswaForm } from "@/components/dialogui/siswa-form";
+import { DialogGuruForm } from "@/components/dialogui/guru-form";
 import { TableGuru } from "@/components/tableui/table-guru";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,13 +10,13 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { formatStatus } from "@/lib/utils";
-import Link from "next/link";
 import React, { Suspense, useEffect, useState } from "react";
 
 const Page = () => {
   const [guru, setGuru] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
+  const refreshData = () => setRefresh((prev) => !prev);
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch("/api/guru");
@@ -25,7 +25,7 @@ const Page = () => {
     };
 
     fetchData();
-  }, []);
+  }, [refresh]);
   return (
     <section className="px-6 mt-10 ">
       <Card className="flex md:flex-row justify-between relative">
@@ -36,7 +36,7 @@ const Page = () => {
           </p>
         </CardHeader>
         <CardFooter>
-          <DialogSiswaForm/>
+          <DialogGuruForm onSuccess={refreshData} />
         </CardFooter>
       </Card>
       <div className="flex gap-5 mt-10 mb-5">
@@ -46,7 +46,7 @@ const Page = () => {
       <Card>
         <Suspense fallback={<p>Loading...</p>}>
           <CardContent className="overflow-auto">
-            <TableGuru children={guru} />
+            <TableGuru children={guru} onDelete={refreshData}/>
           </CardContent>
         </Suspense>
       </Card>

@@ -1,25 +1,25 @@
 "use client";
 
-import { ResponseTableSiswa } from "@/definitions";
-import { formatStatus } from "@/lib/utils";
+import {ResponseTableTahunAjaran } from "@/definitions";
 import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
-import { useDeleteSiswa } from "@/app/libs/action";
+import { useDeleteKelas } from "@/app/libs/action";
 import { toast } from "sonner";
 
-export function TableSiswa({
+export function TableTahunAjaran({
   children,
   onDelete,
 }: {
-  children: ResponseTableSiswa[];
+  children: ResponseTableTahunAjaran[];
   onDelete?: () => void;
 }) {
   const handleDelete = async (id: number) => {
     try {
-      await useDeleteSiswa(id);
+      await useDeleteKelas(id);
 
       toast.success("Berhasil", {
         description: "Berhasil Menghapus data siswa.",
+        
       });
 
       if (onDelete) onDelete();
@@ -36,11 +36,8 @@ export function TableSiswa({
         <tr className="bg-gray-100 text-gray-700">
           <th className="px-4 py-2 text-left">No</th>
           <th className="px-4 py-2 text-left">Nama</th>
-          <th className="px-4 py-2 text-left">NIS</th>
-          <th className="px-4 py-2 text-left">Gender</th>
-          <th className="px-4 py-2 text-left">Alamat</th>
-          <th className="px-4 py-2 text-left">Kelas</th>
-          <th className="px-4 py-2 text-left">Status</th>
+          <th className="px-4 py-2 text-left">Tanggal Mulai</th>
+          <th className="px-4 py-2 text-left">Tanggal Selesai</th>
           <th className="px-4 py-2 text-left">Action</th>
         </tr>
       </thead>
@@ -52,24 +49,17 @@ export function TableSiswa({
           >
             <td className="px-4 py-2">{index + 1}</td>
             <td className="px-4 py-2">{child.nama}</td>
-            <td className="px-4 py-2">{child.nis}</td>
-            <td className="px-4 py-2">{child.jenis_kelamin}</td>
-            <td className="px-4 py-2">{child.alamat}</td>
-            <td className="px-4 py-2">{child.nama_kelas}</td>
-            <td className="px-4 py-2">
-              <div className="bg-green-400 font-semibold border-1 border-black text-xs w-fit px-2 rounded-sm">
-                {formatStatus(child.status_aktif)}
-              </div>
-            </td>
-            <td className="px-4 py-2 flex gap-2 items-center">
+            <td className="px-4 py-2">{child.tanggal_mulai}</td>
+            <td className="px-4 py-2">{child.tanggal_selesai}</td>
+            <td className="px-4 py-2 flex gap-2">
               <Button
-                className="bg-red-400 "
+                className="bg-red-400"
                 size="icon"
                 onClick={() => handleDelete(child.id)}
               >
                 <Trash2 />
               </Button>
-              <Button size="sm" >
+              <Button size="sm">
                 <Pencil />
               </Button>
             </td>

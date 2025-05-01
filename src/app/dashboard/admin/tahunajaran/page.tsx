@@ -11,10 +11,10 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { DialogSiswaForm } from "@/components/dialogui/siswa-form";
+import { TableTahunAjaran } from "@/components/tableui/table-tahunajaran";
 
 const Page = () => {
-  const [siswa, setSiswa] = useState([]);
-  const [kelas, setKelas] = useState([]);
+  const [tahunAjaran, setTahunAjaran] = useState([]);
   const [refresh, setRefresh] = useState(false);
   
   const refreshData = () => setRefresh(prev => !prev);
@@ -22,17 +22,11 @@ const Page = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/siswa", { cache: "no-store" });
+      const response = await fetch("/api/tahunajaran", { cache: "no-store" });
       const data = await response.json();
-      setSiswa(data);
-    };
-    const fetchDataKelas = async () => {
-      const res = await fetch("/api/kelas");
-      const data = await res.json();
-      setKelas(data);
+      setTahunAjaran(data);
     };
     fetchData();
-    fetchDataKelas();
   }, [refresh]);
 
   return (
@@ -45,7 +39,7 @@ const Page = () => {
           </p>
         </CardHeader>
         <CardFooter>
-          <DialogSiswaForm dataKelas={kelas} onSuccess={refreshData}/>
+          {/* <DialogSiswaForm onSuccess={refreshData}/> */}
         </CardFooter>
       </Card>
       <div className="flex gap-5 mt-10 mb-5">
@@ -55,7 +49,7 @@ const Page = () => {
       <Card>
         <Suspense fallback={<p>Loading...</p>}>
           <CardContent className="overflow-auto">
-            <TableSiswa children={siswa} onDelete={refreshData}/>
+            <TableTahunAjaran children={tahunAjaran} onDelete={refreshData}/>
           </CardContent>
         </Suspense>
       </Card>

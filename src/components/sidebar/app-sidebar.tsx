@@ -3,7 +3,9 @@ import { GuruSidebar } from "./guru-sidebar";
 import { SiswaSidebar } from "./siswa-sidebar";
 
 export function AppSidebar() {
-  switch ("admin") {
+  let role = "admin";
+  
+  switch (role) {
     case "admin":
       return <AdminSidebar />;
     case "guru":

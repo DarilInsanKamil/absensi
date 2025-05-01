@@ -9,12 +9,12 @@ export function SiswaSidebar() {
     },
     {
       title: "Absensi",
-      url: "/dashboard/absensi",
+      url: "/dashboard/siswa/absensi",
       icon: BookCheck,
     },
     {
       title: "Jadwal Mata Pelajaran",
-      url: "/dashboard/jadwal",
+      url: "/dashboard/siswa/jadwal",
       icon: Calendar,
     },
   ];

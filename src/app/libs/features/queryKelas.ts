@@ -2,7 +2,16 @@ import { Kelas } from "@/definitions";
 import { connectionPool } from "../../api/db";
 
 export async function getAllKelas() {
-    const result = await connectionPool.query('SELECT * FROM "KELAS"');
+    const result = await connectionPool.query(`
+    SELECT 
+        kelas.id,
+        kelas.nama_kelas,
+        guru.nama as wali_kelas,
+        tahun_ajaran.nama as tahun_ajaran
+    FROM "KELAS" kelas
+    LEFT JOIN "GURU" guru ON kelas.walikelas_id = guru.id
+    LEFT JOIN "TAHUN_AJARAN" tahun_ajaran ON kelas.tahun_ajaran_id = tahun_ajaran.id
+    `);
     return result.rows;
 }
 

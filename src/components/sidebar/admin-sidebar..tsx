@@ -14,25 +14,36 @@ export function AdminSidebar() {
       icon: SiswaIcon,
     },
     {
+      title: "Guru",
+      url: "/dashboard/admin/guru",
+      icon: TeacherIcon,
+    },
+    {
       title: "Kelas",
       url: "/dashboard/admin/kelas",
       icon: KelasIcon,
+    },
+    {
+      title: "Mata Pelajaran",
+      url: "/dashboard/admin/mata-pelajaran",
+      icon: Calendar,
+    },
+    {
+      title: "Jadwal",
+      url: "/dashboard/admin/jadwal",
+      icon: Calendar,
+    },
+    {
+      title: "Tahun Ajaran",
+      url: "/dashboard/admin/tahunajaran",
+      icon: Calendar,
     },
     {
       title: "Absensi",
       url: "/dashboard/absensi",
       icon: BookCheck,
     },
-    {
-      title: "Guru",
-      url: "/dashboard/admin/guru",
-      icon: TeacherIcon,
-    },
-    {
-      title: "Jadwal Mata Pelajaran",
-      url: "/dashboard/jadwal",
-      icon: Calendar,
-    },
+  
   ];
 
   return <SidebarNav items={items} />;

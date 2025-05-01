@@ -1,6 +1,5 @@
-'use client'
+"use client";
 
-import { KelasBoxComponent } from "@/components/kelas-boxcomponents";
 import {
   Card,
   CardContent,
@@ -11,27 +10,27 @@ import {
 import React, { Suspense, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { DialogSiswaForm } from "@/components/dialogui/siswa-form";
+import { DialogKelasForm } from "@/components/dialogui/kelas-form";
+import { TableKelas } from "@/components/tableui/table-kelas";
 
 const Page = () => {
-
   const [kelas, setKelas] = useState([]);
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        const response = await fetch("/api/kelas");
-        const data = await response.json();
-        setKelas(data);
-      };
-  
-      fetchData();
-    }, []);
+  const [refresh, setRefresh] = useState(false);
 
+  const refreshData = () => setRefresh((prev) => !prev);
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("/api/kelas", { cache: "no-store" });
+      const data = await response.json();
+      setKelas(data);
+    };
 
+    fetchData();
+  }, [refresh]);
 
   return (
     <section className="px-6 mt-10 ">
-      <Card className="flex flex-row justify-between relative">
+      <Card className="flex md:flex-row flex-col justify-between relative">
         <CardHeader className="w-full ">
           <h1 className="text-2xl font-bold">Manajemen Data Kelas</h1>
           <p className="text-base text-muted-foreground -mt-2">
@@ -39,28 +38,20 @@ const Page = () => {
           </p>
         </CardHeader>
         <CardFooter>
-          <DialogSiswaForm/>
+          <DialogKelasForm onSuccess={refreshData} />
         </CardFooter>
       </Card>
       <div className="flex gap-5 mt-10 mb-5">
         <Input placeholder="search.." />
         <Button>Search</Button>
       </div>
-      <Suspense fallback={<p>Loading...</p>}>
-        <Card>
-          <CardContent>
-            {kelas.map((item: any) => {
-              return (
-                <KelasBoxComponent
-                  key={item.id}
-                  kelas={item.nama_kelas}
-                  id={item.id}
-                />
-              );
-            })}
+      <Card>
+        <Suspense fallback={<p>Loading...</p>}>
+          <CardContent className="overflow-auto">
+            <TableKelas children={kelas} onDelete={refreshData} />
           </CardContent>
-        </Card>
-      </Suspense>
+        </Suspense>
+      </Card>
     </section>
   );
 };
