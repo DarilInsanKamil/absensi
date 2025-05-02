@@ -1,14 +1,83 @@
 'use server'
 
-import { redirect } from "next/navigation"
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+export async function logout() {
+    (await cookies()).delete('token');
+    (await cookies()).delete('role');
+    redirect('/');
+}
+
 
 export async function loginAccount(formData: FormData) {
-    console.log(formData)
-    redirect('/dashboard')
+    const data = Object.fromEntries(formData.entries());
+    const {
+        username,
+        password
+    } = data;
+    const req = await fetch(`${process.env.LOCAL_TEST_API}/api/login`, {
+        method: 'POST',
+        body: JSON.stringify({
+            username, password
+        })
+    })
+    if (!req.ok) {
+        throw new Error('Login failed');
+    }
+
+    const response = await req.json();
+
+    // Set cookie at client side after successful login
+    (await cookies()).set({
+        name: 'token',
+        value: response.token,
+        httpOnly: true,
+        path: '/',
+        maxAge: 60 * 60 * 24, // 24 hours
+        sameSite: 'strict',
+        secure: process.env.NODE_ENV === 'production',
+    });
+    (await cookies()).set({
+        name: 'role',
+        value: response.user.role,
+        httpOnly: false, // Allow JavaScript access
+        path: '/',
+        maxAge: 60 * 60 * 24,
+        sameSite: 'strict',
+        secure: process.env.NODE_ENV === 'production',
+    });
+    const userRole = response.user.role;
+    switch (userRole) {
+        case 'admin':
+            redirect('/dashboard/admin');
+            break;
+        case 'guru':
+            redirect('/dashboard/guru');
+            break;
+        case 'siswa':
+            redirect('/dashboard/siswa');
+            break;
+        default:
+            redirect('/dashboard');
+    }
 }
-export async function signUpAccount(formData: FormData) {
-    console.log(formData)
-    redirect('/dashboard')
+export async function useSignUpAccount(formData: FormData) {
+    const data = Object.fromEntries(formData.entries());
+    const {
+        username,
+        role,
+        password
+    } = data;
+    const req = await fetch(`${process.env.LOCAL_TEST_API}/api/signup`, {
+        method: 'POST',
+        body: JSON.stringify({
+            username, role, password
+        })
+    })
+    if (!req.ok) {
+        console.log("Gagal :D");
+    }
 }
 export async function useCreateGuru(formData: FormData) {
     try {
@@ -45,11 +114,11 @@ export async function useCreateGuru(formData: FormData) {
 }
 export async function useDeleteGuru(id: number) {
     try {
-        const deleteSiswa = await fetch(`${process.env.LOCAL_TEST_API}/api/guru/${id}`, {
+        const deleteGuru = await fetch(`${process.env.LOCAL_TEST_API}/api/guru/${id}`, {
             method: 'DELETE',
 
         })
-        if (!deleteSiswa.ok) {
+        if (!deleteGuru.ok) {
             console.log("Gagal menghapus data")
         }
     } catch (err) {
@@ -181,16 +250,101 @@ export async function useCreateJadwal(formData: FormData) {
         console.error("Error saat menambah data jadwal: ", err)
         throw new Error("Gagal menambah data jadwal")
     }
-} 
+}
 
 export async function useDeleteJadwal(id: number) {
-    try{
-        const req = await fetch(`${process.env.LOCAL_TEST_API}/api/jadwal/${id}`, {method: 'DELETE'});
+    try {
+        const req = await fetch(`${process.env.LOCAL_TEST_API}/api/jadwal/${id}`, { method: 'DELETE' });
         if (!req.ok) {
             console.log("Gagal Menghapus data jadwal");
         }
-    } catch(err) {
+    } catch (err) {
         console.error("Error saat menghapus data jadwal: ", err)
         throw new Error("Gagal menghapus data jadwal")
+    }
+}
+
+export async function useCreateTahunAjaran(formData: FormData) {
+    try {
+        const data = Object.fromEntries(formData.entries());
+        const {
+            nama,
+            tanggal_mulai,
+            tanggal_selesai,
+            status,
+        } = data;
+        const status_aktif = status as string == "1" ? true : false
+        const res = await fetch(`${process.env.LOCAL_TEST_API}/api/tahunajaran`, {
+            method: 'POST',
+            body: JSON.stringify({
+                nama,
+                tanggal_mulai,
+                tanggal_selesai,
+                status_aktif
+            })
+        })
+        if (!res.ok) {
+            console.log("Gagal Menambah Data")
+        }
+    } catch (err) {
+        console.error("Error saat menambah data tahun ajaran: ", err)
+        throw new Error("Gagal menambah data tahun ajaran")
+    }
+}
+
+export async function useDeleteTahunAjaran(id: number) {
+    try {
+        try {
+            const req = await fetch(`${process.env.LOCAL_TEST_API}/api/tahunajaran/${id}`, { method: 'DELETE' });
+            if (!req.ok) {
+                console.log("Gagal Menghapus data jadwal");
+            }
+        } catch (err) {
+            console.error("Error saat menghapus data jadwal: ", err)
+            throw new Error("Gagal menghapus data jadwal")
+        }
+    } catch (err) {
+
+    }
+}
+
+export async function useCreateMatpel(formData: FormData) {
+    try {
+        const data = Object.fromEntries(formData.entries());
+        const {
+            nama,
+            kode_mapel,
+            nama_mapel,
+        } = data;
+        const res = await fetch(`${process.env.LOCAL_TEST_API}/api/matpel`, {
+            method: 'POST',
+            body: JSON.stringify({
+                nama,
+                kode_mapel,
+                nama_mapel
+            })
+        })
+        if (!res.ok) {
+            console.log("Gagal Menambah Data")
+        }
+    } catch (err) {
+        console.error("Error saat menambah data mata pelajaran: ", err)
+        throw new Error("Gagal menambah data mata pelajaran")
+    }
+}
+
+export async function useDeleteMatpel(id: number) {
+    try {
+        try {
+            const req = await fetch(`${process.env.LOCAL_TEST_API}/api/matpel/${id}`, { method: 'DELETE' });
+            if (!req.ok) {
+                console.log("Gagal Menghapus data mata pelajaran");
+            }
+        } catch (err) {
+            console.error("Error saat menghapus data mata pelajaran: ", err)
+            throw new Error("Gagal menghapus data mata pelajaran")
+        }
+    } catch (err) {
+
     }
 }

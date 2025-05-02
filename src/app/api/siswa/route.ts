@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
         const siswaBaru = await createSiswa({ nis, nama, jenis_kelamin, tanggal_lahir, alamat, no_telepon, email, kelas_id, status_aktif });
 
-        return new Response(JSON.stringify({siswaBaru, message: "Create Data Success"}), {
+        return new Response(JSON.stringify({ siswaBaru, message: "Create Data Success" }), {
             status: 201,
             headers: {
                 'Content-Type': 'application/json',

@@ -1,9 +1,9 @@
 "use client";
 
-import {ResponseTableTahunAjaran } from "@/definitions";
+import { ResponseTableTahunAjaran } from "@/definitions";
 import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
-import { useDeleteKelas } from "@/app/libs/action";
+import { useDeleteTahunAjaran } from "@/app/libs/action";
 import { toast } from "sonner";
 
 export function TableTahunAjaran({
@@ -15,11 +15,10 @@ export function TableTahunAjaran({
 }) {
   const handleDelete = async (id: number) => {
     try {
-      await useDeleteKelas(id);
+      await useDeleteTahunAjaran(id);
 
       toast.success("Berhasil", {
         description: "Berhasil Menghapus data siswa.",
-        
       });
 
       if (onDelete) onDelete();

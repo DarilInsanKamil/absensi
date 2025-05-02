@@ -1,9 +1,11 @@
+import { cookies } from "next/headers";
 import { AdminSidebar } from "./admin-sidebar.";
 import { GuruSidebar } from "./guru-sidebar";
 import { SiswaSidebar } from "./siswa-sidebar";
 
-export function AppSidebar() {
-  let role = "admin";
+export async function AppSidebar() {
+  const cookieStore = cookies();
+  const role = (await cookieStore).get('role')?.value || '';
   
   switch (role) {
     case "admin":

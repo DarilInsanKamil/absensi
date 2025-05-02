@@ -1,6 +1,16 @@
 import { Guru, UpdatedGuru } from "@/definitions";
 import { connectionPool } from "../../api/db";
 
+export async function searchUsernameGuru(username: string) {
+    try {
+        const result = await connectionPool.query(`SELECT id FROM "GURU" WHERE nip = $1`, [username]);
+        return result.rows.length > 0 ? result.rows[0] : null;
+    } catch (err) {
+        console.error('Error searching username in GURU table', err);
+        throw err;
+    }
+}
+
 export async function getGuru() {
     const result = await connectionPool.query('SELECT * FROM "GURU"');
     return result.rows;

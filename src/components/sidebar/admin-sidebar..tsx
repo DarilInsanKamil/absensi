@@ -25,7 +25,7 @@ export function AdminSidebar() {
     },
     {
       title: "Mata Pelajaran",
-      url: "/dashboard/admin/mata-pelajaran",
+      url: "/dashboard/admin/matapelajaran",
       icon: Calendar,
     },
     {
@@ -46,5 +46,5 @@ export function AdminSidebar() {
   
   ];
 
-  return <SidebarNav items={items} />;
+  return <SidebarNav items={items}/>;
 }

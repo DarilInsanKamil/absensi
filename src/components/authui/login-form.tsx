@@ -1,10 +1,21 @@
+"use client";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Input } from "../ui/input";
 import Form from "next/form";
 import { loginAccount } from "@/app/libs/action";
+import { useState } from "react";
 
 export function LoginForm() {
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (formData: FormData) => {
+    try {
+      await loginAccount(formData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed");
+    }
+  };
   return (
     <section className="grid md:grid-cols-12 grid-cols-6 md:px-2 px-5 md:py-10">
       <div className="md:col-start-1 md:col-end-13 col-start-1 col-end-7 flex items-center flex-col mb-10">
@@ -20,14 +31,18 @@ export function LoginForm() {
             </p>
           </CardHeader>
           <CardContent>
-            <Form action={loginAccount}>
+            <Form action={handleSubmit}>
               <div className="mb-3">
-                <label>NIP atau NISN</label>
-                <Input placeholder="masukan nip atau nisn" name="userid" />
+                <label>User Id</label>
+                <Input placeholder="masukan user id" name="username" />
               </div>
               <div>
                 <label>Password</label>
-                <Input placeholder="masukan password" name="password" />
+                <Input
+                  placeholder="masukan password"
+                  name="password"
+                  type="password"
+                />
               </div>
               <Button className="w-full mt-5">Login</Button>
             </Form>

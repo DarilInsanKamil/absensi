@@ -52,7 +52,7 @@ export function DialogJadwalForm({ onSuccess }: { onSuccess?: () => void }) {
         <Button onClick={() => setOpen(true)}>Tambah Jadwal</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogTitle>Input Data Siswa</DialogTitle>
+        <DialogTitle>Input Data Jadwal</DialogTitle>
         <Form action={handleSubmit} className="grid gap-2 py-4">
           <div>
             <label>Guru</label>

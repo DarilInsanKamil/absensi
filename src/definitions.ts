@@ -78,6 +78,14 @@ export interface Mapel {
     nama_mapel: string;
 }
 
+export interface ResponseTableMapel {
+    id: number;
+    kode_mapel: string;
+    nama_mapel: string;
+    cretead_at: string
+    updated_at: string
+}
+
 export interface Kelas {
     nama_kelas: string;
     tahun_ajaran_id: number;
@@ -87,7 +95,9 @@ export interface ResponseTableKelas {
     id: number;
     nama_kelas: string;
     wali_kelas: string;
-    tahun_ajaran: string
+    tahun_ajaran: string;
+    cretead_at: string
+    updated_at: string
 }
 
 export interface Jadwal {
@@ -108,7 +118,9 @@ export interface ResponseTableJadwal {
     tahun_ajaran: string;
     hari: string;
     jam_mulai: string;
-    jam_selesai: string
+    jam_selesai: string;
+    cretead_at: string
+    updated_at: string
 }
 
 export interface TahunAjaran {
@@ -123,7 +135,9 @@ export interface ResponseTableTahunAjaran {
     nama: string;
     tanggal_mulai: string;
     tanggal_selesai: string;
-    status_aktif: boolean
+    status_aktif: boolean;
+    cretead_at: string
+    updated_at: string
 }
 
 export interface Absensi {
@@ -135,3 +149,14 @@ export interface Absensi {
     keterangan?: string;
 }
 
+export interface Users {
+    username: string;
+    role: string;
+    hashedPassword: string;
+    reference_id: string;
+    reference_type : string;
+}
+export interface LoginUser {
+    username: string;
+    password: string;
+}

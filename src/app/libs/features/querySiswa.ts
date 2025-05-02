@@ -1,6 +1,17 @@
 import { Siswa } from "@/definitions";
 import { connectionPool } from "../../api/db";
 
+
+export async function searchUsernameSiswa(username: string) {
+    try {
+        const result = await connectionPool.query(`SELECT id FROM "SISWA" WHERE nis = $1`, [username]);
+        return result.rows.length > 0 ? result.rows[0] : null;
+    } catch (err) {
+        console.error('Error searching username in SISWA table', err);
+        throw err;
+    }
+}
+
 export async function getSiswa() {
     const result = await connectionPool.query(`
         SELECT 
