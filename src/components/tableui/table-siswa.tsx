@@ -69,7 +69,7 @@ export function TableSiswa({
               >
                 <Trash2 />
               </Button>
-              <Button size="sm" >
+              <Button size="sm">
                 <Pencil />
               </Button>
             </td>

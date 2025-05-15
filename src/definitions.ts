@@ -141,12 +141,26 @@ export interface ResponseTableTahunAjaran {
 }
 
 export interface Absensi {
-    siswa_id: number;
-    jadwal_id: number;
-    guru_id: number
+    siswa_id: string;
+    jadwal_id: string;
+    guru_id: string;
     tanggal: string;
     status: string;
     keterangan?: string;
+    waktu_absen?: string; // Added the missing property
+}
+
+export interface ResponseTableAbsensi {
+    id: number;
+    nama_siswa: number;
+    jadwal: number;
+    nama_guru: number
+    tanggal: string;
+    status: string;
+    keterangan?: string;
+    waktu_absen: string;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface Users {
@@ -154,9 +168,18 @@ export interface Users {
     role: string;
     hashedPassword: string;
     reference_id: string;
-    reference_type : string;
+    reference_type: string;
 }
 export interface LoginUser {
     username: string;
     password: string;
 }
+
+export interface SiswaAbsen {
+    id: string;
+    nama: string;
+    nis: string;
+    nama_kelas: string;
+    tahun_ajaran: string;
+}
+type StudentList = SiswaAbsen[]

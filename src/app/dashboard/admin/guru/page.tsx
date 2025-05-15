@@ -26,6 +26,7 @@ const Page = () => {
 
     fetchData();
   }, [refresh]);
+
   return (
     <section className="px-6 mt-10 ">
       <Card className="flex md:flex-row justify-between relative">
@@ -44,11 +45,9 @@ const Page = () => {
         <Button>Search</Button>
       </div>
       <Card>
-        <Suspense fallback={<p>Loading...</p>}>
-          <CardContent className="overflow-auto">
-            <TableGuru children={guru} onDelete={refreshData}/>
-          </CardContent>
-        </Suspense>
+        <CardContent className="overflow-auto">
+          <TableGuru children={guru} onDelete={refreshData} />
+        </CardContent>
       </Card>
     </section>
   );

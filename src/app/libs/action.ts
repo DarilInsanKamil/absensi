@@ -9,59 +9,75 @@ export async function logout() {
     redirect('/');
 }
 
-
 export async function loginAccount(formData: FormData) {
-    const data = Object.fromEntries(formData.entries());
-    const {
-        username,
-        password
-    } = data;
-    const req = await fetch(`${process.env.LOCAL_TEST_API}/api/login`, {
-        method: 'POST',
-        body: JSON.stringify({
-            username, password
-        })
-    })
-    if (!req.ok) {
-        throw new Error('Login failed');
-    }
+    try {
+        const data = Object.fromEntries(formData.entries());
+        const { username, password } = data;
 
-    const response = await req.json();
+        const req = await fetch(`${process.env.LOCAL_TEST_API}/api/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username, 
+                password
+            })
+        });
 
-    // Set cookie at client side after successful login
-    (await cookies()).set({
-        name: 'token',
-        value: response.token,
-        httpOnly: true,
-        path: '/',
-        maxAge: 60 * 60 * 24, // 24 hours
-        sameSite: 'strict',
-        secure: process.env.NODE_ENV === 'production',
-    });
-    (await cookies()).set({
-        name: 'role',
-        value: response.user.role,
-        httpOnly: false, // Allow JavaScript access
-        path: '/',
-        maxAge: 60 * 60 * 24,
-        sameSite: 'strict',
-        secure: process.env.NODE_ENV === 'production',
-    });
-    const userRole = response.user.role;
-    switch (userRole) {
-        case 'admin':
-            redirect('/dashboard/admin');
-            break;
-        case 'guru':
-            redirect('/dashboard/guru');
-            break;
-        case 'siswa':
-            redirect('/dashboard/siswa');
-            break;
-        default:
-            redirect('/dashboard');
+        if (!req.ok) {
+            throw new Error('Invalid credentials');
+        }
+
+        const response = await req.json();
+
+        // Set cookies
+        const cookieStore = await cookies();
+        
+        cookieStore.set({
+            name: 'token',
+            value: response.token,
+            httpOnly: true,
+            path: '/',
+            maxAge: 60 * 60 * 24, // 24 hours
+            sameSite: 'strict',
+            secure: process.env.NODE_ENV === 'production',
+        });
+
+        cookieStore.set({
+            name: 'role',
+            value: response.user.role,
+            httpOnly: false,
+            path: '/',
+            maxAge: 60 * 60 * 24,
+            sameSite: 'strict',
+            secure: process.env.NODE_ENV === 'production',
+        });
+
+        // Handle redirect based on role
+        const userRole = response.user.role;
+        let redirectPath = '/dashboard';
+        
+        switch (userRole) {
+            case 'admin':
+                redirectPath = '/dashboard/admin';
+                break;
+            case 'guru':
+                redirectPath = '/dashboard/guru';
+                break;
+            case 'siswa':
+                redirectPath = '/dashboard/siswa';
+                break;
+        }
+
+        return { success: true, redirectTo: redirectPath };
+
+    } catch (err) {
+        console.error("Error login: ", err);
+        return { success: false, error: 'Failed to login' };
     }
 }
+
 export async function useSignUpAccount(formData: FormData) {
     const data = Object.fromEntries(formData.entries());
     const {
@@ -348,3 +364,34 @@ export async function useDeleteMatpel(id: number) {
 
     }
 }
+
+
+export async function useUpdateGuru(id: number, formData: FormData) {
+    try {
+      const data = Object.fromEntries(formData.entries());
+      const response = await fetch(`${process.env.LOCAL_TEST_API}/api/guru/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nip: data.nip,
+          nama: data.nama,
+          jenis_kelamin: data.jenis_kelamin,
+          alamat: data.alamat,
+          no_telpon: data.no_telpon,
+          email: data.email,
+          status_aktif: data.status === 'true'
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update teacher');
+      }
+  
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating teacher:', error);
+      throw error;
+    }
+  }

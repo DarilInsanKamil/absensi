@@ -40,7 +40,7 @@ export async function deleteGuruById(id: number) {
 export async function updateGuru(id: number, guru: UpdatedGuru) {
     const { nip, nama, jenis_kelamin, alamat, no_telepon, email } = guru;
     try {
-        const result = await connectionPool.query('UPDATE "GURU" SET "nip" = $1, "nama" = $2, "jenis_kelamin" = $3, "alamat" = $4, "no_telepon" = $5, "email" = $6 WHERE "id" = $9 RETURNING *', [nip, nama, jenis_kelamin, alamat, no_telepon, email, id]);
+        const result = await connectionPool.query('UPDATE "GURU" SET "nip" = $1, "nama" = $2, "jenis_kelamin" = $3, "alamat" = $4, "no_telepon" = $5, "email" = $6 WHERE "id" = $7 RETURNING *', [nip, nama, jenis_kelamin, alamat, no_telepon, email, id]);
         return result.rows;
     } catch (err) {
         console.error('Error updating data in GURU table', err);

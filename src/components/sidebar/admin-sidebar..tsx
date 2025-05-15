@@ -40,7 +40,7 @@ export function AdminSidebar() {
     },
     {
       title: "Absensi",
-      url: "/dashboard/absensi",
+      url: "/dashboard/admin/absensi",
       icon: BookCheck,
     },
   

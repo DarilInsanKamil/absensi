@@ -1,19 +1,41 @@
 "use client";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import { Input } from "../ui/input";
-import Form from "next/form";
 import { loginAccount } from "@/app/libs/action";
-import { useState } from "react";
+import { useState, FormEvent } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 export function LoginForm() {
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+
     try {
-      await loginAccount(formData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      const result = await loginAccount(formData);
+
+      if (result.success) {
+        toast.success("Login Berhasil");
+        router.push(result.redirectTo ?? "/dashboard");
+      } else {
+        toast.error("Gagal Login", {
+          description: "Masukan UserId dan Password yang valid",
+        });
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      toast.error("Login Error", {
+        description: "Terjadi kesalahan saat login",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -31,10 +53,15 @@ export function LoginForm() {
             </p>
           </CardHeader>
           <CardContent>
-            <Form action={handleSubmit}>
+            <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label>User Id</label>
-                <Input placeholder="masukan user id" name="username" />
+                <Input
+                  placeholder="masukan user id"
+                  name="username"
+                  disabled={isLoading}
+                  required
+                />
               </div>
               <div>
                 <label>Password</label>
@@ -42,10 +69,25 @@ export function LoginForm() {
                   placeholder="masukan password"
                   name="password"
                   type="password"
+                  disabled={isLoading}
+                  required
                 />
               </div>
-              <Button className="w-full mt-5">Login</Button>
-            </Form>
+              <Button
+                className="w-full mt-5"
+                disabled={isLoading}
+                type="submit"
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <span>Loading...</span>
+                  </div>
+                ) : (
+                  "Login"
+                )}
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>

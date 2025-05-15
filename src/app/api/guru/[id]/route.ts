@@ -2,7 +2,7 @@ import { deleteGuruById, getGuruById, updateGuru } from "@/app/libs/features/que
 import { NextRequest } from "next/server";
 
 
-export async function GET({ params }: { params: Promise<{ id: string }> }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const id = (await params).id;
     try {
         const result = await getGuruById(parseInt(id));
@@ -16,7 +16,7 @@ export async function GET({ params }: { params: Promise<{ id: string }> }) {
             })
         }
 
-        return new Response(JSON.stringify(result), {
+        return new Response(JSON.stringify(result[0]), {
             status: 200,
             headers: {
                 'Content-Type': 'application/json',

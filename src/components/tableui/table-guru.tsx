@@ -4,6 +4,8 @@ import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { useDeleteGuru } from "@/app/libs/action";
 import { toast } from "sonner";
+import { Suspense } from "react";
+import { DialogGuruEditForm } from "../dialogui/guru-editform";
 
 export function TableGuru({
   children,
@@ -66,9 +68,18 @@ export function TableGuru({
               >
                 <Trash2 />
               </Button>
-              <Button size="sm">
+              <DialogGuruEditForm
+                id={res.id}
+                onSuccess={onDelete}
+                trigger={
+                  <Button size="icon">
+                    <Pencil />
+                  </Button>
+                }
+              />
+              {/* <Button size="icon" onClick={() => alert(res.id)}>
                 <Pencil />
-              </Button>
+              </Button> */}
             </td>
           </tr>
         ))}
