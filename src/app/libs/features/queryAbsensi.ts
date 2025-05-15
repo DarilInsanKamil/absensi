@@ -1,6 +1,27 @@
 import { Absensi } from "@/definitions";
 import { connectionPool } from "../../api/db";
 
+export async function getRekapAbsensi(bulan: number, tahun: number, kelas_id: number) {
+    const res = await connectionPool.query(`
+    SELECT 
+    s.id AS siswa_id,
+    s.nama AS nama_siswa,
+    COUNT(a.id) AS jumlah_hari_absen,
+    COUNT(CASE WHEN a.status = 'hadir' THEN 1 END) AS hadir,
+    COUNT(CASE WHEN a.status = 'izin' THEN 1 END) AS izin,
+    COUNT(CASE WHEN a.status = 'sakit' THEN 1 END) AS sakit,
+    COUNT(CASE WHEN a.status = 'alfa' THEN 1 END) AS alfa
+    FROM "SISWA" s
+    LEFT JOIN 
+    "ABSENSI" a ON a.siswa_id = s.id 
+    AND EXTRACT(MONTH FROM a.tanggal) = $1::int 
+    AND EXTRACT(YEAR FROM a.tanggal) = $2::int
+    WHERE s.kelas_id = $3 
+    GROUP BY s.id, s.nama 
+    ORDER BY s.nama`, [bulan, tahun, kelas_id])
+    return res.rows;
+}
+
 export async function getAbsensi() {
     const res = await connectionPool.query(`
         SELECT 

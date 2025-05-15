@@ -22,3 +22,68 @@ export async function kelasConverter(kelasId: number) {
             break;
     }
 }
+
+export const dataBulan = [
+    {
+        value: 1,
+        nama: "Januari"
+    },
+    {
+        value: 2,
+        nama: "Februari"
+    },
+    {
+        value: 3,
+        nama: "Maret"
+    },
+    {
+        value: 4,
+        nama: "April"
+    },
+    {
+        value: 5,
+        nama: "Mei"
+    },
+    {
+        value: 6,
+        nama: "Juni"
+    },
+    {
+        value: 7,
+        nama: "Juli"
+    },
+    {
+        value: 8,
+        nama: "Agustus"
+    },
+    {
+        value: 9,
+        nama: "September"
+    },
+    {
+        value: 10,
+        nama: "Oktober"
+    },
+    {
+        value: 11,
+        nama: "November"
+    },
+    {
+        value: 12,
+        nama: "Desember"
+    },
+]
+export const dataTahun = [
+    {
+        value: 2025,
+        nama: "2025"
+    },
+    {
+        value: 2026,
+        nama: "2026"
+    },
+    {
+        value: 2027,
+        nama: "2027"
+    }
+]

@@ -24,6 +24,19 @@ export async function getJadwal() {
     return res.rows;
 }
 
+export async function getKelasByGuruId(id_guru: number) {
+    const res = await connectionPool.query(`
+    SELECT DISTINCT
+        k.id,
+        k.nama_kelas
+    FROM 
+        "JADWAL" j
+    JOIN "KELAS" k ON k.id = j.kelas_id
+    WHERE 
+        j.guru_id = $1
+    `, [id_guru])
+    return res.rows;
+}
 
 export async function getJadwalByGuruId(guru_id: number, hari: string) {
 
