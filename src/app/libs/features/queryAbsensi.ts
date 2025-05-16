@@ -1,5 +1,5 @@
 import { Absensi } from "@/definitions";
-import { connectionPool } from "../../api/db";
+import { connectionPool } from "../../api/_db/db";
 
 export async function getRekapAbsensi(bulan: number, tahun: number, kelas_id: number) {
     const res = await connectionPool.query(`

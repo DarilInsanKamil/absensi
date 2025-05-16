@@ -1,5 +1,5 @@
 import { TahunAjaran } from "@/definitions";
-import { connectionPool } from "../../api/db";
+import { connectionPool } from "../../api/_db/db";
 
 export async function getTahunAjaran() {
     const res = await connectionPool.query('SELECT * FROM "TAHUN_AJARAN"');

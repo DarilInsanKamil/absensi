@@ -9,8 +9,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Button } from "../ui/button";
-import { logout } from "@/app/libs/action";
+// import { Button } from "../ui/button";
+// import { logout } from "@/app/libs/action";
+import { LogoutBtn } from "../ui/logout-btn";
 
 export function SidebarNav({ items }: { items: any }) {
   return (
@@ -35,13 +36,14 @@ export function SidebarNav({ items }: { items: any }) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Button
+        {/* <Button
           variant="noShadow"
           className="bg-red-500 text-white"
           onClick={logout}
         >
           Logout
-        </Button>
+        </Button> */}
+        <LogoutBtn />
       </SidebarFooter>
     </Sidebar>
   );

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { connectionPool } from '../db';
+import { connectionPool } from '../_db/db';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -50,6 +50,18 @@ export async function POST(req: Request) {
                 [userData.reference_id]
             );
             additionalData = siswaResult.rows[0];
+        } else if (userData.reference_type === "KEPSEK") {
+            const siswaResult = await connectionPool.query(
+                `SELECT * FROM "GURU" WHERE id = $1`,
+                [userData.reference_id]
+            );
+            additionalData = siswaResult.rows[0];
+        } else if (userData.reference_type === "BK") {
+            const siswaResult = await connectionPool.query(
+                `SELECT * FROM "GURU" WHERE id = $1`,
+                [userData.reference_id]
+            );
+            additionalData = siswaResult.rows[0];
         }
 
         // Buat token JWT
@@ -79,17 +91,15 @@ export async function POST(req: Request) {
             },
             { status: 200 }
         );
-
-        // Set cookie using NextResponse
-        // response.cookies.set({
-        //     name: 'token',
-        //     value: token,
-        //     httpOnly: true,
-        //     path: '/',
-        //     maxAge: 60 * 60 * 24, // 24 hours
-        //     sameSite: 'strict',
-        //     secure: process.env.NODE_ENV === 'production',
-        // });
+        (await cookies()).set({
+            name: 'token',
+            value: token,
+            httpOnly: true,
+            path: '/',
+            secure: process.env.NODE_ENV === 'production', // TRUE kalau deploy
+            sameSite: 'strict',
+            maxAge: 60 * 60 * 24 // 1 hari
+        });
 
         return response;
 

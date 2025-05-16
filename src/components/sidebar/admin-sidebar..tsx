@@ -43,8 +43,12 @@ export function AdminSidebar() {
       url: "/dashboard/admin/absensi",
       icon: BookCheck,
     },
-  
+    {
+      title: "Profile",
+      url: "/dashboard/admin/profile",
+      icon: Calendar,
+    },
   ];
 
-  return <SidebarNav items={items}/>;
+  return <SidebarNav items={items} />;
 }

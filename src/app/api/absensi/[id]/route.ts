@@ -1,7 +1,7 @@
 import { deleteAbsensiById, getAbsensiById, updateAbsensiById } from "@/app/libs/features/queryAbsensi";
 import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
     try {
         const searchById = await getAbsensiById(parseInt(id));

@@ -1,28 +1,23 @@
 import { Calendar, Home, BookCheck } from "lucide-react";
 import { SidebarNav } from "./SidebarNav";
 
-export function GuruSidebar() {
+export function BkSidebar() {
   const items = [
     {
       title: "Home",
-      url: "/dashboard/guru",
+      url: "/dashboard/bk",
       icon: Home,
     },
     {
       title: "Absensi",
-      url: "/dashboard/guru/absensi",
+      url: "/dashboard/bk/absensi",
       icon: BookCheck,
     },
     {
-      title: "Jadwal Mata Pelajaran",
-      url: "/dashboard/guru/jadwal",
-      icon: Calendar,
-    },
-    {
       title: "Profile",
-      url: "/dashboard/guru/profile",
+      url: "/dashboard/bk/profile",
       icon: Calendar,
-    },
+    }
   ];
 
   return <SidebarNav items={items} />;

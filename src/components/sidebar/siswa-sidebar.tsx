@@ -17,6 +17,11 @@ export function SiswaSidebar() {
       url: "/dashboard/siswa/jadwal",
       icon: Calendar,
     },
+    {
+      title: "Profile",
+      url: "/dashboard/siswa/profile",
+      icon: Calendar,
+    }
   ];
 
   return <SidebarNav items={items} />;

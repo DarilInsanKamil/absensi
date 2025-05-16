@@ -1,5 +1,5 @@
 import { Jadwal } from "@/definitions";
-import { connectionPool } from "../../api/db";
+import { connectionPool } from "../../api/_db/db";
 
 
 

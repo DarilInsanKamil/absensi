@@ -1,4 +1,4 @@
-import { connectionPool } from "@/app/api/db";
+import { connectionPool } from "@/app/api/_db/db";
 import { Users } from "@/definitions";
 
 export async function createUser(user: Users) {

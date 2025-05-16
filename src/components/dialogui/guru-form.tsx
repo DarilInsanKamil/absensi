@@ -59,6 +59,7 @@ export function DialogGuruForm({ onSuccess }: { onSuccess?: () => void }) {
               </div>
             </div>
           </div>
+          
           <div>
             <label>Alamat</label>
             <Input placeholder="masukan alamat" type="text" name="alamat" />
@@ -68,7 +69,7 @@ export function DialogGuruForm({ onSuccess }: { onSuccess?: () => void }) {
             <Input
               placeholder="masukan no telepom"
               type="number"
-              name="no_telpon"
+              name="no_telepon"
             />
           </div>
           <div>

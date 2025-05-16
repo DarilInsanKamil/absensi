@@ -1,5 +1,5 @@
 import { Siswa } from "@/definitions";
-import { connectionPool } from "../../api/db";
+import { connectionPool } from "../../api/_db/db";
 
 
 export async function searchUsernameSiswa(username: string) {

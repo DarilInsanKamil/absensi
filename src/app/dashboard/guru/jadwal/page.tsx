@@ -42,7 +42,7 @@ const JadwalComponent = ({ children }: { children: Jadwal[] }) => {
 };
 
 const Page = async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = (await cookieStore).get("token")?.value || "";
   const date = new Date();
   const decoded = jwt.verify(token, `${process.env.SESSION_SECRET}`);

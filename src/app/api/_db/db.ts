@@ -2,7 +2,6 @@ import { Pool } from 'pg';
 require('dotenv').config();
 
 export const connectionPool = new Pool({
-    // connectionString: process.env.POSTGRES_URL,
     user: process.env.POSTGRES_USER,
     host: process.env.POSTGRES_HOST,
     database: process.env.POSTGRES_DATABASE,

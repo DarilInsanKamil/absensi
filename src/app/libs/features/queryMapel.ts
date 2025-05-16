@@ -1,5 +1,5 @@
 import { Mapel } from "@/definitions";
-import { connectionPool } from "../../api/db";
+import { connectionPool } from "../../api/_db/db";
 
 export async function getMapel() {
     const result = await connectionPool.query('SELECT * FROM "MATA_PELAJARAN"');

@@ -1,4 +1,4 @@
-import { connectionPool } from "@/app/api/db";
+import { connectionPool } from "@/app/api/_db/db";
 
 export async function queryLength() {
     const res = await connectionPool.query(`

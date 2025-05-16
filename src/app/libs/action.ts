@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 export async function logout() {
     (await cookies()).delete('token');
     (await cookies()).delete('role');
-    redirect('/');
+    return { success: true, redirectTo: '/' };
 }
 
 export async function loginAccount(formData: FormData) {
@@ -19,8 +19,9 @@ export async function loginAccount(formData: FormData) {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({
-                username, 
+                username,
                 password
             })
         });
@@ -33,7 +34,7 @@ export async function loginAccount(formData: FormData) {
 
         // Set cookies
         const cookieStore = await cookies();
-        
+
         cookieStore.set({
             name: 'token',
             value: response.token,
@@ -41,7 +42,7 @@ export async function loginAccount(formData: FormData) {
             path: '/',
             maxAge: 60 * 60 * 24, // 24 hours
             sameSite: 'strict',
-            secure: process.env.NODE_ENV === 'production',
+            secure: false,
         });
 
         cookieStore.set({
@@ -51,13 +52,13 @@ export async function loginAccount(formData: FormData) {
             path: '/',
             maxAge: 60 * 60 * 24,
             sameSite: 'strict',
-            secure: process.env.NODE_ENV === 'production',
+            secure: false,
         });
 
         // Handle redirect based on role
         const userRole = response.user.role;
         let redirectPath = '/dashboard';
-        
+
         switch (userRole) {
             case 'admin':
                 redirectPath = '/dashboard/admin';
@@ -67,6 +68,12 @@ export async function loginAccount(formData: FormData) {
                 break;
             case 'siswa':
                 redirectPath = '/dashboard/siswa';
+                break;
+            case 'kepala-sekolah':
+                redirectPath = '/dashboard/kepala-sekolah';
+                break;
+            case 'bk':
+                redirectPath = '/dashboard/bk';
                 break;
         }
 
@@ -94,6 +101,8 @@ export async function useSignUpAccount(formData: FormData) {
     if (!req.ok) {
         console.log("Gagal :D");
     }
+    return { success: true };
+
 }
 export async function useCreateGuru(formData: FormData) {
     try {
@@ -123,6 +132,7 @@ export async function useCreateGuru(formData: FormData) {
         if (!response.ok) {
             console.log("Gagal menambah data guru")
         }
+
     } catch (err) {
         console.error("Error creating guru: ", err)
         throw new Error('Failed to create guru')
@@ -368,30 +378,30 @@ export async function useDeleteMatpel(id: number) {
 
 export async function useUpdateGuru(id: number, formData: FormData) {
     try {
-      const data = Object.fromEntries(formData.entries());
-      const response = await fetch(`${process.env.LOCAL_TEST_API}/api/guru/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          nip: data.nip,
-          nama: data.nama,
-          jenis_kelamin: data.jenis_kelamin,
-          alamat: data.alamat,
-          no_telpon: data.no_telpon,
-          email: data.email,
-          status_aktif: data.status === 'true'
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to update teacher');
-      }
-  
-      return { success: true };
+        const data = Object.fromEntries(formData.entries());
+        const response = await fetch(`${process.env.LOCAL_TEST_API}/api/guru/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nip: data.nip,
+                nama: data.nama,
+                jenis_kelamin: data.jenis_kelamin,
+                alamat: data.alamat,
+                no_telpon: data.no_telpon,
+                email: data.email,
+                status_aktif: data.status === 'true'
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update teacher');
+        }
+
+        return { success: true };
     } catch (error) {
-      console.error('Error updating teacher:', error);
-      throw error;
+        console.error('Error updating teacher:', error);
+        throw error;
     }
-  }
+}

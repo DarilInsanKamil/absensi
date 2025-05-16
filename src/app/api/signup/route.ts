@@ -6,21 +6,31 @@ import bcrypt from 'bcrypt'
 export async function POST(req: Request) {
     try {
         const data = await req.json();
-
         const { username, password, role } = data;
         let userData = null;
 
-        if (role === "guru") {
-            userData = await searchUsernameGuru(username);
-        } else if (role === "siswa") {
-            userData = await searchUsernameSiswa(username);
-        } else if (role === "admin") {
-            userData = await searchUsernameAdmin(username);
-        } else {
+        // Check for valid role first
+        const validRoles = ['admin', 'guru', 'siswa', 'kepsek', 'bk'];
+        if (!validRoles.includes(role)) {
             return new Response(JSON.stringify({ error: "Invalid role" }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }
             });
+        }
+
+        // Get user data based on role
+        switch (role) {
+            case 'guru':
+            case 'kepsek':
+            case 'bk':
+                userData = await searchUsernameGuru(username);
+                break;
+            case 'siswa':
+                userData = await searchUsernameSiswa(username);
+                break;
+            case 'admin':
+                userData = await searchUsernameAdmin(username);
+                break;
         }
 
         if (!userData) {
@@ -29,16 +39,26 @@ export async function POST(req: Request) {
                 headers: { 'Content-Type': 'application/json' }
             });
         }
-        const reference_id = userData?.id ?? '';
+
+        const reference_id = userData?.id;
         if (!reference_id) {
             return new Response(JSON.stringify({ error: "Reference ID is missing" }), {
                 status: 400,
                 headers: { 'Content-Type': 'application/json' }
             });
         }
-        const reference_type = role.toUpperCase();
-        const hashedPassword = await bcrypt.hash(password, 10)
-        const userBaru = await createUser({ username, hashedPassword, reference_id, reference_type, role })
+
+        // All special roles (kepsek, bk) are stored as GURU in reference_type
+        const reference_type = ['kepsek', 'bk'].includes(role) ? 'GURU' : role.toUpperCase();
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const userBaru = await createUser({
+            username,
+            hashedPassword,
+            reference_id,
+            reference_type,
+            role
+        });
 
         return new Response(JSON.stringify({ message: "Berhasil membuat akun", userBaru }), {
             status: 201,
