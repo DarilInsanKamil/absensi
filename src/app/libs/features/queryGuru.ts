@@ -17,7 +17,11 @@ export async function getGuru() {
 }
 
 export async function getGuruById(id: number) {
-    const result = await connectionPool.query('SELECT * FROM "GURU" WHERE "id" = $1', [id]);
+    const result = await connectionPool.query(`
+        SELECT g.*, k.nama_kelas
+        FROM "GURU" g
+        LEFT JOIN "KELAS" k ON k.walikelas_id = g.id
+        WHERE g.id = $1`, [id]);
     return result.rows;
 }
 

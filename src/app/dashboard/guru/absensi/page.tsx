@@ -1,8 +1,15 @@
 import { getKelasByGuruId } from "@/app/libs/features/queryJadwal";
 import RekapForm from "@/components/dialogui/rekap-form";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import Link from "next/link";
 
 const Page = async () => {
   const cookieStore = await cookies();
@@ -17,13 +24,23 @@ const Page = async () => {
   return (
     <section className="mt-10 flex gap-4 flex-wrap p-5">
       {data.map((res, idx) => (
-        <Card key={idx}>
+        <Card key={idx} className="w-full">
           <CardHeader>
             <h2 className="font-bold text-2xl">{res.nama_kelas}</h2>
+            <h2 className="font-bold text-1xl">{res.nama_mapel}</h2>
           </CardHeader>
           <CardContent>
-            <RekapForm kelasId={res.id} />
+            <p>{res.hari}</p>
+            <p>
+              {res.jam_mulai} - {res.jam_selesai}
+            </p>
           </CardContent>
+          <CardFooter>
+            <Link href={`/dashboard/guru/absensi/${res.id}/history`} className="mr-2">
+              <Button>History Absen</Button>
+            </Link>
+            <RekapForm kelasId={res.id} />
+          </CardFooter>
         </Card>
       ))}
     </section>

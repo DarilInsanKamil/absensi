@@ -9,13 +9,18 @@ export function GuruSidebar() {
       icon: Home,
     },
     {
-      title: "Absensi",
+      title: "Daftar Absensi",
       url: "/dashboard/guru/absensi",
       icon: BookCheck,
     },
     {
-      title: "Jadwal Mata Pelajaran",
+      title: "Absensi",
       url: "/dashboard/guru/jadwal",
+      icon: Calendar,
+    },
+    {
+      title: "Jadwal",
+      url: "/dashboard/guru/jadwal-mengajar",
       icon: Calendar,
     },
     {

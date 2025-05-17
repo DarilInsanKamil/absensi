@@ -1,10 +1,10 @@
 - tamabah role BK dan Kepala Sekolah ✅
 - data pada halaman absensi tidak berubah ⌚
-- jadwal 1 minggu siswa dan guru ⌚
+- jadwal 1 minggu siswa dan guru ✅
 
 - halaman siswa belum semua ⌚
 - fitur edit untuk semua data ⌚
-- merubah flow absensi dan rekap absensi guru ⌚
+- merubah flow absensi dan rekap absensi guru ✅
 
-- history absensi setiap harinya ⌚
+- history absensi setiap harinya ✅
 

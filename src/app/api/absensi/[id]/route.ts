@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
     try {
-        const searchById = await getAbsensiById(parseInt(id));
+        const searchById = await getAbsensiById(id);
         if (searchById.length === 0) {
             return new Response(JSON.stringify({ error: "Absensi not found" }), {
                 status: 404,
@@ -73,7 +73,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     try {
         const body = await req.json();
 
-        const existingData = await getAbsensiById(parseInt(id));
+        const existingData = await getAbsensiById(id);
         if (existingData.length === 0) {
             return new Response(JSON.stringify({ error: "Absensi not found" }), {
                 status: 404,

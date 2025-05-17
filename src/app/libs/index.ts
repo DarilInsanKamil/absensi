@@ -1,3 +1,5 @@
+import { AttendanceSummary } from "@/definitions";
+
 export async function kelasConverter(kelasId: number) {
     switch (kelasId) {
         case 4:
@@ -87,3 +89,19 @@ export const dataTahun = [
         nama: "2027"
     }
 ]
+
+
+
+export function calculateAttendanceSummary(data: any[]): AttendanceSummary {
+  return data.reduce((acc, curr) => {
+    acc[curr.status]++;
+    acc.total++;
+    return acc;
+  }, {
+    hadir: 0,
+    sakit: 0,
+    izin: 0,
+    alpha: 0,
+    total: 0
+  });
+}

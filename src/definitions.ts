@@ -9,6 +9,13 @@ export interface Guru {
     email: string;
     status_aktif: boolean;
 }
+export interface AttendanceSummary {
+  hadir: number;
+  sakit: number;
+  izin: number;
+  alpha: number;
+  total: number;
+}
 export interface ResponseTableGuru {
     id: number;
     nip: string;

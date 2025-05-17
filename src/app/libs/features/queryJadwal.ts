@@ -28,10 +28,16 @@ export async function getKelasByGuruId(id_guru: number) {
     const res = await connectionPool.query(`
     SELECT DISTINCT
         k.id,
-        k.nama_kelas
+        k.nama_kelas,
+        j.hari,
+        j.jam_mulai,
+        j.jam_selesai,
+        mp.id,
+        mp.nama_mapel
     FROM 
         "JADWAL" j
     JOIN "KELAS" k ON k.id = j.kelas_id
+    JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
     WHERE 
         j.guru_id = $1
     `, [id_guru])
@@ -57,7 +63,7 @@ JOIN "TAHUN_AJARAN" tahun_ajaran ON jadwal.tahun_ajaran_id = tahun_ajaran.id
 JOIN "MATA_PELAJARAN" mata_pelajaran ON jadwal.mata_pelajaran_id = mata_pelajaran.id
 WHERE
     jadwal.guru_id = $1 
-    AND jadwal.hari = $2
+    AND jadwal.hari ILIKE $2
 ORDER BY jadwal.jam_mulai ASC;
 `, [guru_id, hari])
     return res.rows;
@@ -126,4 +132,28 @@ WHERE jadwal.id = $1
 ORDER BY siswa.nama ASC;
         `, [id])
     return req.rows
+}
+
+export async function getJadwalGuru(guru_id: number) {
+
+    const res = await connectionPool.query(`
+        SELECT
+    jadwal.id,
+    jadwal.hari,
+    jadwal.jam_mulai,
+    jadwal.jam_selesai,
+    mata_pelajaran.nama_mapel AS mata_pelajaran,
+    guru.nama AS nama_guru,
+    tahun_ajaran.nama AS tahun_ajaran,
+    kelas.nama_kelas AS kelas
+FROM "JADWAL" jadwal
+JOIN "GURU" guru ON jadwal.guru_id = guru.id
+JOIN "KELAS" kelas ON jadwal.kelas_id = kelas.id
+JOIN "TAHUN_AJARAN" tahun_ajaran ON jadwal.tahun_ajaran_id = tahun_ajaran.id
+JOIN "MATA_PELAJARAN" mata_pelajaran ON jadwal.mata_pelajaran_id = mata_pelajaran.id
+WHERE
+    jadwal.guru_id = $1 
+ORDER BY jadwal.jam_mulai ASC;
+`, [guru_id])
+    return res.rows;
 }

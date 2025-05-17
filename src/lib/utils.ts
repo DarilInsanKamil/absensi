@@ -28,33 +28,7 @@ export function convertTahunAjaranToKelas(tahunAjaran: string): number {
 }
 
 
-export function convertDay(dayNow: Date) {
-
-  const day = dayNow.getDay();
-
-  switch (day) {
-    case 0:
-      return 'Minggu';
-      break;
-    case 1:
-      return 'Senin';
-      break;
-    case 2:
-      return 'Selasa';
-      break;
-    case 3:
-      return 'Rabu'
-      break;
-    case 4:
-      return "Kamis"
-      break;
-    case 5:
-      return "Jum'at"
-      break;
-    case 6:
-      return "Sabtu"
-      break;
-    default:
-      return 'Minggu'
-  }
+export function convertDay(day: number): string {
+  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  return days[day];
 }

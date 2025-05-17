@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import Image from "next/image";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 const Page = async () => {
   const cookieStore = await cookies();
@@ -19,13 +21,52 @@ const Page = async () => {
       {!data ? (
         <p>Tidak ada data</p>
       ) : (
-        <div key={data.id}>
-          <p>{data.nama}</p>
-          <p>{data.nip}</p>
-          <p>{data.alamat}</p>
-          <p>{data.no_telepon}</p>
-          <p>{data.email}</p>
-        </div>
+        <Card key={data.id} className="flex justify-center items-center w-2xl">
+          <div className="w-full p-5">
+            <Image
+              src={
+                data.jenis_kelamin === "L" ? "/teacher-l.svg" : "/teacher-p.svg"
+              }
+              width={100}
+              height={100}
+              alt="profile guru"
+            />
+            <table className="mt-5 w-full">
+              <tbody>
+                <tr>
+                  <td>Nama</td>
+                  <td>{data.nama}</td>
+                </tr>
+                <tr>
+                  <td>NIP</td>
+                  <td>{data.nip}</td>
+                </tr>
+                <tr>
+                  <td>Jenis Kelamin</td>
+                  <td>
+                    {data.jenis_kelamin === "L" ? "Laki-Laki" : "Perempuan"}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Wali Kelas</td>
+                  <td>{data.nama_kelas}</td>
+                </tr>
+                <tr>
+                  <td>Alamat</td>
+                  <td>{data.alamat}</td>
+                </tr>
+                <tr>
+                  <td>No Telepon</td>
+                  <td>{data.no_telepon}</td>
+                </tr>
+                <tr>
+                  <td>Email</td>
+                  <td>{data.email}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Card>
       )}
     </section>
   );

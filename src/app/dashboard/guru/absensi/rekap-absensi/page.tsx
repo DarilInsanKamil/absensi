@@ -1,4 +1,10 @@
 "use client";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import ExportToPDF from "@/components/ui/export-pdf";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -10,7 +16,9 @@ interface AbsensiSiswa {
   hadir: string;
   izin: string;
   sakit: string;
-  alfa: string;
+  alpha: string;
+  nama_kelas: string;
+  nama_mapel: string;
 }
 
 type DaftarAbsensiSiswa = AbsensiSiswa[];
@@ -42,13 +50,32 @@ const Page = () => {
     };
     fetchRekap(Number(kelas_id), Number(bulan), Number(tahun));
   }, []);
-
   return (
     <section className="p-6">
-      <h2 className="text-2xl font-bold mb-4">
-        Rekap Absensi - {bulan}/{tahun}
-      </h2>
-      <ExportToPDF data={data} />
+      <Card className="mt-5 mb-10">
+        <CardHeader>
+          <h2 className="text-2xl font-bold">Rekap Absensi</h2>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-600">Kelas: {data[0]?.nama_kelas || "-"}</p>
+          <p className="text-gray-600">
+            Mata Pelajaran: {data[0]?.nama_mapel || "-"}
+          </p>
+          <p className="text-gray-600">
+            Periode: {bulan}/{tahun}
+          </p>
+        </CardContent>
+        <CardFooter>
+          <ExportToPDF
+            data={data}
+            kelas={data[0]?.nama_kelas}
+            mapel={data[0]?.nama_mapel}
+            startDate={`${tahun}-${String(bulan).padStart(2, "0")}-01`}
+            endDate={`${tahun}-${String(bulan).padStart(2, "0")}-31`}
+          />
+        </CardFooter>
+      </Card>
+
       {data.length === 0 ? (
         <p>Tidak ada data absensi pada bulan ini.</p>
       ) : (
@@ -61,7 +88,7 @@ const Page = () => {
                 <th className="p-2 border">Hadir</th>
                 <th className="p-2 border">Izin</th>
                 <th className="p-2 border">Sakit</th>
-                <th className="p-2 border">Alfa</th>
+                <th className="p-2 border">Alpha</th>
               </tr>
             </thead>
             <tbody>
@@ -72,7 +99,7 @@ const Page = () => {
                   <td className="p-2 border">{siswa.hadir}</td>
                   <td className="p-2 border">{siswa.izin}</td>
                   <td className="p-2 border">{siswa.sakit}</td>
-                  <td className="p-2 border">{siswa.alfa}</td>
+                  <td className="p-2 border">{siswa.alpha}</td>
                 </tr>
               ))}
             </tbody>

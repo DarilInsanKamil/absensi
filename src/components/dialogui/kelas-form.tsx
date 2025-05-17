@@ -64,7 +64,7 @@ export function DialogKelasForm({ onSuccess }: { onSuccess?: () => void }) {
         <Form action={handleSubmit} className="grid gap-2 py-4">
           <div>
             <label>Nama Kelas</label>
-            <Input placeholder="masukan nip atau nisn" name="nama_kelas" />
+            <Input placeholder="masukan nama kelas" name="nama_kelas" />
           </div>
           <div>
             <label>Tahun Ajaran</label>
@@ -95,19 +95,6 @@ export function DialogKelasForm({ onSuccess }: { onSuccess?: () => void }) {
               ))}
             </select>
           </div>
-          {/* <div>
-            <label>Status</label>
-            <div className="flex gap-3">
-              <div className="flex gap-1">
-                <input name="status" type="radio" value="1" />
-                <label>Aktif</label>
-              </div>
-              <div className="flex gap-1">
-                <input name="status" type="radio" value="0" />
-                <label>Tidak Aktif</label>
-              </div>
-            </div>
-          </div> */}
           <Button type="submit" className="mt-5">
             Tambah Kelas
           </Button>

@@ -5,6 +5,13 @@ import jwt from "jsonwebtoken";
 import React from "react";
 import { convertDay } from "@/lib/utils";
 import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 type Jadwal = {
   id: number;
@@ -19,41 +26,44 @@ type Jadwal = {
 
 const JadwalComponent = ({ children }: { children: Jadwal[] }) => {
   return (
-    <div className="mt-10 p-4">
+    <section className="mt-10 p-4 flex flex-wrap">
       {children.map((res, idx: number) => (
-        <div key={idx} className="mb-4 p-4 border">
-          <p>
-            <strong>{res.hari}</strong>
-          </p>
-          <p>Guru: {res.nama_guru}</p>
-          <p>Kelas: {res.kelas}</p>
-          <p>
-            Waktu: {res.jam_mulai} - {res.jam_selesai}
-          </p>
-          <Link href={`/dashboard/guru/absensi/${res.id}`}>
-            <button className="mt-2 px-3 py-1 bg-blue-600 text-white rounded">
-              Isi Absensi
-            </button>
-          </Link>
-        </div>
+        <Card key={idx} className="w-[400]">
+          <CardHeader>
+            <h3 className="font-bold text-2xl">{res.hari}</h3>
+          </CardHeader>
+          <CardContent>
+            <p>{res.mata_pelajaran}</p>
+            <p>{res.kelas}</p>
+            <p>
+              {res.jam_mulai} - {res.jam_selesai}
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Link href={`/dashboard/guru/absensi/create/${res.id}`}>
+              <Button>Isi Absensi</Button>
+            </Link>
+          </CardFooter>
+        </Card>
       ))}
-    </div>
+    </section>
   );
 };
 
 const Page = async () => {
   const cookieStore = await cookies();
   const token = (await cookieStore).get("token")?.value || "";
-  const date = new Date();
+  const date = new Date().getDay();
   const decoded = jwt.verify(token, `${process.env.SESSION_SECRET}`);
   const guruId =
     typeof decoded !== "string" && decoded.reference_id
       ? (decoded.reference_id as string)
       : "";
+
   const getData = await getJadwalByGuruId(parseInt(guruId), convertDay(date));
   return (
     <div>
-      {getData.length > 1 ? (
+      {getData.length > 0 ? (
         <JadwalComponent children={getData} />
       ) : (
         <>Tidak ada Jadwal</>
