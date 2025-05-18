@@ -375,7 +375,62 @@ export async function useDeleteMatpel(id: number) {
     }
 }
 
+export async function useUpdateSiswa(id: string, formData: FormData) {
+    try {
+        const data = Object.fromEntries(formData.entries());
+        const response = await fetch(`${process.env.LOCAL_TEST_API}/api/siswa/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                nis: data.nis,
+                nip: data.nip,
+                nama: data.nama,
+                jenis_kelamin: data.jenis_kelamin,
+                alamat: data.alamat,
+                no_telpon: data.no_telpon,
+                email: data.email,
+                kelas_id: data.kelas,
+                status_aktif: data.status === 'true'
+            })
+        })
+        if (!response.ok) {
+            throw new Error('Failed to update teacher');
+        }
 
+        return { success: true };
+    } catch (error) {
+        console.error('Error updating teacher:', error);
+        throw error;
+    }
+}
+
+
+export async function useUpdateMatpel(id: number, formData: FormData) {
+    try {
+        const data = Object.fromEntries(formData.entries());
+        const response = await fetch(`${process.env.LOCAL_TEST_API}/api/matpel/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                kode_mapel: data.kode_mapel,
+                nama_mapel: data.nama_mapel
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update mapel');
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error('Error updating mapel:', error);
+        throw error;
+    }
+}
 export async function useUpdateGuru(id: number, formData: FormData) {
     try {
         const data = Object.fromEntries(formData.entries());

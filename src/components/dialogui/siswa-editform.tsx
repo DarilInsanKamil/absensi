@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useUpdateGuru } from "@/app/libs/action";
+import { useUpdateSiswa } from "@/app/libs/action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,22 +9,48 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Guru } from "@/definitions";
+import { Siswa } from "@/definitions";
+import { Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export function DialogGuruEditForm({
-  id,
-  onSuccess,
-  trigger,
-}: {
+interface DataKelas {
   id: number;
+  nama_kelas: string;
+  wali_kelas: string;
+  tahun_ajaran: string;
+}
+
+export function DialogSiswaEditForm({
+  id,
+  dataKelas,
+  onSuccess,
+  trigger
+}: {
+  id: string;
+  dataKelas: DataKelas[];
   onSuccess?: () => void;
   trigger: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
-  const [guru, setGuru] = useState<Guru | null>(null);
+  const [siswa, setSiswa] = useState<Siswa | null>();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/siswa/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch teacher siswa");
+        const data = await response.json();
+        setSiswa(data);
+      } catch (error) {
+        console.error("Error fetching siswa:", error);
+        toast.error("Gagal mengambil data siswa");
+      }
+    };
+
+    if (open) fetchData();
+  }, [id, open]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,60 +58,43 @@ export function DialogGuruEditForm({
 
     try {
       const formData = new FormData(e.currentTarget);
-      await useUpdateGuru(id, formData);
+      await useUpdateSiswa(id, formData);
 
       toast.success("Berhasil", {
-        description: "Data guru berhasil diupdate.",
+        description: "Data siswa berhasil diupdate.",
       });
 
       if (onSuccess) onSuccess();
       setOpen(false);
     } catch (error) {
       toast.error("Gagal", {
-        description: "Terjadi kesalahan saat mengupdate data guru.",
+        description: "Terjadi kesalahan saat mengupdate data siswa.",
       });
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/api/guru/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch teacher data");
-        const data = await response.json();
-        setGuru(data);
-      } catch (error) {
-        console.error("Error fetching teacher:", error);
-        toast.error("Gagal mengambil data guru");
-      }
-    };
-
-    if (open) fetchData();
-  }, [id, open]);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogTitle>Input Data Guru</DialogTitle>
-        {guru ? (
+        <DialogTitle>Input Data Siswa</DialogTitle>
+        {siswa ? (
           <form onSubmit={handleSubmit} className="grid gap-2 py-4">
             <div>
-              <label>NIP</label>
+              <label>NISN</label>
               <Input
-                placeholder="masukan nip"
-                name="nip"
-                defaultValue={guru.nip}
+                placeholder="masukan nip atau nisn"
+                name="nis"
+                defaultValue={siswa.nis}
               />
             </div>
             <div>
               <label>Nama Lengkap</label>
               <Input
-                placeholder="masukan nama lengkap"
+                placeholder="masukan nama"
                 name="nama"
-                defaultValue={guru.nama}
+                defaultValue={siswa.nama}
               />
             </div>
             <div>
@@ -96,7 +105,7 @@ export function DialogGuruEditForm({
                     name="jenis_kelamin"
                     type="radio"
                     defaultValue="L"
-                    defaultChecked={guru.jenis_kelamin === "L"}
+                    defaultChecked={siswa.jenis_kelamin === "L"}
                   />
                   <label>Laki-laki</label>
                 </div>
@@ -105,11 +114,19 @@ export function DialogGuruEditForm({
                     name="jenis_kelamin"
                     type="radio"
                     defaultValue="P"
-                    defaultChecked={guru.jenis_kelamin === "P"}
+                    defaultChecked={siswa.jenis_kelamin === "P"}
                   />
                   <label>Perempuan</label>
                 </div>
               </div>
+            </div>
+            <div>
+              <label>Tanggal Lahir</label>
+              <Input
+                type="date"
+                name="ttl"
+                defaultValue={siswa.tanggal_lahir}
+              />
             </div>
             <div>
               <label>Alamat</label>
@@ -117,49 +134,43 @@ export function DialogGuruEditForm({
                 placeholder="masukan alamat"
                 type="text"
                 name="alamat"
-                defaultValue={guru.alamat}
+                defaultValue={siswa.alamat}
               />
             </div>
             <div>
               <label>No Telepon</label>
               <Input
-                placeholder="masukan no telepom"
+                placeholder="masukan no telepon"
                 type="tel"
-                defaultValue={guru.no_telepon}
-                name="no_telpon"
+                name="no_telepon"
+                defaultValue={siswa.no_telepon}
               />
             </div>
             <div>
               <label>Email</label>
               <Input
-                placeholder="masukan alamat"
+                placeholder="masukan email"
                 type="email"
                 name="email"
-                defaultValue={guru.email}
+                defaultValue={siswa.email}
               />
             </div>
             <div>
-              <label>Status</label>
-              <div className="flex gap-3">
-                <div className="flex gap-1">
-                  <input
-                    name="status"
-                    type="radio"
-                    defaultValue="true"
-                    defaultChecked={guru.status_aktif === true}
-                  />
-                  <label>Aktif</label>
-                </div>
-                <div className="flex gap-1">
-                  <input
-                    name="status"
-                    type="radio"
-                    defaultValue="false"
-                    defaultChecked={guru.status_aktif === false}
-                  />
-                  <label>Tidak Aktif</label>
-                </div>
-              </div>
+              <label>Kelas</label>
+              <br></br>
+              <select
+                name="kelas"
+                id="kelas"
+                className="w-full bg-white outline-2 p-2 rounded-sm"
+              >
+                {dataKelas.map((res: any, idx: number) => {
+                  return (
+                    <option key={idx} value={res.id}>
+                      {res.nama_kelas}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
@@ -173,7 +184,7 @@ export function DialogGuruEditForm({
             </Button>
           </form>
         ) : (
-          <p>Loading...</p>
+          <p>Loading... </p>
         )}
       </DialogContent>
     </Dialog>

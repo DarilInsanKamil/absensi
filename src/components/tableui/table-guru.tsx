@@ -70,16 +70,13 @@ export function TableGuru({
               </Button>
               <DialogGuruEditForm
                 id={res.id}
-                onSuccess={onDelete}
+                // onSuccess={onDelete}
                 trigger={
                   <Button size="icon">
                     <Pencil />
                   </Button>
                 }
               />
-              {/* <Button size="icon" onClick={() => alert(res.id)}>
-                <Pencil />
-              </Button> */}
             </td>
           </tr>
         ))}

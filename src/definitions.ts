@@ -10,11 +10,11 @@ export interface Guru {
     status_aktif: boolean;
 }
 export interface AttendanceSummary {
-  hadir: number;
-  sakit: number;
-  izin: number;
-  alpha: number;
-  total: number;
+    hadir: number;
+    sakit: number;
+    izin: number;
+    alpha: number;
+    total: number;
 }
 export interface ResponseTableGuru {
     id: number;
@@ -63,6 +63,9 @@ export interface ResponseTableSiswa {
     status_aktif: boolean
 }
 
+export interface Jadwal2 {
+    jadwal_id: string, nama_mapel: string, nama_guru: string, hari: string, jam_mulai: string, jam_selesai: string, jumlah_hadir: string, jumlah_sakit: string, jumlah_izin: string, jumlah_alpha: string
+}
 
 export interface JadwalItem {
     id: string;
@@ -98,6 +101,7 @@ export interface Kelas {
     tahun_ajaran_id: number;
     walikelas_id: string;
 }
+
 export interface ResponseTableKelas {
     id: number;
     nama_kelas: string;

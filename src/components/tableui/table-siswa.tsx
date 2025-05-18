@@ -6,6 +6,8 @@ import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { useDeleteSiswa } from "@/app/libs/action";
 import { toast } from "sonner";
+import { DialogSiswaEditForm } from "../dialogui/siswa-editform";
+import { useEffect, useState } from "react";
 
 export function TableSiswa({
   children,
@@ -14,6 +16,18 @@ export function TableSiswa({
   children: ResponseTableSiswa[];
   onDelete?: () => void;
 }) {
+  const [kelas, setKelas] = useState([]);
+
+  useEffect(() => {
+    const fetchDataKelas = async () => {
+      const res = await fetch("/api/kelas");
+      const data = await res.json();
+      setKelas(data);
+    };
+    fetchDataKelas();
+  }, []);
+  console.log(kelas)
+
   const handleDelete = async (id: number) => {
     try {
       await useDeleteSiswa(id);
@@ -69,9 +83,15 @@ export function TableSiswa({
               >
                 <Trash2 />
               </Button>
-              <Button size="sm">
-                <Pencil />
-              </Button>
+              <DialogSiswaEditForm
+                id={String(child.id)}
+                dataKelas={kelas}
+                trigger={
+                  <Button size="icon">
+                    <Pencil />
+                  </Button>
+                }
+              />
             </td>
           </tr>
         ))}

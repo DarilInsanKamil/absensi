@@ -13,7 +13,20 @@ import Form from "next/form";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export function DialogSiswaForm({ dataKelas, onSuccess }: { dataKelas: any, onSuccess?: ()=> void }) {
+interface DataKelas {
+  id: number;
+  nama_kelas: string;
+  wali_kelas: string;
+  tahun_ajaran: string;
+}
+
+export function DialogSiswaForm({
+  dataKelas,
+  onSuccess,
+}: {
+  dataKelas: DataKelas[];
+  onSuccess?: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const handleSubmit = async (formData: FormData) => {
     try {
@@ -32,6 +45,7 @@ export function DialogSiswaForm({ dataKelas, onSuccess }: { dataKelas: any, onSu
       });
     }
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

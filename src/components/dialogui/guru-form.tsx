@@ -1,3 +1,5 @@
+'use client'
+
 import { useCreateGuru } from "@/app/libs/action";
 import { Button } from "@/components/ui/button";
 import {

@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { useDeleteMatpel } from "@/app/libs/action";
 import { toast } from "sonner";
+import { DialogEditMatpelForm } from "../dialogui/matpel-editform";
 
 export function TableMatpel({
   children,
@@ -56,9 +57,14 @@ export function TableMatpel({
               >
                 <Trash2 />
               </Button>
-              <Button size="sm">
-                <Pencil />
-              </Button>
+              <DialogEditMatpelForm
+                id={child.id}
+                trigger={
+                  <Button size="icon">
+                    <Pencil />
+                  </Button>
+                }
+              />
             </td>
           </tr>
         ))}

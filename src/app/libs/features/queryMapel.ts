@@ -8,7 +8,7 @@ export async function getMapel() {
 
 export async function getMapelById(id: number) {
     const result = await connectionPool.query('SELECT * FROM "MATA_PELAJARAN" WHERE "id" = $1', [id]);
-    return result.rows;
+    return result.rows[0];
 }
 
 export async function createMapel(mapel: Mapel) {
