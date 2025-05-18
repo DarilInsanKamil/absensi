@@ -65,3 +65,63 @@ export const getSiswaByKelasId = async (id: number) => {
     );
     return getSiswa.rows;
 };
+
+export const getMatpelBySiswa = async (id: string) => {
+    const res = await connectionPool.query(`
+      SELECT 
+            jadwal.id AS jadwal_id,
+            mata_pelajaran.nama_mapel,
+            guru.nama AS nama_guru,
+            jadwal.hari,
+            jadwal.jam_mulai,
+            jadwal.jam_selesai,
+            COUNT(CASE WHEN a.status = 'hadir' THEN 1 END) as jumlah_hadir,
+            COUNT(CASE WHEN a.status = 'sakit' THEN 1 END) as jumlah_sakit,
+            COUNT(CASE WHEN a.status = 'izin' THEN 1 END) as jumlah_izin,
+            COUNT(CASE WHEN a.status = 'alpha' THEN 1 END) as jumlah_alpha
+        FROM "SISWA" siswa
+        JOIN "JADWAL" jadwal ON jadwal.kelas_id = siswa.kelas_id
+        JOIN "MATA_PELAJARAN" mata_pelajaran ON jadwal.mata_pelajaran_id = mata_pelajaran.id
+        JOIN "GURU" guru ON jadwal.guru_id = guru.id
+        LEFT JOIN "ABSENSI" a ON a.jadwal_id = jadwal.id AND a.siswa_id = siswa.id
+        WHERE siswa.id = $1
+        GROUP BY 
+            jadwal.id,
+            mata_pelajaran.nama_mapel,
+            guru.nama,
+            jadwal.hari,
+            jadwal.jam_mulai,
+            jadwal.jam_selesai
+        ORDER BY jadwal.hari, jadwal.jam_mulai
+`, [id])
+    return res.rows;
+}
+
+export async function getAbsensiSiswaByJadwal(siswaId: string, jadwalId: number) {
+    try {
+        const res = await connectionPool.query(`
+            SELECT 
+                a.id as absensi_id,
+                a.tanggal,
+                a.status,
+                a.keterangan,
+                a.waktu_absen,
+                m.nama_mapel,
+                g.nama as nama_guru,
+                j.hari,
+                j.jam_mulai,
+                j.jam_selesai
+            FROM "ABSENSI" a
+            JOIN "JADWAL" j ON a.jadwal_id = j.id
+            JOIN "MATA_PELAJARAN" m ON j.mata_pelajaran_id = m.id
+            JOIN "GURU" g ON j.guru_id = g.id
+            WHERE a.siswa_id = $1 AND j.id = $2
+            ORDER BY a.tanggal DESC
+        `, [siswaId, jadwalId]);
+
+        return res.rows;
+    } catch (err) {
+        console.error('Error getting student attendance:', err);
+        throw err;
+    }
+}

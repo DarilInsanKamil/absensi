@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: {params: Promise<{id: string}>}) {
   const { id } = await params;
   const cookieStore = cookies();
   const token = (await cookieStore).get("token")?.value;

@@ -12,11 +12,15 @@ import {
 import DayExportToPDF from "@/components/ui/export-day-pdf";
 import { calculateAttendanceSummary } from "@/app/libs";
 
-export default async function Page({
-  params,
-}: {
-  params: { id: string; edit_id: string };
-}) {
+interface PageProps {
+  params: Promise<{
+    id: string;
+    edit_id: string;
+  }>;
+}
+
+
+export default async function Page({ params }: PageProps) {
   const { id, edit_id } = await params;
 
   const absensiData = await getAbsensiByDate(parseInt(id), edit_id);
