@@ -1,7 +1,7 @@
+export const dynamic = 'force-dynamic'
+
 import { getAbsensiByDate } from "@/app/libs/features/queryAbsensi";
 import { notFound } from "next/navigation";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
 import { EditAbsensiForm } from "@/components/dialogui/absensi-editform";
 import {
   Card,

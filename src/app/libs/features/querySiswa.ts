@@ -65,16 +65,41 @@ export const getSiswaByKelasId = async (id: number) => {
     );
     return getSiswa.rows;
 };
+export const getJadwalSiswa = async (id: string) => {
+    const res = await connectionPool.query(`
+        SELECT 
+    jadwal.id,
+    jadwal.hari,
+    jadwal.jam_mulai,
+    jadwal.jam_selesai,
+    mata_pelajaran.nama_mapel,
+    guru.nama AS nama_guru
+FROM "SISWA" siswa
+JOIN "JADWAL" jadwal ON jadwal.kelas_id = siswa.kelas_id
+JOIN "MATA_PELAJARAN" mata_pelajaran ON jadwal.mata_pelajaran_id = mata_pelajaran.id
+JOIN "GURU" guru ON jadwal.guru_id = guru.id
+WHERE siswa.id = $1
+ORDER BY 
+    CASE 
+        WHEN jadwal.hari = 'Senin' THEN 1
+        WHEN jadwal.hari = 'Selasa' THEN 2
+        WHEN jadwal.hari = 'Rabu' THEN 3
+        WHEN jadwal.hari = 'Kamis' THEN 4
+        WHEN jadwal.hari = 'Jumat' THEN 5
+    END,
+    jadwal.jam_mulai
+        `, [id])
+    return res.rows
+}
 
 export const getMatpelBySiswa = async (id: string) => {
     const res = await connectionPool.query(`
-      SELECT 
-            jadwal.id AS jadwal_id,
+        SELECT 
+            MIN(jadwal.id) AS jadwal_id,
             mata_pelajaran.nama_mapel,
             guru.nama AS nama_guru,
-            jadwal.hari,
-            jadwal.jam_mulai,
-            jadwal.jam_selesai,
+            STRING_AGG(DISTINCT jadwal.hari, ', ' ORDER BY jadwal.hari) as hari,
+            STRING_AGG(DISTINCT jadwal.jam_mulai || ' - ' || jadwal.jam_selesai, ', ') as jam_pelajaran,
             COUNT(CASE WHEN a.status = 'hadir' THEN 1 END) as jumlah_hadir,
             COUNT(CASE WHEN a.status = 'sakit' THEN 1 END) as jumlah_sakit,
             COUNT(CASE WHEN a.status = 'izin' THEN 1 END) as jumlah_izin,
@@ -86,14 +111,10 @@ export const getMatpelBySiswa = async (id: string) => {
         LEFT JOIN "ABSENSI" a ON a.jadwal_id = jadwal.id AND a.siswa_id = siswa.id
         WHERE siswa.id = $1
         GROUP BY 
-            jadwal.id,
             mata_pelajaran.nama_mapel,
-            guru.nama,
-            jadwal.hari,
-            jadwal.jam_mulai,
-            jadwal.jam_selesai
-        ORDER BY jadwal.hari, jadwal.jam_mulai
-`, [id])
+            guru.nama
+        ORDER BY mata_pelajaran.nama_mapel
+    `, [id]);
     return res.rows;
 }
 

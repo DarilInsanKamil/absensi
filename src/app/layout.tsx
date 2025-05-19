@@ -21,7 +21,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await initDb()
+  if (process.env.SKIP_DB_INIT !== "true") {
+    await initDb();
+  }
   return (
     <html lang="en">
       <body className={`${dmSans.className}`}>

@@ -26,21 +26,39 @@ export async function getJadwal() {
 
 export async function getKelasByGuruId(id_guru: number) {
     const res = await connectionPool.query(`
-    SELECT DISTINCT
-        k.id,
-        k.nama_kelas,
-        j.hari,
-        j.jam_mulai,
-        j.jam_selesai,
-        mp.id,
-        mp.nama_mapel
-    FROM 
-        "JADWAL" j
-    JOIN "KELAS" k ON k.id = j.kelas_id
-    JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
-    WHERE 
-        j.guru_id = $1
-    `, [id_guru])
+    WITH ScheduleInfo AS (
+        SELECT 
+            j.id as jadwal_id,
+            k.nama_kelas,
+            mp.id as mapel_id,
+            mp.nama_mapel,
+            STRING_AGG(
+                j.hari || ' (' || j.jam_mulai || '-' || j.jam_selesai || ')',
+                ', '
+                ORDER BY 
+                    CASE 
+                        WHEN j.hari = 'Senin' THEN 1
+                        WHEN j.hari = 'Selasa' THEN 2
+                        WHEN j.hari = 'Rabu' THEN 3
+                        WHEN j.hari = 'Kamis' THEN 4
+                        WHEN j.hari = 'Jumat' THEN 5
+                    END
+            ) as jadwal
+        FROM "JADWAL" j
+        JOIN "KELAS" k ON k.id = j.kelas_id
+        JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
+        WHERE j.guru_id = $1
+        GROUP BY j.id, k.nama_kelas, mp.id, mp.nama_mapel
+        ORDER BY k.nama_kelas, mp.nama_mapel
+    )
+    SELECT 
+        jadwal_id as id,
+        nama_kelas,
+        mapel_id,
+        nama_mapel,
+        jadwal
+    FROM ScheduleInfo
+    `, [id_guru]);
     return res.rows;
 }
 
@@ -135,25 +153,31 @@ ORDER BY siswa.nama ASC;
 }
 
 export async function getJadwalGuru(guru_id: number) {
-
     const res = await connectionPool.query(`
         SELECT
-    jadwal.id,
-    jadwal.hari,
-    jadwal.jam_mulai,
-    jadwal.jam_selesai,
-    mata_pelajaran.nama_mapel AS mata_pelajaran,
-    guru.nama AS nama_guru,
-    tahun_ajaran.nama AS tahun_ajaran,
-    kelas.nama_kelas AS kelas
-FROM "JADWAL" jadwal
-JOIN "GURU" guru ON jadwal.guru_id = guru.id
-JOIN "KELAS" kelas ON jadwal.kelas_id = kelas.id
-JOIN "TAHUN_AJARAN" tahun_ajaran ON jadwal.tahun_ajaran_id = tahun_ajaran.id
-JOIN "MATA_PELAJARAN" mata_pelajaran ON jadwal.mata_pelajaran_id = mata_pelajaran.id
-WHERE
-    jadwal.guru_id = $1 
-ORDER BY jadwal.jam_mulai ASC;
-`, [guru_id])
+            jadwal.id,
+            jadwal.hari,
+            jadwal.jam_mulai,
+            jadwal.jam_selesai,
+            mata_pelajaran.nama_mapel AS mata_pelajaran,
+            guru.nama AS nama_guru,
+            tahun_ajaran.nama AS tahun_ajaran,
+            kelas.nama_kelas AS kelas
+        FROM "JADWAL" jadwal
+        JOIN "GURU" guru ON jadwal.guru_id = guru.id
+        JOIN "KELAS" kelas ON jadwal.kelas_id = kelas.id
+        JOIN "TAHUN_AJARAN" tahun_ajaran ON jadwal.tahun_ajaran_id = tahun_ajaran.id
+        JOIN "MATA_PELAJARAN" mata_pelajaran ON jadwal.mata_pelajaran_id = mata_pelajaran.id
+        WHERE jadwal.guru_id = $1
+        ORDER BY 
+            CASE 
+                WHEN jadwal.hari = 'Senin' THEN 1
+                WHEN jadwal.hari = 'Selasa' THEN 2
+                WHEN jadwal.hari = 'Rabu' THEN 3
+                WHEN jadwal.hari = 'Kamis' THEN 4
+                WHEN jadwal.hari = 'Jumat' THEN 5
+            END,
+            jadwal.jam_mulai;
+    `, [guru_id]);
     return res.rows;
 }

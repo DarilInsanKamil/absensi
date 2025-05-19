@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";

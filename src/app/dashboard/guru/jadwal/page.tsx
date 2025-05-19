@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getJadwalByGuruId } from "@/app/libs/features/queryJadwal";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
@@ -26,7 +28,7 @@ type Jadwal = {
 
 const JadwalComponent = ({ children }: { children: Jadwal[] }) => {
   return (
-    <section className="mt-10 p-4 flex flex-wrap">
+    <section className="mt-10 p-4 flex flex-wrap gap-4">
       {children.map((res, idx: number) => (
         <Card key={idx} className="w-[400]">
           <CardHeader>

@@ -1,6 +1,7 @@
+export const dynamic = 'force-dynamic'
+
 import { getAbsensiHistory } from "@/app/libs/features/queryAbsensi";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import Link from "next/link";

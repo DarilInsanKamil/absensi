@@ -14,7 +14,7 @@ export function GuruSidebar() {
       icon: BookCheck,
     },
     {
-      title: "Absensi",
+      title: "Isi Absensi",
       url: "/dashboard/guru/jadwal",
       icon: Calendar,
     },

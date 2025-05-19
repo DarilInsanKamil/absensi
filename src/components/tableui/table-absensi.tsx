@@ -1,74 +1,62 @@
-import { ResponseTableAbsensi } from "@/definitions";
-import { Button } from "../ui/button";
-import { Pencil, Trash2 } from "lucide-react";
-import { useDeleteGuru } from "@/app/libs/action";
-import { toast } from "sonner";
+"use client";
 
-export function TableAbsensi({
-  children,
-  onDelete,
-}: {
-  children: ResponseTableAbsensi[];
-  onDelete?: () => void;
-}) {
-  const handleDelete = async (id: number) => {
-    try {
-      await useDeleteGuru(id);
+interface AbsensiData {
+  id: string;
+  tanggal: string;
+  nama_siswa: string;
+  nis: string;
+  nama_kelas: string;
+  nama_mapel: string;
+  nama_guru: string;
+  status: string;
+  keterangan?: string;
+}
 
-      toast.success("Berhasil", {
-        description: "Berhasil Menghapus data siswa.",
-      });
-
-      if (onDelete) onDelete();
-    } catch (error) {
-      toast.error("Gagal", {
-        description: "Terjadi kesalahan saat menghapus data siswa.",
-      });
-    }
-  };
+export function AdminAbsensiTable({ data }: { data: AbsensiData[] }) {
   return (
-    <table className="min-w-full bg-white rounded-lg overflow-auto">
-      <thead>
-        <tr className="bg-gray-100 text-gray-700 relative ">
-          <th className="px-4 py-2 text-left">No</th>
-          <th className="px-4 py-2 text-left">Nama Siswa</th>
-          <th className="px-4 py-2 text-left">Jadwal</th>
-          <th className="px-4 py-2 text-left">Nama Guru</th>
-          <th className="px-4 py-2 text-left">Tanggal</th>
-          <th className="px-4 py-2 text-left">Status</th>
-          <th className="px-4 py-2 text-left">Keterangan</th>
-          <th className="px-4 py-2 text-left">Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        {children.map((res, index: number) => (
-          <tr
-            key={index}
-            className="border-b border-gray-300 hover:bg-gray-100 relative bg-white"
-          >
-            <td className="px-4 py-2">{index + 1}</td>
-            <td className="px-4 py-2">{res.nama_siswa}</td>
-            <td className="px-4 py-2">{res.jadwal}</td>
-            <td className="px-4 py-2">{res.nama_guru}</td>
-            <td className="px-4 py-2">{res.tanggal}</td>
-            <td className="px-4 py-2">{res.status}</td>
-            <td className="px-4 py-2">{res.keterangan}</td>
-            <td className="px-4 py-2">{res.waktu_absen}</td>
-            <td className="px-4 py-2 flex gap-2">
-              <Button
-                className="bg-red-400"
-                size="icon"
-                onClick={() => handleDelete(res.id)}
-              >
-                <Trash2 />
-              </Button>
-              <Button size="sm">
-                <Pencil />
-              </Button>
-            </td>
+    <div className="rounded-md border">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Nama Siswa</th>
+            <th>NIS</th>
+            <th>Kelas</th>
+            <th>Mata Pelajaran</th>
+            <th>Guru</th>
+            <th>Status</th>
+            <th>Keterangan</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {data.map((item) => (
+            <tr key={item.id}>
+              <td>{new Date(item.tanggal).toLocaleDateString("id-ID")}</td>
+              <td>{item.nama_siswa}</td>
+              <td>{item.nis}</td>
+              <td>{item.nama_kelas}</td>
+              <td>{item.nama_mapel}</td>
+              <td>{item.nama_guru}</td>
+              <td>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs ${
+                    item.status === "hadir"
+                      ? "bg-green-100 text-green-800"
+                      : item.status === "sakit"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : item.status === "izin"
+                      ? "bg-blue-100 text-blue-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {item.status}
+                </span>
+              </td>
+              <td>{item.keterangan || "-"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

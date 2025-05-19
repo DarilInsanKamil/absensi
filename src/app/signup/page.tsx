@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { SignupForm } from '@/components/authui/signup-form'
 import React from 'react'
 

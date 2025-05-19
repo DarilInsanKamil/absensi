@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getKelasByGuruId } from "@/app/libs/features/queryJadwal";
 import RekapForm from "@/components/dialogui/rekap-form";
 import { Button } from "@/components/ui/button";
@@ -13,7 +15,7 @@ import Link from "next/link";
 
 const Page = async () => {
   const cookieStore = await cookies();
-  const token = (await cookieStore).get("token")?.value || "";
+  const token = cookieStore.get("token")?.value || "";
   const decoded = jwt.verify(token, `${process.env.SESSION_SECRET}`);
   const guruId =
     typeof decoded !== "string" && decoded.reference_id
@@ -22,28 +24,39 @@ const Page = async () => {
 
   const data = await getKelasByGuruId(parseInt(guruId));
   return (
-    <section className="mt-10 flex gap-4 flex-wrap p-5">
-      {data.map((res, idx) => (
-        <Card key={idx} className="w-full">
-          <CardHeader>
-            <h2 className="font-bold text-2xl">{res.nama_kelas}</h2>
-            <h2 className="font-bold text-1xl">{res.nama_mapel}</h2>
-          </CardHeader>
-          <CardContent>
-            <p>{res.hari}</p>
-            <p>
-              {res.jam_mulai} - {res.jam_selesai}
-            </p>
-          </CardContent>
-          <CardFooter>
-            <Link href={`/dashboard/guru/absensi/${res.id}/history`} className="mr-2">
-              <Button>History Absen</Button>
-            </Link>
-            <RekapForm kelasId={res.id} />
-          </CardFooter>
-        </Card>
-      ))}
-    </section>
+    <div className="p-5">
+      <h1 className="text-2xl font-bold mb-6">Daftar Kelas</h1>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {data.map((kelas, idx) => (
+          <Card key={idx} className="h-fit">
+            <CardHeader>
+              <h2 className="font-bold text-xl">{kelas.nama_kelas}</h2>
+              <p className="text-lg font-medium text-muted-foreground">
+                {kelas.nama_mapel}
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground font-medium">
+                  Jadwal:
+                </p>
+                {kelas.jadwal.split(", ").map((jadwal: any, i: number) => (
+                  <p key={i} className="text-sm pl-2">
+                    {jadwal}
+                  </p>
+                ))}
+              </div>
+            </CardContent>
+            <CardFooter className="flex gap-2">
+              <Link href={`/dashboard/guru/absensi/${kelas.id}/history`}>
+                <Button variant="noShadow">History Absen</Button>
+              </Link>
+              <RekapForm kelasId={kelas.id} />
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    </div>
   );
 };
 

@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
+export const dynamic = 'force-dynamic'
+
 const Page = async () => {
   const cookieStore = await cookies();
   const token = (await cookieStore).get("token")?.value || "";

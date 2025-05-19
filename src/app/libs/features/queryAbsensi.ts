@@ -183,3 +183,32 @@ export async function getSiswaByNamaKelas(id: string) {
     }
 }
 
+
+
+export async function getAbsensiAdmin() {
+    try {
+        const res = await connectionPool.query(`
+            SELECT 
+                a.id,
+                a.tanggal,
+                s.nama as nama_siswa,
+                s.nis,
+                k.nama_kelas,
+                mp.nama_mapel,
+                g.nama as nama_guru,
+                a.status,
+                a.keterangan
+            FROM "ABSENSI" a
+            JOIN "SISWA" s ON a.siswa_id = s.id
+            JOIN "JADWAL" j ON a.jadwal_id = j.id
+            JOIN "KELAS" k ON j.kelas_id = k.id
+            JOIN "MATA_PELAJARAN" mp ON j.mata_pelajaran_id = mp.id
+            JOIN "GURU" g ON j.guru_id = g.id
+            ORDER BY a.tanggal DESC, k.nama_kelas, s.nama
+        `);
+        return res.rows;
+    } catch (err) {
+        console.error('Error getting admin attendance:', err);
+        throw err;
+    }
+}

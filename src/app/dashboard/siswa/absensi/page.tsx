@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getMatpelBySiswa } from "@/app/libs/features/querySiswa";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cookies } from "next/headers";
@@ -16,10 +18,8 @@ export default async function Page() {
   const siswaId = decoded.reference_id;
 
   const jadwalList = await getMatpelBySiswa(siswaId);
-
   return (
     <div className="p-5 mt-5">
-      {/* <h1 className="text-2xl font-bold mb-6">Riwayat Absensi</h1> */}
       <div className="grid md:grid-cols-3 gap-4">
         {jadwalList.map((jadwal, idx: number) => (
           <Card key={idx}>
@@ -29,9 +29,14 @@ export default async function Page() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-2">
-                {/* <p className="text-sm">
-                    {jadwal.hari}, {jadwal.jam_mulai} - {jadwal.jam_selesai}
-                  </p> */}
+                <div className="text-sm text-gray-600">
+                  <p className="font-medium">Jadwal:</p>
+                  {jadwal.hari.split(", ").map((hari: any, i: number) => (
+                    <p key={i} className="ml-2">
+                      {hari}: {jadwal.jam_pelajaran.split(", ")[i]}
+                    </p>
+                  ))}
+                </div>
                 <div className="flex gap-2 mt-2">
                   <div className="bg-green-400 font-semibold border-1 border-black text-xs w-fit px-2 rounded-sm">
                     <p>{jadwal.jumlah_hadir || 0} Hadir</p>
@@ -50,7 +55,13 @@ export default async function Page() {
                   className="mt-2 w-fit"
                   href={`/dashboard/siswa/absensi/${jadwal.jadwal_id}`}
                 >
-                  <Button size="sm" variant="noShadow" className="cursor-pointer">Lihat Riwayat Absen</Button>
+                  <Button
+                    size="sm"
+                    variant="noShadow"
+                    className="cursor-pointer"
+                  >
+                    Lihat Riwayat Absen
+                  </Button>
                 </Link>
               </div>
             </CardContent>

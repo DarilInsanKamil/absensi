@@ -1,4 +1,7 @@
+export const dynamic = 'force-dynamic'
+
 import React from "react";
+
 
 import { KelasIcon, SiswaIcon, TeacherIcon } from "@/components/icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";

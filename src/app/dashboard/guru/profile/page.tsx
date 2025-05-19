@@ -1,7 +1,9 @@
+export const dynamic = 'force-dynamic'
+
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import Image from "next/image";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 const Page = async () => {
   const cookieStore = await cookies();
