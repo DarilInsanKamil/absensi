@@ -8,7 +8,11 @@
 
 - history absensi setiap harinya ✅
 
+- halaman jadwal guru ✅
+- halaman jadwal siswa ✅ 
+
 - halaman dashboard kepala sekolah ⌚
 - halaman dashboard guru bk ⌚
-- halaman jadwal guru ✅
-- halaman jadwal siswa ✅
+- halaman kepsek bisa lihat rekap absensi perkelas => per mata pelajaran ⌚
+- halaman bk bisa melihat jadwal mata pelajaran per kelas ⌚
+- halaman isi absensi disatukan per mata perlajaran ✅

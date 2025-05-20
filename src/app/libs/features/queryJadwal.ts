@@ -27,13 +27,14 @@ export async function getJadwal() {
 export async function getKelasByGuruId(id_guru: number) {
     const res = await connectionPool.query(`
     WITH ScheduleInfo AS (
-        SELECT 
-            j.id as jadwal_id,
+        SELECT DISTINCT
             k.nama_kelas,
-            mp.id as mapel_id,
             mp.nama_mapel,
+            MIN(j.id) as jadwal_id,
             STRING_AGG(
-                j.hari || ' (' || j.jam_mulai || '-' || j.jam_selesai || ')',
+                j.hari || ' (' || 
+                TO_CHAR(j.jam_mulai::time, 'HH24:MI') || '-' || 
+                TO_CHAR(j.jam_selesai::time, 'HH24:MI') || ')',
                 ', '
                 ORDER BY 
                     CASE 
@@ -48,13 +49,12 @@ export async function getKelasByGuruId(id_guru: number) {
         JOIN "KELAS" k ON k.id = j.kelas_id
         JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
         WHERE j.guru_id = $1
-        GROUP BY j.id, k.nama_kelas, mp.id, mp.nama_mapel
+        GROUP BY k.nama_kelas, mp.nama_mapel
         ORDER BY k.nama_kelas, mp.nama_mapel
     )
     SELECT 
         jadwal_id as id,
         nama_kelas,
-        mapel_id,
         nama_mapel,
         jadwal
     FROM ScheduleInfo

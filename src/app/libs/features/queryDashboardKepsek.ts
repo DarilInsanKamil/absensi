@@ -45,3 +45,48 @@ export async function getKepsekDashboardData() {
         throw err;
     }
 }
+
+
+export async function getKelasAndMapel() {
+    try {
+        const res = await connectionPool.query(`
+            WITH ScheduleInfo AS (
+                SELECT DISTINCT
+                    k.id as kelas_id,
+                    k.nama_kelas,
+                    mp.nama_mapel,
+                    STRING_AGG(
+                        j.hari || ' (' || 
+                        TO_CHAR(j.jam_mulai::time, 'HH24:MI') || '-' || 
+                        TO_CHAR(j.jam_selesai::time, 'HH24:MI') || ')',
+                        ', '
+                        ORDER BY 
+                            CASE 
+                                WHEN j.hari = 'Senin' THEN 1
+                                WHEN j.hari = 'Selasa' THEN 2
+                                WHEN j.hari = 'Rabu' THEN 3
+                                WHEN j.hari = 'Kamis' THEN 4
+                                WHEN j.hari = 'Jumat' THEN 5
+                            END
+                    ) as jadwal,
+                    g.nama as nama_guru,
+                    COUNT(DISTINCT CASE WHEN a.status = 'hadir' THEN a.id END) as jumlah_hadir,
+                    COUNT(DISTINCT CASE WHEN a.status = 'sakit' THEN a.id END) as jumlah_sakit,
+                    COUNT(DISTINCT CASE WHEN a.status = 'izin' THEN a.id END) as jumlah_izin,
+                    COUNT(DISTINCT CASE WHEN a.status = 'alpha' THEN a.id END) as jumlah_alpha
+                FROM "KELAS" k
+                JOIN "JADWAL" j ON j.kelas_id = k.id
+                JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
+                JOIN "GURU" g ON g.id = j.guru_id
+                LEFT JOIN "ABSENSI" a ON a.jadwal_id = j.id
+                GROUP BY k.id, k.nama_kelas, mp.nama_mapel, g.nama
+                ORDER BY k.nama_kelas, mp.nama_mapel
+            )
+            SELECT * FROM ScheduleInfo
+        `);
+        return res.rows;
+    } catch (err) {
+        console.error('Error getting class and subject data:', err);
+        throw err;
+    }
+}
