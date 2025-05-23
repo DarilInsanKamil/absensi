@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { notFound } from "next/navigation";
-import { getKelasAbsentDetailsBk } from "@/app/libs/features/queryDashboardKepsek";
+import { getKelasAbsentDetails } from "@/app/libs/features/queryDashboardKepsek";
 
 export default async function Page({
   params,
@@ -17,8 +17,8 @@ export default async function Page({
   if (!token) return notFound();
 
   const decoded = jwt.verify(token, process.env.SESSION_SECRET || "") as any;
-  const data = await getKelasAbsentDetailsBk(parseInt(id));
-
+  const data = await getKelasAbsentDetails(parseInt(id));
+  console.log(data);
   const stats =
     data.length > 0
       ? data.reduce(
@@ -53,7 +53,7 @@ export default async function Page({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Total Siswa Alpha</CardTitle>
+            <CardTitle className="text-sm">Total Siswa</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold">{stats.totalStudentsWithAlpha}</p>
@@ -97,8 +97,11 @@ export default async function Page({
                 <tr className="bg-gray-100 text-gray-700">
                   <th className="px-4 py-2 text-left">Nama Siswa</th>
                   <th className="px-4 py-2 text-left">NIS</th>
+                  <th className="px-4 py-2 text-left">Jumlah Hadir</th>
+                  <th className="px-4 py-2 text-left">Jumlah Izin</th>
+                  <th className="px-4 py-2 text-left">Jumlah Sakit</th>
                   <th className="px-4 py-2 text-left">Jumlah Alpha</th>
-                  <th className="px-4 py-2 text-left">Detail Alpha</th>
+                  {/* <th className="px-4 py-2 text-left">Detail Alpha</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -113,8 +116,11 @@ export default async function Page({
                   >
                     <td className="px-4 py-2">{student.nama_siswa}</td>
                     <td className="px-4 py-2">{student.nis}</td>
+                    <td className="px-4 py-2">{student.total_hadir}</td>
+                    <td className="px-4 py-2">{student.total_izin}</td>
+                    <td className="px-4 py-2">{student.total_sakit}</td>
                     <td className="px-4 py-2">{student.total_alpha}</td>
-                    <td className="px-4 py-2">{student.detail_alpha}</td>
+                    {/* <td className="px-4 py-2">{student.detail_alpha}</td> */}
                   </tr>
                 ))}
               </tbody>

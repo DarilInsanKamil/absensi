@@ -7,6 +7,7 @@ import { useState, FormEvent } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -41,7 +42,8 @@ export function LoginForm() {
   return (
     <section className="grid md:grid-cols-12 grid-cols-6 md:px-2 px-5 md:py-10">
       <div className="md:col-start-1 md:col-end-13 col-start-1 col-end-7 flex items-center flex-col mb-10">
-        <div className="w-[86px] h-[86px] rounded-full bg-blue-300"></div>
+        {/* <div className="w-[86px] h-[86px] rounded-full bg-blue-300"></div> */}
+        <Image src="/logosekolah.png" width={100} height={100} alt="logo" />
         <h1 className="font-bold text-2xl mt-5">SMK TECHNO MEDIA</h1>
       </div>
       <div className="md:col-start-5 md:col-end-9 col-start-1 items-center  col-end-7 bg-red-400">

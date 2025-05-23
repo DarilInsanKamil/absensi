@@ -1,10 +1,11 @@
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 import React from "react";
 
 import { KelasIcon, SiswaIcon, TeacherIcon } from "@/components/icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { queryLength } from "@/app/libs/features/queryLength";
+import Link from "next/link";
 const Page = async () => {
   const res = await queryLength();
 

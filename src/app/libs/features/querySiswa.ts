@@ -146,3 +146,53 @@ export async function getAbsensiSiswaByJadwal(siswaId: string, jadwalId: number)
         throw err;
     }
 }
+
+export async function getAbsensiSiswa(siswaId: string) {
+    try {
+        const res = await connectionPool.query(`
+            SELECT 
+                j.id as jadwal_id,
+                j.hari,
+                j.jam_mulai,
+                j.jam_selesai,
+                mp.nama_mapel,
+                g.nama as nama_guru,
+                COUNT(CASE WHEN a.status = 'hadir' THEN 1 END) as total_hadir,
+                COUNT(CASE WHEN a.status = 'alpha' THEN 1 END) as total_alpha,
+                COUNT(CASE WHEN a.status = 'izin' THEN 1 END) as total_izin,
+                COUNT(CASE WHEN a.status = 'sakit' THEN 1 END) as total_sakit
+            FROM "JADWAL" j
+            JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
+            LEFT JOIN "GURU" g ON g.id = j.guru_id
+            LEFT JOIN "ABSENSI" a ON 
+                a.jadwal_id = j.id AND 
+                a.siswa_id = $1
+            WHERE j.kelas_id = (
+                SELECT kelas_id 
+                FROM "SISWA" 
+                WHERE id = $1
+            )
+            GROUP BY 
+                j.id,
+                j.hari,
+                j.jam_mulai,
+                j.jam_selesai,
+                mp.nama_mapel,
+                g.nama
+            ORDER BY 
+                CASE 
+                    WHEN j.hari = 'Senin' THEN 1
+                    WHEN j.hari = 'Selasa' THEN 2
+                    WHEN j.hari = 'Rabu' THEN 3
+                    WHEN j.hari = 'Kamis' THEN 4
+                    WHEN j.hari = 'Jumat' THEN 5
+                END,
+                j.jam_mulai
+        `, [siswaId]);
+        
+        return res.rows;
+    } catch (err) {
+        console.error('Error getting student attendance:', err);
+        throw err;
+    }
+}

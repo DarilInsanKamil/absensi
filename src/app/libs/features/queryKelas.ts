@@ -46,3 +46,33 @@ export async function updateKelasById(id: number, kelas: Kelas) {
         throw err;
     }
 }
+
+
+export async function getSiswaByKelas(id: number) {
+    try {
+        const res = await connectionPool.query(`
+            SELECT 
+                k.id as kelas_id,
+                k.nama_kelas,
+                json_agg(
+                    json_build_object(
+                        'id', s.id,
+                        'nama', s.nama,
+                        'nis', s.nis,
+                        'alamat', s.alamat,
+                        'no_telepon', s.no_telepon,
+                        'email', s.email
+                    ) ORDER BY s.nama
+                ) as siswa
+            FROM "KELAS" k
+            LEFT JOIN "SISWA" s ON s.kelas_id = k.id
+            GROUP BY k.id, k.nama_kelas
+            ORDER BY k.nama_kelas
+            WHERE k.id = $1
+        `, [id]);
+        return res.rows;
+    } catch (err) {
+        console.error('Error getting students by class:', err);
+        throw err;
+    }
+}

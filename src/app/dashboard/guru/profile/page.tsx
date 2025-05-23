@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
@@ -33,37 +33,44 @@ const Page = async () => {
               height={100}
               alt="profile guru"
             />
-            <table className="mt-5 w-full">
+            <table className="mt-5 w-full ">
               <tbody>
                 <tr>
                   <td>Nama</td>
-                  <td>{data.nama}</td>
+                  <td>:</td>
+                  <td className="pl-5">{data.nama}</td>
                 </tr>
                 <tr>
                   <td>NIP</td>
-                  <td>{data.nip}</td>
+                  <td>:</td>
+                  <td className="pl-5">{data.nip}</td>
                 </tr>
                 <tr>
                   <td>Jenis Kelamin</td>
-                  <td>
+                  <td>:</td>
+                  <td className="pl-5">
                     {data.jenis_kelamin === "L" ? "Laki-Laki" : "Perempuan"}
                   </td>
                 </tr>
                 <tr>
                   <td>Wali Kelas</td>
-                  <td>{data.nama_kelas}</td>
+                  <td>:</td>
+                  <td className="pl-5">{data.nama_kelas}</td>
                 </tr>
                 <tr>
                   <td>Alamat</td>
-                  <td>{data.alamat}</td>
+                  <td>:</td>
+                  <td className="pl-5">{data.alamat}</td>
                 </tr>
                 <tr>
                   <td>No Telepon</td>
-                  <td>{data.no_telepon}</td>
+                  <td>:</td>
+                  <td className="pl-5">{data.no_telepon}</td>
                 </tr>
                 <tr>
                   <td>Email</td>
-                  <td>{data.email}</td>
+                  <td>:</td>
+                  <td className="pl-5">{data.email}</td>
                 </tr>
               </tbody>
             </table>

@@ -29,6 +29,6 @@ export function convertTahunAjaranToKelas(tahunAjaran: string): number {
 
 
 export function convertDay(day: number): string {
-  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
   return days[day];
 }

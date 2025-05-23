@@ -90,3 +90,126 @@ export async function getKelasAndMapel() {
         throw err;
     }
 }
+
+
+export async function getKelasAbsentDetails(kelasId: number) {
+    try {
+        const res = await connectionPool.query(`
+            WITH AbsensiPerSiswa AS (
+                SELECT 
+                    s.id as siswa_id,
+                    s.nama as nama_siswa,
+                    s.nis,
+                    k.nama_kelas,
+                    
+                    COUNT(CASE WHEN a.status = 'alpha' THEN 1 END) as total_alpha,
+                    COUNT(CASE WHEN a.status = 'hadir' THEN 1 END) as total_hadir,
+                    COUNT(CASE WHEN a.status = 'hadir' THEN 1 END) as total_sakit,
+                    COUNT(CASE WHEN a.status = 'izin' THEN 1 END) as total_izin,
+
+                    STRING_AGG(
+                        DISTINCT mp.nama_mapel || ' (' || TO_CHAR(a.tanggal, 'DD Mon YYYY') || ')',
+                        ', '
+                        ORDER BY mp.nama_mapel || ' (' || TO_CHAR(a.tanggal, 'DD Mon YYYY') || ')'
+                    ) as detail_alpha
+                FROM "SISWA" s
+                JOIN "KELAS" k ON k.id = s.kelas_id
+                LEFT JOIN "ABSENSI" a ON a.siswa_id = s.id  
+                LEFT JOIN "JADWAL" j ON j.id = a.jadwal_id
+                LEFT JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
+                WHERE s.kelas_id = $1 
+                GROUP BY s.id, s.nama, s.nis, k.nama_kelas
+            )
+            SELECT *
+            FROM AbsensiPerSiswa
+            ORDER BY 
+                total_alpha DESC,
+                nama_siswa ASC
+        `, [kelasId]);
+        return res.rows;
+    } catch (err) {
+        console.error('Error getting class absence details:', err);
+        throw err;
+    }
+}
+
+export async function getKelasAbsentDetailsBk(kelasId: number) {
+    try {
+        const res = await connectionPool.query(`
+            WITH AbsensiPerSiswa AS (
+                SELECT 
+                    s.id as siswa_id,
+                    s.nama as nama_siswa,
+                    s.nis,
+                    k.nama_kelas,
+                    
+                    COUNT(CASE WHEN a.status = 'alpha' THEN 1 END) as total_alpha,
+                    COUNT(CASE WHEN a.status = 'hadir' THEN 1 END) as total_hadir,
+                    COUNT(CASE WHEN a.status = 'izin' THEN 1 END) as total_izin,
+
+                    STRING_AGG(
+                        DISTINCT mp.nama_mapel || ' (' || TO_CHAR(a.tanggal, 'DD Mon YYYY') || ')',
+                        ', '
+                        ORDER BY mp.nama_mapel || ' (' || TO_CHAR(a.tanggal, 'DD Mon YYYY') || ')'
+                    ) as detail_alpha
+                FROM "SISWA" s
+                JOIN "KELAS" k ON k.id = s.kelas_id
+                LEFT JOIN "ABSENSI" a ON a.siswa_id = s.id AND a.status = 'alpha'
+                LEFT JOIN "JADWAL" j ON j.id = a.jadwal_id
+                LEFT JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
+                WHERE s.kelas_id = $1 
+                GROUP BY s.id, s.nama, s.nis, k.nama_kelas
+            )
+            SELECT *
+            FROM AbsensiPerSiswa
+            WHERE total_alpha > 0
+            ORDER BY 
+                total_alpha DESC,
+                nama_siswa ASC
+        `, [kelasId]);
+        return res.rows;
+    } catch (err) {
+        console.error('Error getting class absence details:', err);
+        throw err;
+    }
+}
+
+export async function getJadwalGuru() {
+    try {
+        const res = await connectionPool.query(`
+            WITH TeacherSchedule AS (
+                SELECT 
+                    g.id as guru_id,
+                    g.nama as nama_guru,
+                    g.nip,
+                    STRING_AGG(
+                        k.nama_kelas || ' - ' || mp.nama_mapel || ' (' || 
+                        j.hari || ', ' || 
+                        TO_CHAR(j.jam_mulai::time, 'HH24:MI') || '-' || 
+                        TO_CHAR(j.jam_selesai::time, 'HH24:MI') || ')',
+                        E'\n'
+                        ORDER BY 
+                            CASE 
+                                WHEN j.hari = 'Senin' THEN 1
+                                WHEN j.hari = 'Selasa' THEN 2
+                                WHEN j.hari = 'Rabu' THEN 3
+                                WHEN j.hari = 'Kamis' THEN 4
+                                WHEN j.hari = 'Jumat' THEN 5
+                            END,
+                            j.jam_mulai
+                    ) as jadwal
+                FROM "GURU" g
+                INNER JOIN "JADWAL" j ON j.guru_id = g.id
+                INNER JOIN "KELAS" k ON k.id = j.kelas_id
+                INNER JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
+                GROUP BY g.id, g.nama, g.nip
+                ORDER BY g.nama
+            )
+            SELECT * FROM TeacherSchedule
+        `);
+        return res.rows;
+    } catch (err) {
+        console.error('Error getting teacher schedules:', err);
+        throw err;
+    }
+}

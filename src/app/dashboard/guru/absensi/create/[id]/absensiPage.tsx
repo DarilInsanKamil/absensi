@@ -1,6 +1,8 @@
 "use client";
 
 import Form from "next/form";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -29,7 +31,6 @@ interface AbsensiData {
   keterangan: string;
 }
 
-
 interface AbsensiPageProps {
   jadwal: Jadwal[];
   siswaList: Siswa[];
@@ -42,14 +43,13 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
   guruId,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const router = useRouter();
   const handleSubmit = async (formData: FormData) => {
     try {
       setIsSubmitting(true);
 
       // Create array to hold all attendance records
       const absensiData: AbsensiData[] = [];
-
       // Get current date and time
       const currentDate = new Date().toISOString().split("T")[0];
       const currentTime = new Date().toLocaleTimeString();
@@ -62,7 +62,7 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
 
         absensiData.push({
           siswa_id: siswa.id,
-          jadwal_id: jadwal[0].id,
+          jadwal_id: jadwal[0]?.id,
           guru_id: guruId,
           tanggal: currentDate,
           waktu_absen: currentTime,
@@ -71,9 +71,9 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
         });
       }
       if (!absensiData.length) {
-        throw new Error('No attendance data to submit');
+        throw new Error("No attendance data to submit");
       }
-      
+
       // Send to API
       const response = await fetch("/api/absensi", {
         method: "POST",
@@ -86,6 +86,8 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
       if (!response.ok) {
         throw new Error("Failed to submit attendance");
       }
+
+      console.log(response.json());
 
       toast.success("Absensi berhasil disimpan");
     } catch (error) {
@@ -144,7 +146,6 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
             ))}
           </tbody>
         </table>
-
         <button
           type="submit"
           className="mt-4 px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"

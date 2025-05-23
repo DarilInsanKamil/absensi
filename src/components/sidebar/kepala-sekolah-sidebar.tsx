@@ -1,4 +1,4 @@
-import { Calendar, Home, BookCheck } from "lucide-react";
+import { Calendar, Home, BookCheck, User2 } from "lucide-react";
 import { SidebarNav } from "./SidebarNav";
 
 export function KepalaSekolahSidebar() {
@@ -14,9 +14,14 @@ export function KepalaSekolahSidebar() {
       icon: BookCheck,
     },
     {
+      title: "Jadwal Guru",
+      url: "/dashboard/kepala-sekolah/jadwal-guru",
+      icon: Calendar,
+    },
+    {
       title: "Profile",
       url: "/dashboard/kepala-sekolah/profile",
-      icon: Calendar,
+      icon: User2,
     }
   ];
 

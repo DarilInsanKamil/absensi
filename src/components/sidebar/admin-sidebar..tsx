@@ -5,7 +5,7 @@ export function AdminSidebar() {
   const items = [
     {
       title: "Home",
-      url: "/dashboard",
+      url: "/dashboard/admin",
       icon: Home,
     },
     {

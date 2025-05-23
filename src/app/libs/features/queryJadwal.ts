@@ -24,43 +24,82 @@ export async function getJadwal() {
     return res.rows;
 }
 
+// export async function getKelasByGuruId(id_guru: number) {
+//     const res = await connectionPool.query(`
+//     WITH ScheduleInfo AS (
+//         SELECT 
+//             k.nama_kelas,
+//             mp.nama_mapel,
+//             j.id as jadwal_id,
+//             j.hari,
+//             TO_CHAR(j.jam_mulai::time, 'HH24:MI') || '-' || 
+//             TO_CHAR(j.jam_selesai::time, 'HH24:MI') as jam,
+//             CASE 
+//                 WHEN j.hari = 'Senin' THEN 1
+//                 WHEN j.hari = 'Selasa' THEN 2
+//                 WHEN j.hari = 'Rabu' THEN 3
+//                 WHEN j.hari = 'Kamis' THEN 4
+//                 WHEN j.hari = 'Jumat' THEN 5
+//             END as hari_urut
+//         FROM "JADWAL" j
+//         JOIN "KELAS" k ON k.id = j.kelas_id
+//         JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
+//         WHERE j.guru_id = $1
+//     )
+//     SELECT 
+//         s.jadwal_id as id,
+//         s.nama_kelas,
+//         s.nama_mapel,
+//         s.hari || ' (' || s.jam || ')' as jadwal
+//     FROM ScheduleInfo s
+//     ORDER BY 
+//         s.nama_kelas,
+//         s.nama_mapel,
+//         s.hari_urut,
+//         s.jam
+//     `, [id_guru]);
+//     return res.rows;
+// }
+
+
 export async function getKelasByGuruId(id_guru: number) {
     const res = await connectionPool.query(`
-    WITH ScheduleInfo AS (
-        SELECT DISTINCT
-            k.nama_kelas,
-            mp.nama_mapel,
-            MIN(j.id) as jadwal_id,
-            STRING_AGG(
-                j.hari || ' (' || 
+        WITH ScheduleInfo AS (
+            SELECT 
+                k.nama_kelas,
+                mp.nama_mapel,
+                j.id as jadwal_id,
+                j.hari,
                 TO_CHAR(j.jam_mulai::time, 'HH24:MI') || '-' || 
-                TO_CHAR(j.jam_selesai::time, 'HH24:MI') || ')',
-                ', '
-                ORDER BY 
-                    CASE 
-                        WHEN j.hari = 'Senin' THEN 1
-                        WHEN j.hari = 'Selasa' THEN 2
-                        WHEN j.hari = 'Rabu' THEN 3
-                        WHEN j.hari = 'Kamis' THEN 4
-                        WHEN j.hari = 'Jumat' THEN 5
-                    END
-            ) as jadwal
-        FROM "JADWAL" j
-        JOIN "KELAS" k ON k.id = j.kelas_id
-        JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
-        WHERE j.guru_id = $1
-        GROUP BY k.nama_kelas, mp.nama_mapel
-        ORDER BY k.nama_kelas, mp.nama_mapel
-    )
-    SELECT 
-        jadwal_id as id,
-        nama_kelas,
-        nama_mapel,
-        jadwal
-    FROM ScheduleInfo
+                TO_CHAR(j.jam_selesai::time, 'HH24:MI') as jam,
+                CASE 
+                    WHEN j.hari = 'Senin' THEN 1
+                    WHEN j.hari = 'Selasa' THEN 2
+                    WHEN j.hari = 'Rabu' THEN 3
+                    WHEN j.hari = 'Kamis' THEN 4
+                    WHEN j.hari = 'Jumat' THEN 5
+                END as hari_urut
+            FROM "JADWAL" j
+            JOIN "KELAS" k ON k.id = j.kelas_id
+            JOIN "MATA_PELAJARAN" mp ON mp.id = j.mata_pelajaran_id
+            WHERE j.guru_id = $1
+            ORDER BY 
+                k.nama_kelas,
+                mp.nama_mapel,
+                hari_urut,
+                j.jam_mulai
+        )
+        SELECT 
+            jadwal_id as id,
+            nama_kelas,
+            nama_mapel,
+            hari,
+            jam
+        FROM ScheduleInfo
     `, [id_guru]);
     return res.rows;
 }
+
 
 export async function getJadwalByGuruId(guru_id: number, hari: string) {
 

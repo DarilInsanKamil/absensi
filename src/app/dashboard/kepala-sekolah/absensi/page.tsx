@@ -6,10 +6,9 @@ import {
   getKelasAndMapel,
   getKepsekDashboardData,
 } from "@/app/libs/features/queryDashboardKepsek";
-import { ClassComparisonChart } from "@/components/bar-chart";
-import { AttendanceTrendChart } from "@/components/line-chart";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { queryLength } from "@/app/libs/features/queryLength";
 
 export default async function Page() {
   const cookieStore = cookies();
@@ -19,6 +18,7 @@ export default async function Page() {
 
   const decoded = jwt.verify(token, process.env.SESSION_SECRET || "") as any;
   const data = await getKepsekDashboardData();
+  const res = await queryLength();
 
   // Calculate overall statistics
   const stats = data.reduce(
@@ -59,7 +59,7 @@ export default async function Page() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Dashboard Kepala Sekolah</h1>
+        <h1 className="text-2xl font-bold mb-6">Rekap Absensi</h1>
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -68,10 +68,10 @@ export default async function Page() {
             <CardTitle className="text-sm font-medium">Total Siswa</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{stats.totalStudents}</p>
+            <p className="text-2xl font-bold">{stats.totalStudents} / {res?.siswa}</p>
           </CardContent>
         </Card>
-        <Card>
+        {/* <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">
               Kehadiran Hari Ini
@@ -94,15 +94,22 @@ export default async function Page() {
               {(stats.monthlyAttendance / stats.totalClasses).toFixed(1)}%
             </p>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
       <div className="p-2">
-        <h1 className="text-2xl font-bold mb-6">Rekap Absensi</h1>
 
         {Object.entries(groupedData).map(([kelas, mapelList]) => (
           <div key={kelas} className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">{kelas}</h2>
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-xl font-semibold mb-4">{kelas}</h2>
+              <Link
+                href={`/dashboard/kepala-sekolah/absensi/${mapelList[0].kelas_id}/detail`}
+                className="block mt-4"
+              >
+                <Button className="w-full">Lihat Detail</Button>
+              </Link>
+            </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {mapelList.map((mapel, idx) => (
                 <Card key={idx} className="h-fit">
@@ -114,16 +121,7 @@ export default async function Page() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      <div className="text-sm text-muted-foreground">
-                        <p className="font-medium">Jadwal:</p>
-                        {mapel.jadwal
-                          .split(", ")
-                          .map((jadwal: string, i: number) => (
-                            <p key={i} className="ml-2">
-                              {jadwal}
-                            </p>
-                          ))}
-                      </div>
+                      <div className="text-sm text-muted-foreground"></div>
                       <div className="grid grid-cols-2 gap-2 mt-2">
                         <div className="bg-green-100 p-2 rounded-md">
                           <p className="text-xs text-gray-600">Hadir</p>
@@ -142,12 +140,6 @@ export default async function Page() {
                           <p className="font-semibold">{mapel.jumlah_alpha}</p>
                         </div>
                       </div>
-                      <Link
-                        href={`/dashboard/kepala-sekolah/absensi/${mapel.kelas_id}/detail`}
-                        className="block mt-4"
-                      >
-                        <Button className="w-full">Lihat Detail</Button>
-                      </Link>
                     </div>
                   </CardContent>
                 </Card>
