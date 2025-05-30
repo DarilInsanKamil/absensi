@@ -1,4 +1,4 @@
-import { connectionPool } from "@/app/api/_db/db";
+import { connectionPool } from "@/app/_db/db";
 
 export async function getQueryFormJadwal() {
     const namaGuru = await connectionPool.query('SELECT id,nama FROM "GURU"');

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { connectionPool } from '../_db/db';
+import { connectionPool } from '../../_db/db';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 

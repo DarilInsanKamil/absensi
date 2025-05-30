@@ -1,5 +1,5 @@
 import { Absensi } from "@/definitions";
-import { connectionPool } from "../../api/_db/db";
+import { connectionPool } from "../../_db/db";
 
 export async function getRekapAbsensi(bulan: number, tahun: number, kelas_id: number) {
     const res = await connectionPool.query(`
@@ -117,43 +117,37 @@ export async function getAbsensiByDate(jadwalId: number, tanggal: string) {
 //     }
 // }
 
-export async function getAbsensiHistory(jadwalId: number, guruId: number) {
-    try {
-        const res = await connectionPool.query(`
-            WITH AbsensiSummary AS (
-                SELECT 
-                    DATE(a.tanggal) as tanggal,
-                    j.jam_mulai,
-                    j.jam_selesai,
-                    COUNT(DISTINCT s.id) as total_siswa,
-                    COUNT(DISTINCT CASE WHEN a.status = 'hadir' THEN s.id END) as jumlah_hadir,
-                    COUNT(DISTINCT CASE WHEN a.status = 'sakit' THEN s.id END) as jumlah_sakit,
-                    COUNT(DISTINCT CASE WHEN a.status = 'izin' THEN s.id END) as jumlah_izin,
-                    COUNT(DISTINCT CASE WHEN a.status = 'alpha' THEN s.id END) as jumlah_alpha
-                FROM "JADWAL" j
-                JOIN "KELAS" k ON k.id = j.kelas_id
-                JOIN "SISWA" s ON s.kelas_id = k.id
-                LEFT JOIN "ABSENSI" a ON 
-                    a.siswa_id = s.id AND 
-                    a.jadwal_id = j.id
-                WHERE 
-                    j.id = $1 AND 
-                    j.guru_id = $2
-                GROUP BY 
-                    DATE(a.tanggal),
-                    j.jam_mulai,
-                    j.jam_selesai
-                HAVING DATE(a.tanggal) IS NOT NULL
-                ORDER BY DATE(a.tanggal) DESC
-            )
-            SELECT * FROM AbsensiSummary
-        `, [jadwalId, guruId]);
-
-        return res.rows;
-    } catch (err) {
-        console.error('Error getting attendance history:', err);
-        throw err;
-    }
+export async function getAbsensiHistory(kelas_id: number, guru_id: number) {
+  const res = await connectionPool.query(`
+    WITH AbsensiCount AS (
+      SELECT 
+        a.tanggal,
+        j.jam_mulai,
+        j.jam_selesai,
+        k.nama_kelas,
+        mp.nama_mapel,
+        COUNT(*) as total_siswa,
+        SUM(CASE WHEN a.status = 'hadir' THEN 1 ELSE 0 END) as jumlah_hadir,
+        SUM(CASE WHEN a.status = 'sakit' THEN 1 ELSE 0 END) as jumlah_sakit,
+        SUM(CASE WHEN a.status = 'izin' THEN 1 ELSE 0 END) as jumlah_izin,
+        SUM(CASE WHEN a.status = 'alpha' THEN 1 ELSE 0 END) as jumlah_alpha
+      FROM "ABSENSI" a
+      JOIN "JADWAL" j ON a.jadwal_id = j.id
+      JOIN "KELAS" k ON j.kelas_id = k.id
+      JOIN "MATA_PELAJARAN" mp ON j.mata_pelajaran_id = mp.id
+      WHERE j.kelas_id = $1 AND j.guru_id = $2
+      GROUP BY 
+        a.tanggal,
+        j.jam_mulai,
+        j.jam_selesai,
+        k.nama_kelas,
+        mp.nama_mapel
+      ORDER BY a.tanggal DESC
+    )
+    SELECT * FROM AbsensiCount
+  `, [kelas_id, guru_id]);
+  
+  return res.rows;
 }
 
 // export async function getAbsensiHistory(jadwalId: number, guruId: number) {

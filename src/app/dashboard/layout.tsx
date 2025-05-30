@@ -1,7 +1,7 @@
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ export default function DashboardLayout({
       <AppSidebar />
       <main className="w-full">
         <div className="ml-5 mt-2 sticky top-5 z-1">
-          <SidebarTrigger variant="neutral" />
+          <SidebarTrigger variant="noShadow" className="bg-white" />
         </div>
         {children}
       </main>

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { initDb } from "./api/_db/init_db";
+import { initDb } from "./_db/init_db";
+import { headers } from "next/headers";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -21,9 +22,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // if (process.env.SKIP_DB_INIT !== "true") {
-  //   await initDb();
-  // }
+  try {
+    const response = await fetch(`${process.env.LOCAL_TEST_API}/api/initdb`, {
+      method: "GET",
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      console.error("Failed to initialize database");
+    }
+  } catch (error) {
+    console.error("Database initialization error:", error);
+  }
   return (
     <html lang="en">
       <body className={`${dmSans.className}`}>

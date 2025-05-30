@@ -9,8 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-// import { Button } from "../ui/button";
-// import { logout } from "@/app/libs/action";
+
 import { LogoutBtn } from "../ui/logout-btn";
 
 export function SidebarNav({ items }: { items: any }) {

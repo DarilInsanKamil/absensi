@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import jwt from "jsonwebtoken";
 import { getJadwalSiswa } from "@/app/libs/features/querySiswa";
+import ExportJadwalToPDF from "@/components/ui/export-jadwal-pdf";
 
 interface Jadwal {
   id: number;
@@ -37,9 +38,10 @@ const Page = async () => {
   );
 
   return (
-    <div className="p-5">
+    <div className="md:p-6 mt-5">
       <h1 className="text-2xl font-bold mb-6">Jadwal Pelajaran</h1>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <ExportJadwalToPDF data={jadwalByHari} kelas={jadwalList[0]?.nama_kelas} />
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
         {Object.entries(jadwalByHari).map(([hari, jadwal]) => (
           <Card key={hari} className="h-fit">
             <CardHeader className="pb-3">

@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { connectionPool } from "../../_db/db";
+import { connectionPool } from "../../../_db/db";
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const id = (await params).id;

@@ -19,10 +19,22 @@ export default async function Page({
 
   const decoded = jwt.verify(token, process.env.SESSION_SECRET || "") as any;
   const siswaId = decoded.reference_id;
+  // ...existing token and auth code...
+
   const absensiData = await getAbsensiSiswaByJadwal(siswaId, id);
 
+  // Group by date
+  const groupedByDate = absensiData.reduce((acc: any, curr) => {
+    const date = new Date(curr.tanggal).toLocaleDateString("id-ID");
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(curr);
+    return acc;
+  }, {});
+
   return (
-    <div className="p-6">
+    <div className="p-6 mt-10">
       {absensiData.length > 0 ? (
         <>
           <div className="mb-6">
@@ -34,40 +46,50 @@ export default async function Page({
           </div>
 
           <div className="grid gap-4">
-            {absensiData.map((absensi) => (
-              <Card key={absensi.absensi_id}>
-                <CardHeader>
-                  <h3 className="font-semibold">
-                    {new Date(absensi.tanggal).toLocaleDateString("id-ID")}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    {absensi.jam_mulai} - {absensi.jam_selesai}
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        absensi.status === "hadir"
-                          ? "bg-green-100 text-green-800"
-                          : absensi.status === "sakit"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : absensi.status === "izin"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {absensi.status}
-                    </div>
-                    {absensi.keterangan && (
-                      <p className="text-sm text-gray-600">
-                        Keterangan: {absensi.keterangan}
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            {Object.entries(groupedByDate).map(
+              ([date, absensis]: [string, any]) => (
+                <Card key={date}>
+                  <CardHeader>
+                    <h3 className="font-semibold text-xl">
+                      {absensis[0]?.hari}
+                    </h3>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {absensis.map((absensi: any) => (
+                      <div
+                        key={absensi.absensi_id}
+                        className="flex items-center justify-between pb-2"
+                      >
+                        <ul className="*:mb-2">
+                          <li
+                            className={`px-3 py-1 rounded-full text-sm w-fit mb-2 ${
+                              absensi.status === "hadir"
+                                ? "bg-green-200 text-green-800"
+                                : absensi.status === "sakit"
+                                ? "bg-yellow-200 text-yellow-800"
+                                : absensi.status === "izin"
+                                ? "bg-blue-200 text-blue-800"
+                                : "bg-red-200 text-red-800"
+                            }`}
+                          >
+                            {absensi.status}
+                          </li>
+                          <li className="text-sm">Tanggal: {date}</li>
+                          <li className="text-sm">
+                            Waktu Absen: {absensi.waktu_absen.toTimeString()}
+                          </li>
+                        </ul>
+                        {absensi.keterangan && (
+                          <p className="text-sm text-gray-600 w-fit">
+                            Keterangan: {absensi.keterangan}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )
+            )}
           </div>
         </>
       ) : (

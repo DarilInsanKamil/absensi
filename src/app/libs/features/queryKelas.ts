@@ -1,5 +1,5 @@
 import { Kelas } from "@/definitions";
-import { connectionPool } from "../../api/_db/db";
+import { connectionPool } from "../../_db/db";
 
 export async function getAllKelas() {
     const result = await connectionPool.query(`

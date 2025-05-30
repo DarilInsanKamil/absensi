@@ -1,5 +1,5 @@
 import { Jadwal } from "@/definitions";
-import { connectionPool } from "../../api/_db/db";
+import { connectionPool } from "../../_db/db";
 
 
 
@@ -66,7 +66,9 @@ export async function getKelasByGuruId(id_guru: number) {
     const res = await connectionPool.query(`
         WITH ScheduleInfo AS (
             SELECT 
+                k.id as kelas_id,
                 k.nama_kelas,
+                mp.id as mata_pelajaran_id,
                 mp.nama_mapel,
                 j.id as jadwal_id,
                 j.hari,
@@ -85,12 +87,13 @@ export async function getKelasByGuruId(id_guru: number) {
             WHERE j.guru_id = $1
             ORDER BY 
                 k.nama_kelas,
-                mp.nama_mapel,
                 hari_urut,
                 j.jam_mulai
         )
         SELECT 
             jadwal_id as id,
+            kelas_id,
+            mata_pelajaran_id, 
             nama_kelas,
             nama_mapel,
             hari,

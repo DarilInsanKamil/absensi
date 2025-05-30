@@ -1,20 +1,11 @@
 import { connectionPool } from "./db";
+import bcrypt from 'bcrypt';
 
-export async function initDb() {
-    // Cek apakah tabel USERS sudah ada
-    const checkTable = await connectionPool.query(`
-    SELECT to_regclass('public."USERS"') as exists;
-  `);
 
-    const tableExists = checkTable.rows[0].exists !== null;
-
-    if (tableExists) {
-        console.log('Tabel sudah ada, skip migration & seeding.');
-        return;
-    }
+async function createTables() {
 
     await connectionPool.query(`
-        CREATE TABLE "TAHUN_AJARAN" (
+    CREATE TABLE "TAHUN_AJARAN" (
     id SERIAL PRIMARY KEY,
     nama VARCHAR(20) NOT NULL,
     tanggal_mulai DATE NOT NULL,
@@ -22,7 +13,7 @@ export async function initDb() {
     status_aktif BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    );
 
 
 CREATE TABLE "GURU" (
@@ -128,5 +119,86 @@ CREATE TABLE "ADMIN" (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`)
-    console.log('Database initialized.');
+}
+
+
+
+async function checkTableExists(tableName: string) {
+    const result = await connectionPool.query(`
+        SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            AND table_name = $1
+        );
+    `, [tableName]);
+    return result.rows[0].exists;
+}
+
+async function dropAllTables() {
+    await connectionPool.query(`
+        DROP TABLE IF EXISTS 
+            "ABSENSI",
+            "JADWAL",
+            "GURU_MATA_PELAJARAN",
+            "MATA_PELAJARAN",
+            "SISWA",
+            "KELAS",
+            "GURU",
+            "TAHUN_AJARAN",
+            "USERS",
+            "ADMIN"
+        CASCADE;
+    `);
+}
+
+async function seedAdminAndUser() {
+    // Hash password untuk admin default
+    const hashedPassword = await bcrypt.hash('admin123', 10);
+
+    // Insert admin
+    const adminResult = await connectionPool.query(`
+        INSERT INTO "ADMIN" (username, nama, email, no_telepon)
+        VALUES ('admin', 'Administrator', 'admin@example.com', '08123456789')
+        RETURNING id;
+    `);
+
+    // Insert user untuk admin
+    await connectionPool.query(`
+        INSERT INTO "USERS" (username, password, role, reference_id, reference_type)
+        VALUES ('admin', $1, 'admin', $2, 'ADMIN');
+    `, [hashedPassword, adminResult.rows[0].id.toString()]);
+}
+
+export async function initDb() {
+    try {
+        // Force check for KELAS table specifically since it's causing issues
+        const kelasExists = await checkTableExists('KELAS');
+
+        if (!kelasExists) {
+            console.log('KELAS table missing, reinitializing all tables...');
+            await dropAllTables();
+            await createTables();
+            await seedAdminAndUser();
+            console.log('Database reinitialized successfully');
+        } else {
+            // Double check all other required tables
+            const tables = ['USERS', 'ADMIN', 'GURU', 'SISWA', 'TAHUN_AJARAN'];
+            const otherTablesExist = await Promise.all(
+                tables.map(table => checkTableExists(table))
+            );
+
+            if (otherTablesExist.includes(false)) {
+                console.log('Some tables missing, reinitializing all tables...');
+                await dropAllTables();
+                await createTables();
+                await seedAdminAndUser();
+                console.log('Database reinitialized successfully');
+            } else {
+                console.log('All tables exist, skipping initialization');
+            }
+        }
+    } catch (error) {
+        console.error('Error in database initialization:', error);
+        throw error;
+    }
 }

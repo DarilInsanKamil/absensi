@@ -28,7 +28,7 @@ export default function RekapForm({ kelasId }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="neutral" onClick={() => setOpen(true)}>
+        <Button variant="neutral" size="sm" onClick={() => setOpen(true)}>
           Rekap Absen
         </Button>
       </DialogTrigger>

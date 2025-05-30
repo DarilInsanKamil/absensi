@@ -1,5 +1,5 @@
 import { Mapel } from "@/definitions";
-import { connectionPool } from "../../api/_db/db";
+import { connectionPool } from "../../_db/db";
 
 export async function getMapel() {
     const result = await connectionPool.query('SELECT * FROM "MATA_PELAJARAN"');
@@ -38,3 +38,42 @@ export async function deleteMapelById(id: number) {
     const result = await connectionPool.query('DELETE FROM "MATA_PELAJARAN" WHERE "id" = $1', [id]);
     return result.rowCount !== null && result.rowCount > 0;
 }   
+
+
+export async function getMapelSiswa(siswa_id: string) {
+  const res = await connectionPool.query(`
+    WITH ScheduleInfo AS (
+      SELECT 
+        mp.id as mapel_id,
+        j.id as jadwal_id,
+        mp.nama_mapel,
+        g.nama as nama_guru,
+        j.hari,
+        TO_CHAR(j.jam_mulai::time, 'HH24:MI') || '-' || 
+        TO_CHAR(j.jam_selesai::time, 'HH24:MI') as jam,
+        CASE 
+          WHEN j.hari = 'Senin' THEN 1
+          WHEN j.hari = 'Selasa' THEN 2
+          WHEN j.hari = 'Rabu' THEN 3
+          WHEN j.hari = 'Kamis' THEN 4
+          WHEN j.hari = 'Jumat' THEN 5
+        END as hari_urut
+      FROM "JADWAL" j
+      JOIN "MATA_PELAJARAN" mp ON j.mata_pelajaran_id = mp.id
+      JOIN "GURU" g ON j.guru_id = g.id
+      JOIN "KELAS" k ON j.kelas_id = k.id
+      JOIN "SISWA" s ON s.kelas_id = k.id
+      WHERE s.id = $1
+      ORDER BY hari_urut, j.jam_mulai
+    )
+    SELECT 
+      mapel_id,
+      jadwal_id,
+      nama_mapel,
+      nama_guru,
+      hari,
+      jam
+    FROM ScheduleInfo
+  `, [siswa_id]);
+  return res.rows;
+}

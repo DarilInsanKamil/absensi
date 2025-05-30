@@ -1,5 +1,5 @@
 import { Guru, UpdatedGuru } from "@/definitions";
-import { connectionPool } from "../../api/_db/db";
+import { connectionPool } from "../../_db/db";
 
 export async function searchUsernameGuru(username: string) {
     try {
