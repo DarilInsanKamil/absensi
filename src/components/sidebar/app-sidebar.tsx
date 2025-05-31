@@ -7,7 +7,7 @@ import { BkSidebar } from "./bk-sidebar";
 
 export async function AppSidebar() {
   const cookieStore = await cookies();
-  const role = (await cookieStore).get("role")?.value || "";
+  const role =  cookieStore.get("role")?.value || "";
 
   switch (role) {
     case "admin":

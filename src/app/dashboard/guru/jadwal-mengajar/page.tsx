@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
@@ -28,13 +28,16 @@ const Page = async () => {
   const jadwalList = await getJadwalGuru(parseInt(guruId));
 
   // Group schedules by day
-  const jadwalByHari = jadwalList.reduce((acc: { [key: string]: Jadwal[] }, curr) => {
-    if (!acc[curr.hari]) {
-      acc[curr.hari] = [];
-    }
-    acc[curr.hari].push(curr);
-    return acc;
-  }, {});
+  const jadwalByHari = jadwalList.reduce(
+    (acc: { [key: string]: Jadwal[] }, curr) => {
+      if (!acc[curr.hari]) {
+        acc[curr.hari] = [];
+      }
+      acc[curr.hari].push(curr);
+      return acc;
+    },
+    {}
+  );
 
   return (
     <div className="p-5">
@@ -47,17 +50,20 @@ const Page = async () => {
             </CardHeader>
             <CardContent className="divide-y">
               {jadwal.map((mapel) => (
-                <div 
-                  key={mapel.id} 
+                <div
+                  key={mapel.id}
                   className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0"
                 >
-                  <div>
-                    <p className="font-semibold">{mapel.mata_pelajaran}</p>
-                    <p className="text-sm text-gray-600">{mapel.kelas}</p>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-semibold">{mapel.mata_pelajaran}</p>
+                      <p className="text-sm text-gray-600">{mapel.kelas}</p>
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      {mapel.jam_mulai.slice(0, 5)} -{" "}
+                      {mapel.jam_selesai.slice(0, 5)}
+                    </p>
                   </div>
-                  <p className="text-sm text-gray-600">
-                    {mapel.jam_mulai.slice(0, 5)} - {mapel.jam_selesai.slice(0, 5)}
-                  </p>
                 </div>
               ))}
             </CardContent>

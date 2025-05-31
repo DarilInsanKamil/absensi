@@ -92,10 +92,28 @@ export const dataTahun = [
 
 
 
-export function calculateAttendanceSummary(data: any[]): AttendanceSummary {
+interface AttendanceData {
+  status: 'hadir' | 'sakit' | 'izin' | 'alpha';
+}
+
+export function calculateAttendanceSummary(data: AttendanceData[]): AttendanceSummary {
+  // Handle empty or invalid data
+  if (!Array.isArray(data) || data.length === 0) {
+    return {
+      hadir: 0,
+      sakit: 0,
+      izin: 0,
+      alpha: 0,
+      total: 0
+    };
+  }
+
   return data.reduce((acc, curr) => {
-    acc[curr.status]++;
-    acc.total++;
+    // Check if status exists and is valid
+    if (curr && curr.status && ['hadir', 'sakit', 'izin', 'alpha'].includes(curr.status)) {
+      acc[curr.status]++;
+      acc.total++;
+    }
     return acc;
   }, {
     hadir: 0,

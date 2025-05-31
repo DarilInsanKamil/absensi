@@ -26,21 +26,24 @@ const Page = async () => {
 
   // Group by class only since 1 teacher = 1 subject
   const groupedData = data.reduce((acc: any, curr) => {
-    const kelasKey = curr.nama_kelas;
-    if (!acc[kelasKey]) {
-      acc[kelasKey] = {
+    const compositeKey = `${curr.nama_kelas}-${curr.mata_pelajaran_id}`;
+
+    if (!acc[compositeKey]) {
+      acc[compositeKey] = {
         nama_kelas: curr.nama_kelas,
-        nama_mapel: curr.nama_mapel, // Will be same for all entries
+        nama_mapel: curr.nama_mapel,
         kelas_id: curr.kelas_id,
         mapel_id: curr.mata_pelajaran_id,
         schedules: [],
       };
     }
-    acc[kelasKey].schedules.push({
+
+    acc[compositeKey].schedules.push({
       id: curr.id,
       hari: curr.hari,
       jam: curr.jam,
     });
+
     return acc;
   }, {});
 

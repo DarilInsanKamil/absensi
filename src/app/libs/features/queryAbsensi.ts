@@ -57,8 +57,16 @@ export async function getAbsensiHarianByKelasAndGuru(kelasId: number, guruId: nu
     return res.rows;
 }
 
-export async function getAbsensiByDate(jadwalId: number, tanggal: string) {
+
+export async function getAbsensiByDateTime(
+  kelasId: number, 
+  guruId: number,
+  tanggal: string, 
+  jamMulai: string
+) {
     try {
+        console.log("Raw query params:", { kelasId, guruId, tanggal, jamMulai });
+
         const res = await connectionPool.query(`
             SELECT 
                 a.id as absensi_id,
@@ -68,23 +76,94 @@ export async function getAbsensiByDate(jadwalId: number, tanggal: string) {
                 s.nama as nama_siswa,
                 s.nis,
                 k.nama_kelas,
-                mp.nama_mapel
+                mp.nama_mapel,
+                j.jam_mulai,
+                j.jam_selesai
             FROM "ABSENSI" a
             JOIN "SISWA" s ON a.siswa_id = s.id
             JOIN "JADWAL" j ON a.jadwal_id = j.id
             JOIN "KELAS" k ON j.kelas_id = k.id
             JOIN "MATA_PELAJARAN" mp ON j.mata_pelajaran_id = mp.id
-            WHERE j.id = $1 
-            AND DATE(a.tanggal) = $2::date
+            WHERE k.id = $1
+            AND j.guru_id = $2 
+            AND DATE(a.tanggal) = $3::date
+            AND $4::time BETWEEN j.jam_mulai AND j.jam_selesai
             ORDER BY s.nama ASC
-        `, [jadwalId, tanggal]);
+        `, [kelasId, guruId, tanggal, jamMulai]);
+
+        console.log("Query results:", {
+            count: res.rows.length,
+            firstRow: res.rows[0],
+            sql: res.command,
+            searchTime: jamMulai
+        });
 
         return res.rows;
     } catch (err) {
-        console.error('Error getting attendance by date:', err);
+        console.error("Error in getAbsensiByDateTime:", err);
         throw err;
     }
 }
+
+// versi lama unutk [edit_id]
+// export async function getAbsensiByDate(kelasId: number, tanggal: string) {
+//     try {
+//         const res = await connectionPool.query(`
+//             SELECT 
+//                 a.id as absensi_id,
+//                 a.siswa_id,
+//                 a.status,
+//                 a.keterangan,
+//                 s.nama as nama_siswa,
+//                 s.nis,
+//                 k.nama_kelas,
+//                 mp.nama_mapel
+//             FROM "ABSENSI" a
+//             JOIN "SISWA" s ON a.siswa_id = s.id
+//             JOIN "JADWAL" j ON a.jadwal_id = j.id
+//             JOIN "KELAS" k ON j.kelas_id = k.id
+//             JOIN "MATA_PELAJARAN" mp ON j.mata_pelajaran_id = mp.id
+//             WHERE k.id = $1  -- Changed to use kelas_id
+//             AND DATE(a.tanggal) = $2::date
+//             ORDER BY s.nama ASC
+//         `, [kelasId, tanggal]);
+
+//         return res.rows;
+//     } catch (err) {
+//         console.error('Error getting attendance by date:', err);
+//         throw err;
+//     }
+// }
+
+// versi lama
+// export async function getAbsensiByDate(jadwalId: number, tanggal: string) {
+//     try {
+//         const res = await connectionPool.query(`
+//             SELECT 
+//                 a.id as absensi_id,
+//                 a.siswa_id,
+//                 a.status,
+//                 a.keterangan,
+//                 s.nama as nama_siswa,
+//                 s.nis,
+//                 k.nama_kelas,
+//                 mp.nama_mapel
+//             FROM "ABSENSI" a
+//             JOIN "SISWA" s ON a.siswa_id = s.id
+//             JOIN "JADWAL" j ON a.jadwal_id = j.id
+//             JOIN "KELAS" k ON j.kelas_id = k.id
+//             JOIN "MATA_PELAJARAN" mp ON j.mata_pelajaran_id = mp.id
+//             WHERE j.id = $1 
+//             AND DATE(a.tanggal) = $2::date
+//             ORDER BY s.nama ASC
+//         `, [jadwalId, tanggal]);
+
+//         return res.rows;
+//     } catch (err) {
+//         console.error('Error getting attendance by date:', err);
+//         throw err;
+//     }
+// }
 
 // export async function getAbsensiHistory(jadwalId: number, guruId: number) {
 //     try {
@@ -118,7 +197,7 @@ export async function getAbsensiByDate(jadwalId: number, tanggal: string) {
 // }
 
 export async function getAbsensiHistory(kelas_id: number, guru_id: number) {
-  const res = await connectionPool.query(`
+    const res = await connectionPool.query(`
     WITH AbsensiCount AS (
       SELECT 
         a.tanggal,
@@ -146,8 +225,8 @@ export async function getAbsensiHistory(kelas_id: number, guru_id: number) {
     )
     SELECT * FROM AbsensiCount
   `, [kelas_id, guru_id]);
-  
-  return res.rows;
+
+    return res.rows;
 }
 
 // export async function getAbsensiHistory(jadwalId: number, guruId: number) {

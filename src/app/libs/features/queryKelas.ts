@@ -20,6 +20,41 @@ export async function getKelasById(id: number) {
     return res.rows[0]
 }
 
+export async function getKelasWaliKelasById(kelasId: number) {
+  const result = await connectionPool.query(`
+    SELECT 
+      k.*,
+      COUNT(DISTINCT s.id) as total_siswa,
+      COUNT(DISTINCT j.mata_pelajaran_id) as total_mapel
+    FROM "KELAS" k
+    LEFT JOIN "SISWA" s ON s.kelas_id = k.id
+    LEFT JOIN "JADWAL" j ON j.kelas_id = k.id
+    WHERE k.id = $1
+    GROUP BY k.id
+  `, [kelasId]);
+
+  return result.rows[0];
+}
+export async function getAbsensiByKelas(kelasId: number) {
+  const result = await connectionPool.query(`
+    SELECT 
+      s.id as siswa_id,
+      s.nama,
+      s.nis,
+      COUNT(CASE WHEN a.status = 'hadir' THEN 1 END) as total_hadir,
+      COUNT(CASE WHEN a.status = 'sakit' THEN 1 END) as total_sakit,
+      COUNT(CASE WHEN a.status = 'izin' THEN 1 END) as total_izin,
+      COUNT(CASE WHEN a.status = 'alpha' THEN 1 END) as total_alpha
+    FROM "SISWA" s
+    LEFT JOIN "ABSENSI" a ON a.siswa_id = s.id
+    WHERE s.kelas_id = $1
+    GROUP BY s.id, s.nama, s.nis
+    ORDER BY s.nama
+  `, [kelasId]);
+
+  return result.rows;
+}
+
 export async function deleteKelasById(id: number) {
     const res = await connectionPool.query('DELETE FROM "KELAS" WHERE "id" = $1', [id]);
     return res.rowCount !== null && res.rowCount > 0;

@@ -26,17 +26,19 @@ export default async function Page({
     parseInt(guruId)
   );
 
-  const convertDate = (date: any) => {
-    return new Date(date).toLocaleDateString("id-ID");
+  const convertDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("id-ID");
   };
 
-  function formatDateToYYYYMMDD(date: Date | string): string {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
+ function formatDateTimeForUrl(date: string | Date, time: string): string {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const [hour, minute] = time.split(":"); // Split time into hour and minute
+  return `${year}-${month}-${day}-${hour}-${minute}`;
+}
+
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
@@ -62,7 +64,8 @@ export default async function Page({
               <tr key={idx} className="border-b hover:bg-gray-50">
                 <td className="px-4 py-2">{convertDate(history.tanggal)}</td>
                 <td className="px-4 py-2">
-                  {history.jam_mulai} - {history.jam_selesai}
+                  {history.jam_mulai.slice(0, 5)} -{" "}
+                  {history.jam_selesai.slice(0, 5)}
                 </td>
                 <td className="px-4 py-2 text-center">{history.total_siswa}</td>
                 <td className="px-4 py-2 text-center">
@@ -77,13 +80,13 @@ export default async function Page({
                 </td>
                 <td className="px-4 py-2">
                   <Link
-                    href={`/dashboard/guru/absensi/${id}/edit/${formatDateToYYYYMMDD(
-                      history.tanggal
+                    href={`/dashboard/guru/absensi/${id}/edit/${formatDateTimeForUrl(
+                      history.tanggal,
+                      history.jam_mulai.slice(0, 5)
                     )}`}
+                    className="text-blue-600 hover:text-blue-800"
                   >
-                    <Button size="sm" variant="neutral" className="mr-2">
-                      Edit
-                    </Button>
+                    Edit
                   </Link>
                 </td>
               </tr>

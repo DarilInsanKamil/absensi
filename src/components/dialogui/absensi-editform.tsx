@@ -12,14 +12,16 @@ interface AbsensiData {
   keterangan: string;
   nama_siswa: string;
   nis: string;
+  nama_kelas: string;
+  nama_mapel: string;
 }
 
 export function EditAbsensiForm({
   initialData,
-  jadwalId,
+  kelasId,
 }: {
   initialData: AbsensiData[];
-  jadwalId: string;
+  kelasId: string;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
@@ -33,7 +35,7 @@ export function EditAbsensiForm({
       const updates = initialData.map((siswa) => ({
         absensi_id: siswa.absensi_id,
         status: formData.get(`status_${siswa.siswa_id}`),
-        keterangan: formData.get(`keterangan_${siswa.siswa_id}`),
+        keterangan: formData.get(`keterangan_${siswa.siswa_id}`) || undefined,
       }));
 
       const response = await fetch("/api/absensi/update", {
@@ -42,10 +44,13 @@ export function EditAbsensiForm({
         body: JSON.stringify({ updates }),
       });
 
-      if (!response.ok) throw new Error("Failed to update attendance");
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to update attendance");
+      }
 
       toast.success("Absensi berhasil diupdate");
-      router.push(`/dashboard/guru/absensi/${jadwalId}/history`);
+      router.push(`/dashboard/guru/absensi/${kelasId}/history`);
       router.refresh();
     } catch (error) {
       toast.error("Gagal mengupdate absensi");
@@ -74,7 +79,7 @@ export function EditAbsensiForm({
         </thead>
         <tbody>
           {initialData.map((siswa, index) => (
-            <tr key={siswa.siswa_id} className="border-b">
+            <tr key={index} className="border-b">
               <td className="px-4 py-2">{index + 1}</td>
               <td className="px-4 py-2">{siswa.nama_siswa}</td>
               {/* <td className="px-4 py-2">{siswa.nis}</td> */}

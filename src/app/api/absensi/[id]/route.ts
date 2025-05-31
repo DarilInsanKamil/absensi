@@ -1,3 +1,4 @@
+import { connectionPool } from "@/app/_db/db";
 import { deleteAbsensiById, getAbsensiById, updateAbsensiById } from "@/app/libs/features/queryAbsensi";
 import { NextRequest } from "next/server";
 
@@ -117,3 +118,52 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 }
 
+
+
+export async function PUT(req: NextRequest) {
+    try {
+        const { updates } = await req.json();
+
+        // Start a transaction since we're doing multiple updates
+        const client = await connectionPool.connect();
+        try {
+            await client.query('BEGIN');
+
+            for (const update of updates) {
+                await client.query(`
+                    UPDATE "ABSENSI" 
+                    SET status = $1, 
+                        keterangan = $2,
+                        updated_at = CURRENT_TIMESTAMP
+                    WHERE id = $3
+                `, [update.status, update.keterangan || null, update.absensi_id]);
+            }
+
+            await client.query('COMMIT');
+            
+            return new Response(JSON.stringify({ message: "Updates successful" }), {
+                status: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+        } catch (err) {
+            await client.query('ROLLBACK');
+            throw err;
+        } finally {
+            client.release();
+        }
+    } catch (err) {
+        console.error('Error executing batch update:', err);
+        let errorMessage = 'An error occurred while updating attendance records';
+        if (err instanceof Error) {
+            errorMessage = err.message;
+        }
+        return new Response(JSON.stringify({ error: errorMessage }), {
+            status: 500,
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+    }
+}
