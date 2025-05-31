@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,6 +16,7 @@ import { DialogMatpelForm } from "@/components/dialogui/matpel-form";
 const Page = () => {
   const [mapel, setMapel] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const refreshData = () => setRefresh((prev) => !prev);
 
@@ -27,6 +28,18 @@ const Page = () => {
     };
     fetchData();
   }, [refresh]);
+
+  const filteredMapel = useMemo(() => {
+    return mapel.filter((m: any) => {
+      if (searchQuery) {
+        return (
+          m.kode_mapel.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          m.nama_mapel.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+      return true;
+    });
+  }, [mapel, searchQuery]);
 
   return (
     <section className="px-6 mt-10 ">
@@ -43,13 +56,17 @@ const Page = () => {
         </CardFooter>
       </Card>
       <div className="flex gap-5 mt-10 mb-5">
-        <Input placeholder="search.." />
-        <Button>Search</Button>
+        <Input
+          placeholder="Cari kode atau nama mapel..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="max-w-xs"
+        />
       </div>
       <Card>
         <Suspense fallback={<p>Loading...</p>}>
           <CardContent className="overflow-auto">
-            <TableMatpel children={mapel} onDelete={refreshData} />
+            <TableMatpel children={filteredMapel} onDelete={refreshData} />
           </CardContent>
         </Suspense>
       </Card>

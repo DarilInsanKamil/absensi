@@ -6,6 +6,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { useDeleteKelas, useDeleteSiswa } from "@/app/libs/action";
 import { toast } from "sonner";
 import { Suspense } from "react";
+import { DialogEditKelasForm } from "../dialogui/kelas-editform";
 
 export function TableKelas({
   children,
@@ -42,29 +43,34 @@ export function TableKelas({
         </tr>
       </thead>
       <tbody>
-          {children.map((child, index) => (
-            <tr
-              key={index}
-              className="border-b border-gray-300 hover:bg-gray-100"
-            >
-              <td className="px-4 py-2">{index + 1}</td>
-              <td className="px-4 py-2">{child.nama_kelas}</td>
-              <td className="px-4 py-2">{child.tahun_ajaran}</td>
-              <td className="px-4 py-2">{child.wali_kelas}</td>
-              <td className="px-4 py-2 flex gap-2">
-                <Button
-                  className="bg-red-400"
-                  size="icon"
-                  onClick={() => handleDelete(child.id)}
-                >
-                  <Trash2 />
-                </Button>
-                <Button size="sm">
-                  <Pencil />
-                </Button>
-              </td>
-            </tr>
-          ))}
+        {children.map((child, index) => (
+          <tr
+            key={index}
+            className="border-b border-gray-300 hover:bg-gray-100"
+          >
+            <td className="px-4 py-2">{index + 1}</td>
+            <td className="px-4 py-2">{child.nama_kelas}</td>
+            <td className="px-4 py-2">{child.tahun_ajaran}</td>
+            <td className="px-4 py-2">{child.wali_kelas}</td>
+            <td className="px-4 py-2 flex gap-2">
+              <Button
+                className="bg-red-400"
+                size="icon"
+                onClick={() => handleDelete(child.id)}
+              >
+                <Trash2 />
+              </Button>
+              <DialogEditKelasForm
+                id={child.id}
+                trigger={
+                  <Button size="icon">
+                    <Pencil />
+                  </Button>
+                }
+              />
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

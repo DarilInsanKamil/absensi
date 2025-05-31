@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
-import { initDb } from "./_db/init_db";
-import { headers } from "next/headers";
+
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",

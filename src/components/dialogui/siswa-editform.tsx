@@ -25,7 +25,7 @@ export function DialogSiswaEditForm({
   id,
   dataKelas,
   onSuccess,
-  trigger
+  trigger,
 }: {
   id: string;
   dataKelas: DataKelas[];
@@ -162,14 +162,16 @@ export function DialogSiswaEditForm({
                 name="kelas"
                 id="kelas"
                 className="w-full bg-white outline-2 p-2 rounded-sm"
+                defaultValue={siswa.kelas_id} // Use kelas_id instead of nama_kelas
               >
-                {dataKelas.map((res: any, idx: number) => {
-                  return (
-                    <option key={idx} value={res.id}>
-                      {res.nama_kelas}
-                    </option>
-                  );
-                })}
+                {dataKelas.map((res: DataKelas) => (
+                  <option
+                    key={res.id}
+                    value={res.id}
+                  >
+                    {res.nama_kelas}
+                  </option>
+                ))}
               </select>
             </div>
             <Button type="submit" disabled={isLoading}>

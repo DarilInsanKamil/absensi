@@ -7,7 +7,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DialogKelasForm } from "@/components/dialogui/kelas-form";
@@ -16,6 +16,7 @@ import { TableKelas } from "@/components/tableui/table-kelas";
 const Page = () => {
   const [kelas, setKelas] = useState([]);
   const [refresh, setRefresh] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const refreshData = () => setRefresh((prev) => !prev);
   useEffect(() => {
@@ -28,6 +29,14 @@ const Page = () => {
     fetchData();
   }, [refresh]);
 
+  const filteredKelas = useMemo(() => {
+    return kelas.filter((k: any) => {
+      if (searchQuery) {
+        return k.nama_kelas.toLowerCase().includes(searchQuery.toLowerCase());
+      }
+      return true;
+    });
+  }, [kelas, searchQuery]);
   return (
     <section className="px-6 mt-10 ">
       <Card className="flex md:flex-row flex-col justify-between relative">
@@ -42,13 +51,17 @@ const Page = () => {
         </CardFooter>
       </Card>
       <div className="flex gap-5 mt-10 mb-5">
-        <Input placeholder="search.." />
-        <Button>Search</Button>
+        <Input
+          placeholder="Cari kode atau nama mapel..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="max-w-xs"
+        />
       </div>
       <Card>
         <Suspense fallback={<p>Loading...</p>}>
           <CardContent className="overflow-auto">
-            <TableKelas children={kelas} onDelete={refreshData} />
+            <TableKelas children={filteredKelas} onDelete={refreshData} />
           </CardContent>
         </Suspense>
       </Card>

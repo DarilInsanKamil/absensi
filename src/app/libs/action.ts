@@ -431,6 +431,7 @@ export async function useUpdateMatpel(id: number, formData: FormData) {
         throw error;
     }
 }
+
 export async function useUpdateGuru(id: number, formData: FormData) {
     try {
         const data = Object.fromEntries(formData.entries());
@@ -457,6 +458,32 @@ export async function useUpdateGuru(id: number, formData: FormData) {
         return { success: true };
     } catch (error) {
         console.error('Error updating teacher:', error);
+        throw error;
+    }
+}
+
+export async function useUpdateKelas(id: number, formData: FormData) {
+    try {
+        const data = Object.fromEntries(formData.entries());
+        const response = await fetch(`${process.env.LOCAL_TEST_API}/api/kelas/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nama_kelas: data.nama_kelas,
+                tahun_ajaran_id: data.tahun_ajaran_id,
+                walikelas_id: data.walikelas_id,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update kelas');
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error('Error updating kelas:', error);
         throw error;
     }
 }

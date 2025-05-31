@@ -17,7 +17,7 @@ export async function getAllKelas() {
 
 export async function getKelasById(id: number) {
     const res = await connectionPool.query('SELECT * FROM "KELAS" WHERE "id" =$1', [id])
-    return res.rows
+    return res.rows[0]
 }
 
 export async function deleteKelasById(id: number) {

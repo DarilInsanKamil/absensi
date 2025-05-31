@@ -1,11 +1,11 @@
 import { deleteKelasById, getKelasById, updateKelasById } from "@/app/libs/features/queryKelas";
-import { getSiswaByKelasId } from "@/app/libs/features/querySiswa";
+import { getSiswaById, getSiswaByKelasId } from "@/app/libs/features/querySiswa";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     try {
-        const result = await getSiswaByKelasId(parseInt(id))
+        const result = await getKelasById(parseInt(id))
 
         if (result.length === 0) {
             return new Response(JSON.stringify({ error: "Kelas not found" }), {

@@ -66,6 +66,7 @@ export const getSiswaByKelasId = async (id: number) => {
     );
     return getSiswa.rows;
 };
+
 export const getJadwalSiswa = async (id: string) => {
     const res = await connectionPool.query(`
         SELECT 

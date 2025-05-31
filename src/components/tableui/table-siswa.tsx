@@ -26,7 +26,7 @@ export function TableSiswa({
     };
     fetchDataKelas();
   }, []);
-  console.log(kelas)
+  console.log(kelas);
 
   const handleDelete = async (id: number) => {
     try {
