@@ -15,10 +15,10 @@ interface Siswa {
 interface Jadwal {
   id: number;
   kelas: string;
-  mata_pelajaran: string;
   hari: string;
   jam_mulai: string;
   jam_selesai: string;
+  mata_pelajaran: string;
 }
 
 interface AbsensiData {
@@ -32,7 +32,7 @@ interface AbsensiData {
 }
 
 interface AbsensiPageProps {
-  jadwal: Jadwal[];
+  jadwal: Jadwal;
   siswaList: Siswa[];
   guruId: number;
 }
@@ -44,6 +44,7 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+
   const handleSubmit = async (formData: FormData) => {
     try {
       setIsSubmitting(true);
@@ -62,7 +63,7 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
 
         absensiData.push({
           siswa_id: siswa.id,
-          jadwal_id: jadwal[0]?.id,
+          jadwal_id: jadwal.id,
           guru_id: guruId,
           tanggal: currentDate,
           waktu_absen: currentTime,
@@ -101,7 +102,7 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
   return (
     <div className="p-6">
       <h2 className="text-xl font-bold mb-4">
-        Absensi Kelas {jadwal[0].kelas} - {jadwal[0].mata_pelajaran}
+        Absensi Kelas {jadwal.kelas} - {jadwal.mata_pelajaran}
       </h2>
 
       <Form action={handleSubmit}>

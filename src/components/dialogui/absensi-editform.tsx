@@ -50,7 +50,7 @@ export function EditAbsensiForm({
       }
 
       toast.success("Absensi berhasil diupdate");
-      router.push(`/absensiteknomedia/dashboard/guru/absensi/${kelasId}/history`);
+      router.push(`/dashboard/guru/absensi/${kelasId}/history`);
       router.refresh();
     } catch (error) {
       toast.error("Gagal mengupdate absensi");

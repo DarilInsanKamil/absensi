@@ -5,6 +5,7 @@ import {
 } from "@/app/libs/features/queryKelas";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import RekapForm from "@/components/dialogui/rekap-form";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -24,9 +25,8 @@ const Page = async ({ params }: PageProps) => {
       <h1 className="text-2xl font-bold mb-6">
         Wali Kelas {kelasData.nama_kelas}
       </h1>
-
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <Card>
           <CardHeader>Total Siswa</CardHeader>
           <CardContent>{kelasData.total_siswa}</CardContent>
@@ -38,6 +38,14 @@ const Page = async ({ params }: PageProps) => {
         <Card>
           <CardHeader>Mata Pelajaran</CardHeader>
           <CardContent>{kelasData.total_mapel}</CardContent>
+        </Card>
+        <Card>
+          <CardHeader>Rekap Absen</CardHeader>
+          <CardContent>
+            <RekapForm
+            kelasId={kelasData.id}
+            />
+          </CardContent>
         </Card>
       </div>
 

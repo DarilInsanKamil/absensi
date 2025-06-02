@@ -29,15 +29,13 @@ const Page = async ({ params }: PageProps) => {
     <div className="p-6 mt-5">
       {/* Student Info Header */}
       <div className="flex justify-between items-start mb-6">
-        {siswaData.map((res:any, idx:number) => (
-          <div key={idx}>
-            <div>
-              <h1 className="text-2xl font-bold">{res.nama}</h1>
-              <p className="text-gray-600">NIS: {res.nis}</p>
-              <p className="text-gray-600">Kelas: {res.nama_kelas}</p>
-            </div>
+        <div>
+          <div>
+            <h1 className="text-2xl font-bold">{siswaData.nama}</h1>
+            <p className="text-gray-600">NIS: {siswaData.nis}</p>
+            <p className="text-gray-600">Kelas: {siswaData.nama_kelas}</p>
           </div>
-        ))}
+        </div>
       </div>
 
       {/* Tabs for different views */}

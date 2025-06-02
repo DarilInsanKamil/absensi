@@ -8,10 +8,10 @@ import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 
 type Props = {
-  kelasId: number;
+  jadwalId: number;
 };
 
-export default function RekapForm({ kelasId }: Props) {
+export default function RekapMapel({ jadwalId }: Props) {
   const router = useRouter();
   const [bulan, setBulan] = useState(new Date().getMonth() + 1); // default: bulan ini
   const [tahun, setTahun] = useState(new Date().getFullYear());
@@ -20,7 +20,7 @@ export default function RekapForm({ kelasId }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     router.push(
-      `/dashboard/guru/absensi/rekap-absensi?kelas_id=${kelasId}&bulan=${bulan}&tahun=${tahun}`
+      `/dashboard/guru/absensi/rekap-absensi-mapel?jadwal_id=${jadwalId}&bulan=${bulan}&tahun=${tahun}`
     );
     setOpen(false);
   };
@@ -28,12 +28,7 @@ export default function RekapForm({ kelasId }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="noShadow"
-          size="sm"
-          onClick={() => setOpen(true)}
-          className="bg-white"
-        >
+        <Button variant="neutral" size="sm" onClick={() => setOpen(true)}>
           Rekap Absen
         </Button>
       </DialogTrigger>

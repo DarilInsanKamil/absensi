@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { getKelasByGuruId } from "@/app/libs/features/queryJadwal";
 import RekapForm from "@/components/dialogui/rekap-form";
+import RekapMapel from "@/components/dialogui/rekap-mapel";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -76,7 +77,9 @@ const Page = async () => {
               </div>
             </CardContent>
             <CardFooter className="flex gap-2">
-              <RekapForm kelasId={kelas.kelas_id} />
+              <RekapMapel
+                jadwalId={kelas.schedules[0].id}
+              />
               <Link href={`/dashboard/guru/absensi/${kelas.kelas_id}/history`}>
                 <Button size="sm">Lihat History</Button>
               </Link>
