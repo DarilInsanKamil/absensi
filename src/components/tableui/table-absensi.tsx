@@ -15,29 +15,34 @@ interface AbsensiData {
 export function AdminAbsensiTable({ data }: { data: AbsensiData[] }) {
   return (
     <div className="rounded-md border">
-      <table>
+      <table className="min-w-full bg-white rounded-lg overflow-auto">
         <thead>
-          <tr>
-            <th>Tanggal</th>
-            <th>Nama Siswa</th>
-            <th>NIS</th>
-            <th>Kelas</th>
-            <th>Mata Pelajaran</th>
-            <th>Guru</th>
-            <th>Status</th>
-            <th>Keterangan</th>
+          <tr className="bg-gray-100 text-gray-700">
+            <th className="px-4 py-2 text-left">Tanggal</th>
+            <th className="px-4 py-2 text-left">Nama Siswa</th>
+            <th className="px-4 py-2 text-left">NIS</th>
+            <th className="px-4 py-2 text-left">Kelas</th>
+            <th className="px-4 py-2 text-left">Mata Pelajaran</th>
+            <th className="px-4 py-2 text-left">Guru</th>
+            <th className="px-4 py-2 text-left">Status</th>
+            <th className="px-4 py-2 text-left">Keterangan</th>
           </tr>
         </thead>
         <tbody>
           {data.map((item) => (
-            <tr key={item.id}>
-              <td>{new Date(item.tanggal).toLocaleDateString("id-ID")}</td>
-              <td>{item.nama_siswa}</td>
-              <td>{item.nis}</td>
-              <td>{item.nama_kelas}</td>
-              <td>{item.nama_mapel}</td>
-              <td>{item.nama_guru}</td>
-              <td>
+            <tr
+              key={item.id}
+              className="border-b border-gray-300 hover:bg-gray-100 relative bg-white"
+            >
+              <td className="px-4 py-2">
+                {new Date(item.tanggal).toLocaleDateString("id-ID")}
+              </td>
+              <td className="px-4 py-2">{item.nama_siswa}</td>
+              <td className="px-4 py-2">{item.nis}</td>
+              <td className="px-4 py-2">{item.nama_kelas}</td>
+              <td className="px-4 py-2">{item.nama_mapel}</td>
+              <td className="px-4 py-2">{item.nama_guru}</td>
+              <td className="px-4 py-2">
                 <span
                   className={`px-2 py-1 rounded-full text-xs ${
                     item.status === "hadir"
@@ -52,7 +57,7 @@ export function AdminAbsensiTable({ data }: { data: AbsensiData[] }) {
                   {item.status}
                 </span>
               </td>
-              <td>{item.keterangan || "-"}</td>
+              <td className="px-4 py-2">{item.keterangan || "-"}</td>
             </tr>
           ))}
         </tbody>

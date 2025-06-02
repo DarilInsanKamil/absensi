@@ -52,7 +52,7 @@ export function TableMatpel({
             <td className="px-4 py-2 flex gap-2">
               <Button
                 className="bg-red-400"
-                size="icon"
+                size="icon" variant="noShadow"
                 onClick={() => handleDelete(child.id)}
               >
                 <Trash2 />
@@ -60,7 +60,7 @@ export function TableMatpel({
               <DialogEditMatpelForm
                 id={child.id}
                 trigger={
-                  <Button size="icon">
+                  <Button size="icon" variant="noShadow">
                     <Pencil />
                   </Button>
                 }

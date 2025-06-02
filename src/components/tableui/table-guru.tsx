@@ -63,7 +63,7 @@ export function TableGuru({
             <td className="px-4 py-2 flex gap-2">
               <Button
                 className="bg-red-400"
-                size="icon"
+                size="icon" variant="noShadow"
                 onClick={() => handleDelete(res.id)}
               >
                 <Trash2 />
@@ -72,7 +72,7 @@ export function TableGuru({
                 id={res.id}
                 // onSuccess={onDelete}
                 trigger={
-                  <Button size="icon">
+                  <Button size="icon" variant="noShadow">
                     <Pencil />
                   </Button>
                 }
