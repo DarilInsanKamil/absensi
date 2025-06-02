@@ -21,27 +21,27 @@ export async function GuruSidebar() {
   const items = [
     {
       title: "Home",
-      url: "/dashboard/guru",
+      url: "/absensiteknomedia/dashboard/guru",
       icon: Home,
     },
     {
       title: "Daftar Absensi",
-      url: "/dashboard/guru/absensi",
+      url: "/absensiteknomedia/dashboard/guru/absensi",
       icon: BookCheck,
     },
     {
       title: "Isi Absensi",
-      url: "/dashboard/guru/jadwal",
+      url: "/absensiteknomedia/dashboard/guru/jadwal",
       icon: Calendar,
     },
     {
       title: "Jadwal",
-      url: "/dashboard/guru/jadwal-mengajar",
+      url: "/absensiteknomedia/dashboard/guru/jadwal-mengajar",
       icon: Calendar,
     },
     {
       title: "Profile",
-      url: "/dashboard/guru/profile",
+      url: "/absensiteknomedia/dashboard/guru/profile",
       icon: Calendar,
     },
   ];
@@ -49,7 +49,7 @@ export async function GuruSidebar() {
   if (waliKelasStatus.isWaliKelas) {
     items.push({
       title: `Wali Kelas ${waliKelasStatus.kelasData.nama_kelas}`,
-      url: `/dashboard/guru/walikelas/${waliKelasStatus.kelasData.id}`,
+      url: `/absensiteknomedia/dashboard/guru/walikelas/${waliKelasStatus.kelasData.id}`,
       icon: Users,
     });
   }

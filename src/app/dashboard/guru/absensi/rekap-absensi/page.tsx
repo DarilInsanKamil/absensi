@@ -42,7 +42,7 @@ const Page = () => {
       tahun: number
     ) => {
       const res = await fetch(
-        `/api/absensi/rekap?kelas_id=${kelasId}&bulan=${bulan}&tahun=${tahun}`
+        `/absensiteknomedia/api/absensi/rekap?kelas_id=${kelasId}&bulan=${bulan}&tahun=${tahun}`
       );
       if (!res.ok) throw new Error("Gagal mengambil data rekap");
       const datas = await res.json();

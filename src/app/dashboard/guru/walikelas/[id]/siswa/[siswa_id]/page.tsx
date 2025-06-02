@@ -29,7 +29,7 @@ const Page = async ({ params }: PageProps) => {
     <div className="p-6 mt-5">
       {/* Student Info Header */}
       <div className="flex justify-between items-start mb-6">
-        {siswaData.map((res, idx) => (
+        {siswaData.map((res:any, idx:number) => (
           <div key={idx}>
             <div>
               <h1 className="text-2xl font-bold">{res.nama}</h1>

@@ -52,7 +52,7 @@ export function DialogGuruEditForm({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/guru/${id}`);
+        const response = await fetch(`/absensiteknomedia/api/guru/${id}`);
         if (!response.ok) throw new Error("Failed to fetch teacher data");
         const data = await response.json();
         setGuru(data);

@@ -16,44 +16,68 @@ import { toast } from "sonner";
 
 export function DialogKelasForm({ onSuccess }: { onSuccess?: () => void }) {
   const [guru, setGuru] = useState<ResponseTableGuru[]>([]);
-  const [tahunAjaran, setTahunAjaran] = useState<ResponseTableTahunAjaran[]>(
-    []
-  );
+  const [tahunAjaran, setTahunAjaran] = useState<ResponseTableTahunAjaran[]>([]);
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchDataGuru = async () => {
-      const response = await fetch("/api/guru");
-      const data = await response.json();
-      setGuru(data);
+    let isMounted = true;
+
+    const fetchFormData = async () => {
+      if (!open || guru.length > 0) return; // Skip if not open or already loaded
+      
+      try {
+        setIsLoading(true);
+        const [guruRes, tahunAjaranRes] = await Promise.all([
+          fetch("/absensiteknomedia/api/guru"),
+          fetch("/absensiteknomedia/api/tahunajaran")
+        ]);
+
+        if (!isMounted) return;
+
+        const [guruData, tahunAjaranData] = await Promise.all([
+          guruRes.json(),
+          tahunAjaranRes.json()
+        ]);
+
+        setGuru(guruData);
+        setTahunAjaran(tahunAjaranData);
+      } catch (error) {
+        console.error("Error fetching form data:", error);
+        toast.error("Gagal mengambil data");
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
     };
 
-    const fetchDataTahunAjaran = async () => {
-      const response = await fetch("/api/tahunajaran");
-      const data = await response.json();
-      setTahunAjaran(data);
+    fetchFormData();
+
+    return () => {
+      isMounted = false;
     };
-    fetchDataGuru();
-    fetchDataTahunAjaran();
-  }, []);
+  }, [open]);
 
   const handleSubmit = async (formData: FormData) => {
     try {
-      const result = await useCreateKelas(formData);
+      setIsLoading(true);
+      await useCreateKelas(formData);
 
       toast.success("Berhasil", {
-        description: "Data siswa berhasil ditambahkan.",
+        description: "Data kelas berhasil ditambahkan.",
       });
 
       if (onSuccess) onSuccess();
-
       setOpen(false);
     } catch (error) {
+      console.error("Error creating kelas:", error);
       toast.error("Gagal", {
-        description: "Terjadi kesalahan saat menambahkan data siswa.",
+        description: "Terjadi kesalahan saat menambahkan data kelas.",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -61,44 +85,59 @@ export function DialogKelasForm({ onSuccess }: { onSuccess?: () => void }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogTitle>Input Data Kelas</DialogTitle>
-        <Form action={handleSubmit} className="grid gap-2 py-4">
-          <div>
-            <label>Nama Kelas</label>
-            <Input placeholder="masukan nama kelas" name="nama_kelas" />
-          </div>
-          <div>
-            <label>Tahun Ajaran</label>
-            <select
-              name="tahun_ajaran_id"
-              id="tahun_ajaran_id"
-              className="w-full bg-white outline-2 p-2 rounded-sm"
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <Form action={handleSubmit} className="grid gap-2 py-4">
+            <div>
+              <label>Nama Kelas</label>
+              <Input 
+                placeholder="masukan nama kelas" 
+                name="nama_kelas" 
+                required 
+              />
+            </div>
+            <div>
+              <label>Tahun Ajaran</label>
+              <select
+                name="tahun_ajaran_id"
+                id="tahun_ajaran_id"
+                className="w-full bg-white outline-2 p-2 rounded-sm"
+                required
+              >
+                <option value="">Pilih Tahun Ajaran</option>
+                {tahunAjaran.map((ta) => (
+                  <option key={ta.id} value={ta.id}>
+                    {ta.nama}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label>Wali Kelas</label>
+              <select
+                name="walikelas_id"
+                id="walikelas_id"
+                className="w-full bg-white outline-2 p-2 rounded-sm"
+                required
+              >
+                <option value="">Pilih Wali Kelas</option>
+                {guru.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {g.nama}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <Button 
+              type="submit" 
+              className="mt-5"
+              disabled={isLoading}
             >
-              {tahunAjaran.map((res, idx) => (
-                <option key={idx} value={res.id}>
-                  {res.nama}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label>Wali Kelas</label>
-            <br></br>
-            <select
-              name="walikelas_id"
-              id="walikelas_id"
-              className="w-full bg-white outline-2 p-2 rounded-sm"
-            >
-              {guru.map((res, idx) => (
-                <option key={idx} value={res.id}>
-                  {res.nama}
-                </option>
-              ))}
-            </select>
-          </div>
-          <Button type="submit" className="mt-5">
-            Tambah Kelas
-          </Button>
-        </Form>
+              {isLoading ? "Menyimpan..." : "Tambah Kelas"}
+            </Button>
+          </Form>
+        )}
       </DialogContent>
     </Dialog>
   );

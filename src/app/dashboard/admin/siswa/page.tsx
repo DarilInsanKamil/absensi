@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { TableSiswa } from "@/components/tableui/table-siswa";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Card,
@@ -35,15 +34,19 @@ const Page = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/siswa", {
-        cache: "no-store",
+      const response = await fetch("/absensiteknomedia/api/siswa", {
+        next: {
+          tags: ["siswa"],
+          revalidate: 0, // Force revalidation
+        },
+        cache: "no-store", // Disable cache
       });
       const data = await response.json();
       setSiswa(data);
     };
 
     const fetchDataKelas = async () => {
-      const res = await fetch("/api/kelas");
+      const res = await fetch(`/absensiteknomedia/api/kelas`);
       const data = await res.json();
       setKelas(data);
     };

@@ -4,22 +4,22 @@ export function SiswaSidebar() {
   const items = [
     {
       title: "Home",
-      url: "/dashboard/siswa",
+      url: "/absensiteknomedia/dashboard/siswa",
       icon: Home,
     },
     {
       title: "Absensi",
-      url: "/dashboard/siswa/absensi",
+      url: "/absensiteknomedia/dashboard/siswa/absensi",
       icon: BookCheck,
     },
     {
       title: "Jadwal Mata Pelajaran",
-      url: "/dashboard/siswa/jadwal",
+      url: "/absensiteknomedia/dashboard/siswa/jadwal",
       icon: Calendar,
     },
     {
       title: "Profile",
-      url: "/dashboard/siswa/profile",
+      url: "/absensiteknomedia/dashboard/siswa/profile",
       icon: Calendar,
     }
   ];

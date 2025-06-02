@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { useDeleteTahunAjaran } from "@/app/libs/action";
 import { toast } from "sonner";
+import { DialogEditTahunAjaranForm } from "../dialogui/tahunjaran-editform";
 
 export function TableTahunAjaran({
   children,
@@ -48,19 +49,29 @@ export function TableTahunAjaran({
           >
             <td className="px-4 py-2">{index + 1}</td>
             <td className="px-4 py-2">{child.nama}</td>
-            <td className="px-4 py-2">{child.tanggal_mulai}</td>
-            <td className="px-4 py-2">{child.tanggal_selesai}</td>
+            <td className="px-4 py-2">
+              {new Date(child.tanggal_mulai).toISOString().split("T")[0]}
+            </td>
+            <td className="px-4 py-2">
+              {new Date(child.tanggal_selesai).toISOString().split("T")[0]}
+            </td>
             <td className="px-4 py-2 flex gap-2">
               <Button
                 className="bg-red-400"
                 size="icon"
+                variant="noShadow"
                 onClick={() => handleDelete(child.id)}
               >
                 <Trash2 />
               </Button>
-              <Button size="sm">
-                <Pencil />
-              </Button>
+              <DialogEditTahunAjaranForm
+                id={child.id}
+                trigger={
+                  <Button size="icon" variant="noShadow">
+                    <Pencil />
+                  </Button>
+                }
+              />
             </td>
           </tr>
         ))}

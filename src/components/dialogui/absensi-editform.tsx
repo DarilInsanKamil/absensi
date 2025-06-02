@@ -38,7 +38,7 @@ export function EditAbsensiForm({
         keterangan: formData.get(`keterangan_${siswa.siswa_id}`) || undefined,
       }));
 
-      const response = await fetch("/api/absensi/update", {
+      const response = await fetch("/absensiteknomedia/api/absensi/update", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ updates }),
@@ -50,7 +50,7 @@ export function EditAbsensiForm({
       }
 
       toast.success("Absensi berhasil diupdate");
-      router.push(`/dashboard/guru/absensi/${kelasId}/history`);
+      router.push(`/absensiteknomedia/dashboard/guru/absensi/${kelasId}/history`);
       router.refresh();
     } catch (error) {
       toast.error("Gagal mengupdate absensi");

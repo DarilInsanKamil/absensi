@@ -1,8 +1,10 @@
 import { createSiswa, getSiswa } from '@/app/libs/features/querySiswa';
+import { revalidateTag } from 'next/cache';
 
 export async function GET(req: Request) {
     try {
         const siswa = await getSiswa();
+        revalidateTag('siswa')
         return new Response(JSON.stringify(siswa), {
             status: 200,
             headers: {

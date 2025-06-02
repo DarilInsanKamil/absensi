@@ -22,7 +22,7 @@ export function DialogJadwalForm({ onSuccess }: { onSuccess?: () => void }) {
 
   useEffect(() => {
     const fetchForm = async () => {
-      const res = await fetch("/api/getFormJadwal");
+      const res = await fetch("/absensiteknomedia/api/getFormJadwal");
       const datas = await res.json();
       setGuru(datas.guru);
       setKelas(datas.kelas);
@@ -30,7 +30,7 @@ export function DialogJadwalForm({ onSuccess }: { onSuccess?: () => void }) {
       setTahunAjaran(datas.tahunAjaran);
     };
     fetchForm();
-  }, []);
+  }, [open]);
 
   const handleSubmit = async (formData: FormData) => {
     try {

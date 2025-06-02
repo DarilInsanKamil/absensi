@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
                 }
             })
         }
-        return new Response(JSON.stringify(result[0]), {
+        return new Response(JSON.stringify(result), {
             status: 200,
             headers: {
                 'Content-Type': 'application/json',

@@ -10,6 +10,9 @@ export async function getJadwal() {
         jadwal.id,
         jadwal.hari,
         jadwal.jam_mulai,
+        jadwal.guru_id,
+        jadwal.kelas_id,
+        jadwal.mata_pelajaran_id,
         jadwal.jam_selesai,
         mata_pelajaran.nama_mapel as mata_pelajaran,
         guru.nama as nama_guru,
@@ -147,6 +150,10 @@ export async function getJadwalById(id: number) {
         jadwal.id,
         jadwal.hari,
         jadwal.jam_mulai,
+        jadwal.guru_id,
+        jadwal.kelas_id,
+        jadwal.tahun_ajaran_id,
+        jadwal.mata_pelajaran_id,
         jadwal.jam_selesai,
         mata_pelajaran.nama_mapel as mata_pelajaran,
         guru.nama as nama_guru,
@@ -158,7 +165,7 @@ export async function getJadwalById(id: number) {
         JOIN "TAHUN_AJARAN" tahun_ajaran ON jadwal.tahun_ajaran_id = tahun_ajaran.id
         JOIN "MATA_PELAJARAN" mata_pelajaran ON jadwal.mata_pelajaran_id = mata_pelajaran.id
 WHERE jadwal.id = $1`, [id])
-    return search.rows;
+    return search.rows[0];
 }
 
 export async function deleteJadwalById(id: number) {
@@ -221,5 +228,45 @@ export async function getJadwalGuru(guru_id: number) {
             END,
             jadwal.jam_mulai;
     `, [guru_id]);
+    return res.rows;
+}
+
+
+
+export async function getJadwalSiswaForBK(kelasId?: string, mapelId?: string) {
+    let query = `
+        SELECT
+            jadwal.id,
+            jadwal.hari,
+            jadwal.jam_mulai,
+            jadwal.guru_id,
+            jadwal.kelas_id,
+            jadwal.mata_pelajaran_id,
+            jadwal.jam_selesai,
+            mata_pelajaran.nama_mapel as mata_pelajaran,
+            guru.nama as nama_guru,
+            tahun_ajaran.nama as tahun_ajaran,
+            kelas.nama_kelas as kelas
+        FROM "JADWAL" jadwal
+        JOIN "GURU" guru ON jadwal.guru_id = guru.id
+        JOIN "KELAS" kelas ON jadwal.kelas_id = kelas.id
+        JOIN "TAHUN_AJARAN" tahun_ajaran ON jadwal.tahun_ajaran_id = tahun_ajaran.id
+        JOIN "MATA_PELAJARAN" mata_pelajaran ON jadwal.mata_pelajaran_id = mata_pelajaran.id
+        WHERE 1=1
+    `;
+
+    const params: any[] = [];
+
+    if (kelasId) {
+        params.push(kelasId);
+        query += ` AND jadwal.kelas_id = $${params.length}`;
+    }
+
+    if (mapelId) {
+        params.push(mapelId);
+        query += ` AND jadwal.mata_pelajaran_id = $${params.length}`;
+    }
+
+    const res = await connectionPool.query(query, params);
     return res.rows;
 }

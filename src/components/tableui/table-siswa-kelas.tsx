@@ -35,7 +35,7 @@ export function TableSiswaKelas({
             <td className="px-4 py-2">{child.wali_kelas}</td>
             <td className="px-4 py-2">
               <Button>
-                <Link href={`/dashboard/guru/kelas/${child.id}/siswa-kelas`}>
+                <Link href={`/absensiteknomedia/dashboard/guru/kelas/${child.id}/siswa-kelas`}>
                   Dettail
                 </Link>
               </Button>

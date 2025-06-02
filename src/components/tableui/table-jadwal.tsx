@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { useDeleteJadwal, useDeleteSiswa } from "@/app/libs/action";
 import { toast } from "sonner";
+import { DialogEditJadwalForm } from "../dialogui/jadwal-editform";
 
 export function TableJadwal({
   children,
@@ -62,13 +63,19 @@ export function TableJadwal({
               <Button
                 className="bg-red-400 "
                 size="icon"
+                variant={"noShadow"}
                 onClick={() => handleDelete(child.id)}
               >
                 <Trash2 />
               </Button>
-              <Button size="sm" >
-                <Pencil />
-              </Button>
+              <DialogEditJadwalForm
+                id={child.id}
+                trigger={
+                  <Button size="icon" variant="noShadow">
+                    <Pencil />
+                  </Button>
+                }
+              />
             </td>
           </tr>
         ))}

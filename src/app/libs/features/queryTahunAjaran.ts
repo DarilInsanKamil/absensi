@@ -8,7 +8,7 @@ export async function getTahunAjaran() {
 
 export async function getTahunAjaranById(id: number) {
     const result = await connectionPool.query('SELECT * FROM "TAHUN_AJARAN" WHERE "id" = $1 ', [id])
-    return result.rows
+    return result.rows[0]
 }
 
 export async function createTahunAjaran(tahunAjaran: TahunAjaran) {

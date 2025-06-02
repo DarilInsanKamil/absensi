@@ -24,7 +24,7 @@ const Page = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/absensi/admin");
+      const response = await fetch("/absensiteknomedia/api/absensi/admin");
       const jsonData = await response.json();
       setData(jsonData);
       setFilteredData(jsonData);

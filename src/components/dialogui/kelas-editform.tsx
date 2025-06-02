@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  useCreateMatpel,
-  useUpdateKelas,
-  useUpdateMatpel,
-} from "@/app/libs/action";
+import { useUpdateKelas } from "@/app/libs/action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -40,34 +36,77 @@ export function DialogEditKelasForm({
   const [guru, setGuru] = useState<any>();
   const [tahunAjaran, setTahunAjaran] = useState<any>();
   const router = useRouter();
+
   useEffect(() => {
-    const fetchData = async () => {
+    let isMounted = true;
+
+    const fetchFormData = async () => {
+      if (!open) return; // Only fetch when dialog is open
+
       try {
-        const response = await fetch(`/api/kelas/${id}`);
+        setIsLoading(true);
+        const [guruRes, tahunAjaranRes] = await Promise.all([
+          fetch("/absensiteknomedia/api/guru"),
+          fetch("/absensiteknomedia/api/tahunajaran"),
+        ]);
+
+        if (!isMounted) return;
+
+        const [guruData, tahunAjaranData] = await Promise.all([
+          guruRes.json(),
+          tahunAjaranRes.json(),
+        ]);
+
+        setGuru(guruData);
+        setTahunAjaran(tahunAjaranData);
+      } catch (error) {
+        console.error("Error fetching form data:", error);
+        toast.error("Gagal mengambil data form");
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchFormData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [open]);
+
+  // Separate useEffect for kelas data
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchKelasData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/absensiteknomedia/api/kelas/${id}`);
         if (!response.ok) throw new Error("Failed to fetch kelas data");
+
+        if (!isMounted) return;
+
         const data = await response.json();
         setKelas(data);
       } catch (error) {
         console.error("Error fetching kelas:", error);
         toast.error("Gagal mengambil data kelas");
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    const fetchDataGuru = async () => {
-      const response = await fetch("/api/guru");
-      const data = await response.json();
-      setGuru(data);
-    };
+    if (open && id) {
+      fetchKelasData();
+    }
 
-    const fetchDataTahunAjaran = async () => {
-      const response = await fetch("/api/tahunajaran");
-      const data = await response.json();
-      setTahunAjaran(data);
+    return () => {
+      isMounted = false;
     };
-    fetchDataGuru();
-    fetchDataTahunAjaran();
-
-    if (open) fetchData();
   }, [id, open]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -78,18 +117,20 @@ export function DialogEditKelasForm({
       const formData = new FormData(e.currentTarget);
       await useUpdateKelas(id, formData);
 
+      toast.success("Berhasil", {
+        description: "Data kelas berhasil diupdate.",
+      });
+
       if (onSuccess) onSuccess();
       setOpen(false);
+      router.refresh();
     } catch (error) {
+      console.error("Error updating kelas:", error);
       toast.error("Gagal", {
         description: "Terjadi kesalahan saat mengupdate data kelas.",
       });
     } finally {
       setIsLoading(false);
-      router.refresh();
-      toast.success("Berhasil", {
-        description: "Data kelas berhasil diupdate.",
-      });
     }
   };
   return (
@@ -115,7 +156,7 @@ export function DialogEditKelasForm({
                 defaultValue={kelas.tahun_ajaran_id}
                 className="w-full bg-white outline-2 p-2 rounded-sm"
               >
-                {tahunAjaran.map((res: any, idx: number) => (
+                {tahunAjaran?.map((res: any, idx: number) => (
                   <option key={idx} value={res.id}>
                     {res.nama}
                   </option>
@@ -131,7 +172,7 @@ export function DialogEditKelasForm({
                 defaultValue={kelas.walikelas_id}
                 className="w-full bg-white outline-2 p-2 rounded-sm"
               >
-                {guru.map((res: any, idx: number) => (
+                {guru?.map((res: any, idx: number) => (
                   <option key={idx} value={res.id}>
                     {res.nama}
                   </option>

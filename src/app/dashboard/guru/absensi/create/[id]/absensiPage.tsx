@@ -75,7 +75,7 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
       }
 
       // Send to API
-      const response = await fetch("/api/absensi", {
+      const response = await fetch("/absensiteknomedia/api/absensi", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

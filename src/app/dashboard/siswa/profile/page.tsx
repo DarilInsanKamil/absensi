@@ -1,8 +1,9 @@
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { Card } from "@/components/ui/card";
+import Image from "next/image";
 
 const Page = async () => {
   const cookieStore = await cookies();
@@ -18,20 +19,20 @@ const Page = async () => {
   );
   const data = await findById.json();
   return (
-   <section className="p-5 mt-10">
+    <section className="p-5 mt-10">
       {!data ? (
         <p>Tidak ada data</p>
       ) : (
         <Card key={data.id} className="flex justify-center items-center w-2xl">
           <div className="w-full p-5">
-            {/* <Image
+            <Image
               src={
-                data.jenis_kelamin === "L" ? "/teacher-l.svg" : "/teacher-p.svg"
+                data.jenis_kelamin === "L" ? "/absensiteknomedia/teacher-l.svg" : "/absensiteknomedia/teacher-p.svg"
               }
               width={100}
               height={100}
               alt="profile guru"
-            /> */}
+            />
             <table className="mt-5 w-full ">
               <tbody>
                 <tr>
@@ -42,7 +43,7 @@ const Page = async () => {
                 <tr>
                   <td>NIP</td>
                   <td>:</td>
-                  <td className="pl-5">{data.nip}</td>
+                  <td className="pl-5">{data.nis}</td>
                 </tr>
                 <tr>
                   <td>Jenis Kelamin</td>
@@ -52,7 +53,7 @@ const Page = async () => {
                   </td>
                 </tr>
                 <tr>
-                  <td>Wali Kelas</td>
+                  <td>Kelas</td>
                   <td>:</td>
                   <td className="pl-5">{data.nama_kelas}</td>
                 </tr>

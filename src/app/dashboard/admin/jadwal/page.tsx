@@ -11,17 +11,18 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ResponseTableJadwal } from "@/definitions";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 const Page = () => {
   const [jadwal, setJadwal] = useState<ResponseTableJadwal[]>([]);
   const [refresh, setRefresh] = useState(false);
-  
-  const refreshData = () => setRefresh(prev => !prev);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const refreshData = () => setRefresh((prev) => !prev);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/jadwal");
+      const response = await fetch("/absensiteknomedia/api/jadwal");
       const data = await response.json();
 
       setJadwal(data);
@@ -29,6 +30,21 @@ const Page = () => {
 
     fetchData();
   }, [refresh]);
+
+  const filteredJadwal = useMemo(() => {
+    return jadwal.filter((s: any) => {
+      // Then filter by search query
+      if (searchQuery) {
+        return (
+          s.hari.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          s.mata_pelajaran.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          s.nama_guru.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
+      return true;
+    });
+  }, [jadwal, searchQuery]);
 
   return (
     <section className="px-6 mt-10 ">
@@ -40,17 +56,21 @@ const Page = () => {
           </p>
         </CardHeader>
         <CardFooter>
-          <DialogJadwalForm onSuccess={refreshData}/>
+          <DialogJadwalForm onSuccess={refreshData} />
         </CardFooter>
       </Card>
       <div className="flex gap-5 mt-10 mb-5">
-        <Input placeholder="search.." />
-        <Button>Search</Button>
+        <Input
+          placeholder="Cari berdasarkan hari atau matpel siswa..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="max-w-xs"
+        />
       </div>
       <Card className="overflow-y-scroll">
         <Suspense fallback={<p>Loading...</p>}>
           <CardContent className="overflow-auto">
-            <TableJadwal children={jadwal} onDelete={refreshData}/>
+            <TableJadwal children={filteredJadwal} onDelete={refreshData} />
           </CardContent>
         </Suspense>
       </Card>

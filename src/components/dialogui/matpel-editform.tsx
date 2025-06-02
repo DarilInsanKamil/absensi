@@ -35,7 +35,7 @@ export function DialogEditMatpelForm({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/matpel/${id}`);
+        const response = await fetch(`/absensiteknomedia/api/matpel/${id}`);
         if (!response.ok) throw new Error("Failed to fetch matpel data");
         const data = await response.json();
         setMatpel(data);

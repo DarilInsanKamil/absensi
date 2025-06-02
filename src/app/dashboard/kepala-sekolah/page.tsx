@@ -21,19 +21,19 @@ const Page = async () => {
           </p>
         </CardHeader>
         <CardContent className="flex gap-4 items-center mt-5 md:flex-row flex-col">
-          <Link href="/dashboard/kepala-sekolah/guru" className="w-full">
+          <Link href="/absensiteknomedia/dashboard/kepala-sekolah/guru" className="w-full">
             <div className="bg-blue-400 border-2 border-black text-xl text-white font-semibold p-3 w-full rounded-md flex gap-2 items-center">
               <TeacherIcon />
               <p>{res?.guru} Guru</p>
             </div>
           </Link>
-          <Link href="/dashboard/kepala-sekolah/siswa" className="w-full">
+          <Link href="/absensiteknomedia/dashboard/kepala-sekolah/siswa" className="w-full">
             <div className="bg-blue-400 border-2 border-black text-xl text-white font-semibold p-3  rounded-md flex gap-2 items-center">
               <SiswaIcon />
               <p>{res?.siswa} Siswa</p>
             </div>
           </Link>
-          <Link href="/dashboard/kepala-sekolah/kelas" className="w-full">
+          <Link href="/absensiteknomedia/dashboard/kepala-sekolah/kelas" className="w-full">
             <div className="bg-blue-400 border-2 border-black text-xl text-white font-semibold p-3 w-full rounded-md flex gap-2 items-center">
               <KelasIcon />
               <p>{res?.kelas} Kelas</p>

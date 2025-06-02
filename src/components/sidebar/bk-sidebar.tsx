@@ -5,17 +5,17 @@ export function BkSidebar() {
   const items = [
     {
       title: "Home",
-      url: "/dashboard/bk",
+      url: "/absensiteknomedia/dashboard/bk",
       icon: Home,
     },
     {
       title: "Absensi",
-      url: "/dashboard/bk/absensi",
+      url: "/absensiteknomedia/dashboard/bk/absensi",
       icon: BookCheck,
     },
     {
       title: "Profile",
-      url: "/dashboard/bk/profile",
+      url: "/absensiteknomedia/dashboard/bk/profile",
       icon: Calendar,
     }
   ];

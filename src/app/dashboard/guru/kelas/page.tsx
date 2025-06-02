@@ -20,7 +20,7 @@ const Page = () => {
   const refreshData = () => setRefresh((prev) => !prev);
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/kelas", { cache: "no-store" });
+      const response = await fetch("/absensiteknomedia/api/kelas", { cache: "no-store" });
       const data = await response.json();
       setKelas(data);
     };

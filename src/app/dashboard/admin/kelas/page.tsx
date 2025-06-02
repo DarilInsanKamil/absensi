@@ -21,7 +21,7 @@ const Page = () => {
   const refreshData = () => setRefresh((prev) => !prev);
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/kelas", { cache: "no-store" });
+      const response = await fetch("/absensiteknomedia/api/kelas", { cache: "no-store" });
       const data = await response.json();
       setKelas(data);
     };
@@ -37,6 +37,7 @@ const Page = () => {
       return true;
     });
   }, [kelas, searchQuery]);
+  
   return (
     <section className="px-6 mt-10 ">
       <Card className="flex md:flex-row flex-col justify-between relative">

@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath, revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -102,8 +103,8 @@ export async function useSignUpAccount(formData: FormData) {
         console.log("Gagal :D");
     }
     return { success: true };
-
 }
+
 export async function useCreateGuru(formData: FormData) {
     try {
         const data = Object.fromEntries(formData.entries());
@@ -150,6 +151,36 @@ export async function useDeleteGuru(id: number) {
     } catch (err) {
         console.error("Error deleting guru: ", err)
         throw new Error('Failed to deleting guru')
+    }
+}
+
+export async function useDeleteUser(id: number) {
+    try {
+        const deleteUser = await fetch(`${process.env.LOCAL_TEST_API}/api/users/${id}`, {
+            method: 'DELETE',
+
+        })
+        if (!deleteUser.ok) {
+            console.log("Gagal menghapus data")
+        }
+    } catch (err) {
+        console.error("Error deleting user: ", err)
+        throw new Error('Failed to deleting user')
+    }
+}
+
+export async function useDeleteUsers(id: number | string) {
+    try {
+        const deleteUsers = await fetch(`${process.env.LOCAL_TEST_API}/api/users/${id}`, {
+            method: 'DELETE',
+
+        })
+        if (!deleteUsers.ok) {
+            console.log("Gagal menghapus data")
+        }
+    } catch (err) {
+        console.error("Error deleting user: ", err)
+        throw new Error('Failed to deleting user')
     }
 }
 
@@ -388,24 +419,84 @@ export async function useUpdateSiswa(id: string, formData: FormData) {
                 nip: data.nip,
                 nama: data.nama,
                 jenis_kelamin: data.jenis_kelamin,
+                tanggal_lahir: data.tanggal_lahir,
                 alamat: data.alamat,
-                no_telpon: data.no_telpon,
+                no_telepon: data.no_telepon,
                 email: data.email,
                 kelas_id: data.kelas,
                 status_aktif: data.status === 'true'
             })
         })
         if (!response.ok) {
-            throw new Error('Failed to update teacher');
+            throw new Error('Failed to update student');
         }
-
+        revalidateTag('siswa');
+        // revalidatePath('/dashboard/admin/siswa');
         return { success: true };
     } catch (error) {
-        console.error('Error updating teacher:', error);
+        console.error('Error updating student:', error);
         throw error;
     }
 }
 
+export async function useUpdateJadwal(id: number, formData: FormData) {
+    try {
+        const data = Object.fromEntries(formData.entries());
+        const {
+            mata_pelajaran_id,
+            kelas_id,
+            tahun_ajaran_id,
+            guru_id,
+            hari,
+            jam_mulai,
+            jam_selesai,
+        } = data;
+        const response = await fetch(`${process.env.LOCAL_TEST_API}/api/jadwal/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                mata_pelajaran_id,
+                kelas_id,
+                guru_id,
+                tahun_ajaran_id,
+                hari,
+                jam_mulai,
+                jam_selesai
+            })
+        })
+        if (!response.ok) {
+            console.log("Gagal update data jadwal");
+
+        }
+    } catch (err) {
+        console.error("Error saat update data jadwal: ", err)
+        throw new Error("Gagal update data jadwal")
+    }
+}
+
+
+export async function useUpdatePassword(id: number, formData: FormData) {
+    try {
+        const data = Object.fromEntries(formData.entries());
+        const response = await fetch(`${process.env.LOCAL_TEST_API}/api/users/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                password: data.password,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update password');
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error('Error updating mapel:', error);
+        throw error;
+    }
+}
 
 export async function useUpdateMatpel(id: number, formData: FormData) {
     try {
@@ -431,6 +522,35 @@ export async function useUpdateMatpel(id: number, formData: FormData) {
         throw error;
     }
 }
+
+export async function useUpdateTahunAjaran(id: number, formData: FormData) {
+    try {
+        const data = Object.fromEntries(formData.entries());
+        const {
+            nama,
+            tanggal_mulai,
+            tanggal_selesai,
+            status,
+        } = data;
+        const status_aktif = status as string == "1" ? true : false
+        const res = await fetch(`${process.env.LOCAL_TEST_API}/api/tahunajaran/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                nama,
+                tanggal_mulai,
+                tanggal_selesai,
+                status_aktif
+            })
+        })
+        if (!res.ok) {
+            console.log("Gagal Update Data")
+        }
+    } catch (err) {
+        console.error("Error saat Update data tahun ajaran: ", err)
+        throw new Error("Gagal Update data tahun ajaran")
+    }
+}
+
 
 export async function useUpdateGuru(id: number, formData: FormData) {
     try {

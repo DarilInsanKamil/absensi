@@ -10,7 +10,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Siswa } from "@/definitions";
-import { Pencil } from "lucide-react";
+import { Loader2Icon, Pencil } from "lucide-react";
+import Form from "next/form";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -35,11 +37,11 @@ export function DialogSiswaEditForm({
   const [open, setOpen] = useState(false);
   const [siswa, setSiswa] = useState<Siswa | null>();
   const [isLoading, setIsLoading] = useState(false);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/siswa/${id}`);
+        const response = await fetch(`/absensiteknomedia/api/siswa/${id}`);
         if (!response.ok) throw new Error("Failed to fetch teacher siswa");
         const data = await response.json();
         setSiswa(data);
@@ -52,12 +54,9 @@ export function DialogSiswaEditForm({
     if (open) fetchData();
   }, [id, open]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-
+  const handleSubmit = async (formData: FormData) => {
     try {
-      const formData = new FormData(e.currentTarget);
+      setIsLoading(true);
       await useUpdateSiswa(id, formData);
 
       toast.success("Berhasil", {
@@ -78,9 +77,9 @@ export function DialogSiswaEditForm({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogTitle>Input Data Siswa</DialogTitle>
+        <DialogTitle>Edit Data Siswa</DialogTitle>
         {siswa ? (
-          <form onSubmit={handleSubmit} className="grid gap-2 py-4">
+          <Form action={handleSubmit} className="grid gap-2 py-4">
             <div>
               <label>NISN</label>
               <Input
@@ -124,8 +123,10 @@ export function DialogSiswaEditForm({
               <label>Tanggal Lahir</label>
               <Input
                 type="date"
-                name="ttl"
-                defaultValue={siswa.tanggal_lahir}
+                name="tanggal_lahir"
+                defaultValue={
+                  new Date(siswa.tanggal_lahir).toISOString().split("T")[0]
+                }
               />
             </div>
             <div>
@@ -165,26 +166,45 @@ export function DialogSiswaEditForm({
                 defaultValue={siswa.kelas_id} // Use kelas_id instead of nama_kelas
               >
                 {dataKelas.map((res: DataKelas) => (
-                  <option
-                    key={res.id}
-                    value={res.id}
-                  >
+                  <option key={res.id} value={res.id}>
                     {res.nama_kelas}
                   </option>
                 ))}
               </select>
             </div>
+            <div className="flex gap-3">
+              <div className="flex gap-1">
+                <input
+                  name="status"
+                  type="radio"
+                  defaultValue="true"
+                  defaultChecked={siswa.status_aktif === true}
+                />
+                <label>Aktif</label>
+              </div>
+              <div className="flex gap-1">
+                <input
+                  name="status"
+                  type="radio"
+                  defaultValue="false"
+                  defaultChecked={siswa.status_aktif === false}
+                />
+                <label>Tidak Aktif</label>
+              </div>
+            </div>
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <span className="mr-2">Menyimpan...</span>
-                  <span className="animate-spin">⏳</span>
+                  <span className="animate-spin">
+                    <Loader2Icon />
+                  </span>
                 </>
               ) : (
                 "Simpan Perubahan"
               )}
             </Button>
-          </form>
+          </Form>
         ) : (
           <p>Loading... </p>
         )}

@@ -112,7 +112,17 @@ export function DialogSiswaForm({
               })}
             </select>
           </div>
-          <Button type="submit" className="mt-5">
+          <div className="flex gap-3">
+            <div className="flex gap-1">
+              <input name="status" type="radio" defaultValue="true" />
+              <label>Aktif</label>
+            </div>
+            <div className="flex gap-1">
+              <input name="status" type="radio" defaultValue="false" />
+              <label>Tidak Aktif</label>
+            </div>
+          </div>
+          <Button type="submit" className="mt-2">
             Tambah Siswa
           </Button>
         </Form>

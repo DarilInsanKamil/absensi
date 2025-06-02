@@ -21,7 +21,7 @@ const Page = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/guru");
+      const response = await fetch("/absensiteknomedia/api/guru");
       const data = await response.json();
       setGuru(data);
     };

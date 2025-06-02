@@ -1,52 +1,57 @@
-import { Calendar, Home, BookCheck } from "lucide-react";
+import { Calendar, Home, BookCheck, User, Users } from "lucide-react";
 import { TeacherIcon, KelasIcon, SiswaIcon } from "../icon";
 import { SidebarNav } from "./SidebarNav";
 export function AdminSidebar() {
   const items = [
     {
       title: "Home",
-      url: "/dashboard/admin",
+      url: "/absensiteknomedia/dashboard/admin",
       icon: Home,
     },
     {
       title: "Siswa",
-      url: "/dashboard/admin/siswa",
+      url: "/absensiteknomedia/dashboard/admin/siswa",
       icon: SiswaIcon,
     },
     {
       title: "Guru",
-      url: "/dashboard/admin/guru",
+      url: "/absensiteknomedia/dashboard/admin/guru",
       icon: TeacherIcon,
     },
     {
       title: "Kelas",
-      url: "/dashboard/admin/kelas",
+      url: "/absensiteknomedia/dashboard/admin/kelas",
       icon: KelasIcon,
     },
     {
       title: "Mata Pelajaran",
-      url: "/dashboard/admin/matapelajaran",
+      url: "/absensiteknomedia/dashboard/admin/matapelajaran",
       icon: Calendar,
     },
     {
       title: "Jadwal",
-      url: "/dashboard/admin/jadwal",
+      url: "/absensiteknomedia/dashboard/admin/jadwal",
       icon: Calendar,
     },
     {
       title: "Tahun Ajaran",
-      url: "/dashboard/admin/tahunajaran",
+      url: "/absensiteknomedia/dashboard/admin/tahunajaran",
       icon: Calendar,
     },
     {
       title: "Absensi",
-      url: "/dashboard/admin/absensi",
+      url: "/absensiteknomedia/dashboard/admin/absensi",
       icon: BookCheck,
     },
     {
+      title: "Users",
+      url: "/absensiteknomedia/dashboard/admin/users",
+      icon: Users,
+    },
+    {
       title: "Profile",
-      url: "/dashboard/admin/profile",
-      icon: Calendar,
+      url: "/absensiteknomedia/dashboard/admin/profile",
+      icon: User,
     },
   ];
 

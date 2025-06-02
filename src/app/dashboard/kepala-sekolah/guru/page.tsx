@@ -20,7 +20,7 @@ const Page = () => {
   const refreshData = () => setRefresh((prev) => !prev);
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/guru");
+      const response = await fetch("/absensiteknomedia/api/guru");
       const data = await response.json();
       setGuru(data);
     };

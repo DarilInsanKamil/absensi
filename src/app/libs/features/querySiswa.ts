@@ -32,6 +32,26 @@ export async function getSiswa() {
     return result.rows;
 }
 
+export async function getSiswaKelasId(id: number) {
+    const result = await connectionPool.query(`
+        SELECT 
+            siswa.id,
+            siswa.nis,
+            siswa.nama,
+            siswa.jenis_kelamin,
+            siswa.tanggal_lahir,
+            siswa.alamat,
+            siswa.no_telepon,
+            siswa.email,
+            siswa.status_aktif,
+            kelas.nama_kelas
+        FROM "SISWA" siswa
+        JOIN "KELAS" kelas ON siswa.kelas_id = $1
+        ORDER BY siswa.nama
+    `, [id]);
+    return result.rows;
+}
+
 export async function createSiswa(siswa: Siswa) {
     const { nis, nama, jenis_kelamin, tanggal_lahir, alamat, no_telepon, email, kelas_id, status_aktif } = siswa;
     const result = await connectionPool.query('INSERT INTO "SISWA" ("nis", "nama", "jenis_kelamin", "tanggal_lahir", "alamat", "no_telepon", "email", "kelas_id", "status_aktif") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *', [nis, nama, jenis_kelamin, tanggal_lahir, alamat, no_telepon, email, kelas_id, status_aktif]);
@@ -39,8 +59,24 @@ export async function createSiswa(siswa: Siswa) {
 }
 
 export async function getSiswaById(id: string) {
-    const result = await connectionPool.query('SELECT * FROM "SISWA" WHERE "id" = $1', [id]);
-    return result.rows;
+    const result = await connectionPool.query(`
+        SELECT 
+            siswa.id,
+            siswa.nis,
+            siswa.nama,
+            siswa.jenis_kelamin,
+            siswa.tanggal_lahir,
+            siswa.alamat,
+            siswa.no_telepon,
+            siswa.email,
+            siswa.status_aktif,
+            siswa.kelas_id,
+            kelas.nama_kelas
+        FROM "SISWA" siswa
+        JOIN "KELAS" kelas ON siswa.kelas_id = kelas.id
+        WHERE siswa.id = $1
+    `, [id]);
+    return result.rows[0]; // Return single object instead of array
 }
 
 export async function deleteSiswaById(id: string) {

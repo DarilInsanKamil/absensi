@@ -20,13 +20,12 @@ export function TableSiswa({
 
   useEffect(() => {
     const fetchDataKelas = async () => {
-      const res = await fetch("/api/kelas");
+      const res = await fetch("/absensiteknomedia/api/kelas");
       const data = await res.json();
       setKelas(data);
     };
     fetchDataKelas();
   }, []);
-  console.log(kelas);
 
   const handleDelete = async (id: number) => {
     try {
@@ -79,6 +78,7 @@ export function TableSiswa({
               <Button
                 className="bg-red-400 "
                 size="icon"
+                variant="noShadow"
                 onClick={() => handleDelete(child.id)}
               >
                 <Trash2 />
@@ -87,7 +87,7 @@ export function TableSiswa({
                 id={String(child.id)}
                 dataKelas={kelas}
                 trigger={
-                  <Button size="icon">
+                  <Button size="icon" variant="noShadow">
                     <Pencil />
                   </Button>
                 }

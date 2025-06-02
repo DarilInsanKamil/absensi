@@ -27,7 +27,7 @@ const Page = async () => {
           <div className="w-full p-5">
             <Image
               src={
-                data.jenis_kelamin === "L" ? "/teacher-l.svg" : "/teacher-p.svg"
+                data.jenis_kelamin === "L" ? "/absensiteknomedia/teacher-l.svg" : "/absensiteknomedia/teacher-p.svg"
               }
               width={100}
               height={100}

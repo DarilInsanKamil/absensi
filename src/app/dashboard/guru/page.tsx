@@ -21,7 +21,7 @@ const Page = async () => {
           </p>
         </CardHeader>
         <CardContent className="flex gap-4 items-center mt-5 md:flex-row flex-col">
-          <Link href="/dashboard/guru/gurutable" className="w-full">
+          <Link href="/absensiteknomedia/dashboard/guru/gurutable" className="w-full">
             <div className="bg-blue-400 border-2 border-black text-xl text-white font-semibold p-3 w-full rounded-md flex gap-2 items-center">
               <TeacherIcon />
               <p>{res?.guru} Guru</p>

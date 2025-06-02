@@ -32,3 +32,8 @@ export function convertDay(day: number): string {
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu"];
   return days[day];
 }
+
+export function formatTimeForInput(timeString: string | undefined | null): string {
+  if (!timeString) return "";
+  return timeString.slice(0, 5); // Takes "07:40" from "07:40:00"
+}

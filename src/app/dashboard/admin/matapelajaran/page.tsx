@@ -22,7 +22,7 @@ const Page = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/matpel", { cache: "no-store" });
+      const response = await fetch("/absensiteknomedia/api/matpel", { cache: "no-store" });
       const data = await response.json();
       setMapel(data);
     };
