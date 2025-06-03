@@ -1,20 +1,23 @@
-# Gunakan base image Node.js
-FROM node:22-alpine
+# gunakan node versi terbaru stable
+FROM node:20-alpine
 
-# Set working directory
+# working directory di container
 WORKDIR /app
 
-# Copy file dependensi terlebih dahulu
+# copy package.json dan package-lock.json dulu untuk caching
 COPY package*.json ./
 
-# Install dependensi
-RUN npm install
+# install dependencies
+RUN npm install --force
 
-# Copy semua file project
+# copy semua source code
 COPY . .
 
-# Build aplikasi
+# build nextjs app
 RUN npm run build
 
-# Jalankan aplikasi
+# expose port
+EXPOSE 3000
+
+# jalankan nextjs production
 CMD ["npm", "start"]

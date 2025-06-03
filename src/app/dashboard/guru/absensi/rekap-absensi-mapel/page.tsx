@@ -25,11 +25,12 @@ const Page = () => {
   const [data, setData] = useState<AbsensiSiswa[]>([]);
   const searchParams = useSearchParams();
 
-  const jadwal_id = searchParams.get("jadwal_id"); // Add jadwal_id parameter
+  const kelasId = searchParams.get("kelas_id");
+  const mapelId = searchParams.get("mapel_id");
   const bulan = searchParams.get("bulan");
   const tahun = searchParams.get("tahun");
 
-  if (!jadwal_id || !bulan || !tahun) {
+  if (!kelasId || !mapelId || !bulan || !tahun) {
     return (
       <div>
         Parameter tidak lengkap. Harap pilih kelas, mata pelajaran, bulan dan
@@ -40,13 +41,14 @@ const Page = () => {
 
   useEffect(() => {
     const fetchRekap = async (
-      jadwalId: number,
+      kelasId: number,
+      mapelId: number,
       bulan: number,
       tahun: number
     ) => {
       try {
         const res = await fetch(
-          `/absensiteknomedia/api/absensi/rekap-mapel?jadwal_id=${jadwalId}&bulan=${bulan}&tahun=${tahun}`
+          `/absensiteknomedia/api/absensi/rekap-mapel?kelas_id=${kelasId}&mapel_id=${mapelId}&bulan=${bulan}&tahun=${tahun}`
         );
         if (!res.ok) throw new Error("Gagal mengambil data rekap");
         const datas = await res.json();
@@ -56,12 +58,8 @@ const Page = () => {
       }
     };
 
-    fetchRekap(
-      Number(jadwal_id),
-      Number(bulan),
-      Number(tahun)
-    );
-  }, [jadwal_id, bulan, tahun]); // Add dependencies
+    fetchRekap(Number(kelasId), Number(mapelId), Number(bulan), Number(tahun));
+  }, [kelasId, bulan, tahun]); // Add dependencies
 
   return (
     <section className="p-6">

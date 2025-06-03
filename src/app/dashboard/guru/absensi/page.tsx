@@ -77,9 +77,7 @@ const Page = async () => {
               </div>
             </CardContent>
             <CardFooter className="flex gap-2">
-              <RekapMapel
-                jadwalId={kelas.schedules[0].id}
-              />
+              <RekapMapel kelasId={kelas.kelas_id} mapelId={kelas.mapel_id} />
               <Link href={`/dashboard/guru/absensi/${kelas.kelas_id}/history`}>
                 <Button size="sm">Lihat History</Button>
               </Link>

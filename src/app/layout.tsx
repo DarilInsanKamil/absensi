@@ -21,18 +21,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  try {
-    const response = await fetch(`${process.env.LOCAL_TEST_API}/api/initdb`, {
-      method: "GET",
-      cache: "no-store",
-    });
+  // try {
+  //   const response = await fetch(`${process.env.LOCAL_TEST_API}/api/initdb`, {
+  //     method: "GET",
+  //     cache: "no-store",
+  //   });
 
-    if (!response.ok) {
-      console.error("Failed to initialize database");
-    }
-  } catch (error) {
-    console.error("Database initialization error:", error);
-  }
+  //   if (!response.ok) {
+  //     console.error("Failed to initialize database");
+  //   }
+  // } catch (error) {
+  //   console.error("Database initialization error:", error);
+  // }
   return (
     <html lang="en">
       <body className={`${dmSans.className}`}>

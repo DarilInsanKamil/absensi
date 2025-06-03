@@ -8,10 +8,11 @@ import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 
 type Props = {
-  jadwalId: number;
+  kelasId: number;
+  mapelId: number;
 };
 
-export default function RekapMapel({ jadwalId }: Props) {
+export default function RekapMapel({ kelasId, mapelId }: Props) {
   const router = useRouter();
   const [bulan, setBulan] = useState(new Date().getMonth() + 1); // default: bulan ini
   const [tahun, setTahun] = useState(new Date().getFullYear());
@@ -20,7 +21,7 @@ export default function RekapMapel({ jadwalId }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     router.push(
-      `/dashboard/guru/absensi/rekap-absensi-mapel?jadwal_id=${jadwalId}&bulan=${bulan}&tahun=${tahun}`
+      `/dashboard/guru/absensi/rekap-absensi-mapel?kelas_id=${kelasId}&mapel_id=${mapelId}&bulan=${bulan}&tahun=${tahun}`
     );
     setOpen(false);
   };
