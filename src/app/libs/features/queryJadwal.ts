@@ -23,6 +23,7 @@ export async function getJadwal() {
         JOIN "KELAS" kelas ON jadwal.kelas_id = kelas.id
         JOIN "TAHUN_AJARAN" tahun_ajaran ON jadwal.tahun_ajaran_id = tahun_ajaran.id
         JOIN "MATA_PELAJARAN" mata_pelajaran ON jadwal.mata_pelajaran_id = mata_pelajaran.id
+        ORDER BY jadwal.id
     `)
     return res.rows;
 }

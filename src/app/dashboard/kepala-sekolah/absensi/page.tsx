@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { notFound } from "next/navigation";
@@ -68,7 +74,6 @@ export default async function Page() {
   const data = await getKepsekDashboardData();
   const res = await queryLength();
   const topStudents = await getTopAttendingStudents();
-
   const topClass = [...data].sort(
     (a, b) => (b.kehadiran_persen || 0) - (a.kehadiran_persen || 0)
   )[0];
@@ -80,32 +85,27 @@ export default async function Page() {
   );
 
   // Calculate stats
+  // Update the stats calculation
   const stats = data.reduce(
     (acc, curr) => {
-      const date = new Date(curr.tanggal);
-      const isToday = date.toDateString() === new Date().toDateString();
+      // Use jumlah_hadir_today instead of checking date
+      acc.presentToday += Number(curr.jumlah_hadir_today) || 0;
 
-      if (isToday) {
-        acc.presentToday += curr.jumlah_hadir || 0;
-        acc.todayAttendance += curr.kehadiran_persen;
-        acc.todayClasses++;
-      }
-
-      // Add lowAttendanceClasses calculation
       if (curr.kehadiran_persen < 70) {
         acc.lowAttendanceClasses++;
       }
 
-      acc.totalStudents = Math.max(acc.totalStudents, curr.total_siswa);
-      acc.monthlyAttendance += curr.kehadiran_persen;
+      acc.totalStudents = Math.max(
+        acc.totalStudents,
+        Number(curr.total_siswa) || 0
+      );
+      acc.monthlyAttendance += Number(curr.kehadiran_persen) || 0;
       acc.totalClasses++;
 
       return acc;
     },
     {
       presentToday: 0,
-      todayAttendance: 0,
-      todayClasses: 0,
       totalStudents: 0,
       monthlyAttendance: 0,
       totalClasses: 0,
@@ -113,24 +113,13 @@ export default async function Page() {
     }
   );
 
-  const datas = await getKelasAndMapel();
-
-  // Group data by class
-  const groupedData = datas.reduce((acc: { [key: string]: any[] }, curr) => {
-    if (!acc[curr.nama_kelas]) {
-      acc[curr.nama_kelas] = [];
-    }
-    acc[curr.nama_kelas].push(curr);
-    return acc;
-  }, {});
-
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Dashboard Kehadiran</h1>
         {/* <Button onClick={() => window.print()}>Export Laporan</Button> */}
       </div>
-
+      
       {/* Daily Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card>
@@ -144,7 +133,8 @@ export default async function Page() {
               {stats.presentToday} / {res?.siswa}
             </p>
             <p className="text-sm text-muted-foreground">
-              {((stats.presentToday / res?.siswa) * 100).toFixed(1)}% Hadir
+              {((stats.presentToday / (res?.siswa || 1)) * 100).toFixed(1)}%
+              Hadir
             </p>
           </CardContent>
         </Card>

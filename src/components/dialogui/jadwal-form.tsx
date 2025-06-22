@@ -135,7 +135,7 @@ export function DialogJadwalForm({ onSuccess }: { onSuccess?: () => void }) {
             <Input placeholder="masukan jam selesai" type="time" name="jam_selesai" />
           </div>
           <Button type="submit" className="mt-5">
-            Tambah Siswa
+            Tambah Jadwal
           </Button>
         </Form>
       </DialogContent>

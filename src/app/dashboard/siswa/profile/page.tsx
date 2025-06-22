@@ -23,7 +23,7 @@ const Page = async () => {
       {!data ? (
         <p>Tidak ada data</p>
       ) : (
-        <Card key={data.id} className="flex justify-center items-center w-2xl">
+        <Card key={data.id} className="flex justify-center items-center md:w-2xl">
           <div className="w-full p-5">
             <Image
               src={
@@ -41,7 +41,7 @@ const Page = async () => {
                   <td className="pl-5">{data.nama}</td>
                 </tr>
                 <tr>
-                  <td>NIP</td>
+                  <td>NIS</td>
                   <td>:</td>
                   <td className="pl-5">{data.nis}</td>
                 </tr>

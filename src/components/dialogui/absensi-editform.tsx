@@ -67,6 +67,8 @@ export function EditAbsensiForm({
           {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
         </Button>
       </div>
+      <div className="overflow-auto">
+
       <table className="min-w-full bg-white">
         <thead>
           <tr className="bg-gray-100">
@@ -112,6 +114,8 @@ export function EditAbsensiForm({
           ))}
         </tbody>
       </table>
+      </div>
+
     </form>
   );
 }

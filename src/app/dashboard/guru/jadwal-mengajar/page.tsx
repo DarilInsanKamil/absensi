@@ -44,7 +44,7 @@ const Page = async () => {
       <h1 className="text-2xl font-bold mb-6">Jadwal Mengajar</h1>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {Object.entries(jadwalByHari).map(([hari, jadwal]) => (
-          <Card key={hari} className="h-fit">
+          <Card key={hari}>
             <CardHeader className="pb-3">
               <h3 className="text-lg font-bold tracking-tight">{hari}</h3>
             </CardHeader>

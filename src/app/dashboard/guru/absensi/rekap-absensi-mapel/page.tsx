@@ -59,7 +59,7 @@ const Page = () => {
     };
 
     fetchRekap(Number(kelasId), Number(mapelId), Number(bulan), Number(tahun));
-  }, [kelasId, bulan, tahun]); // Add dependencies
+  }, [kelasId, bulan, tahun]);
 
   return (
     <section className="p-6">

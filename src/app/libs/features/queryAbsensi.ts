@@ -59,10 +59,10 @@ export async function getAbsensiHarianByKelasAndGuru(kelasId: number, guruId: nu
 
 
 export async function getAbsensiByDateTime(
-  kelasId: number, 
-  guruId: number,
-  tanggal: string, 
-  jamMulai: string
+    kelasId: number,
+    guruId: number,
+    tanggal: string,
+    jamMulai: string
 ) {
     try {
         console.log("Raw query params:", { kelasId, guruId, tanggal, jamMulai });
@@ -392,5 +392,22 @@ export async function getAbsensiAdmin() {
     } catch (err) {
         console.error('Error getting admin attendance:', err);
         throw err;
+    }
+}
+export async function checkAbsensiStatus(jadwal_id: number) {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+
+        const result = await connectionPool.query(`
+      SELECT COUNT(*) as count 
+      FROM "ABSENSI" 
+      WHERE jadwal_id = $1 
+      AND DATE(tanggal) = $2
+    `, [jadwal_id, today]);
+
+        return result.rows[0].count > 0;
+    } catch (error) {
+        console.error('Error checking absensi status:', error);
+        return false;
     }
 }

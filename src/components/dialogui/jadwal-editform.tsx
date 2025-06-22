@@ -34,7 +34,7 @@ export function DialogEditJadwalForm({
   const [mataPelajaran, setMataPelajaran] = useState<any>([]);
   const [jadwal, setJadwal] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   useEffect(() => {
     let isMounted = true;
 
@@ -76,10 +76,7 @@ export function DialogEditJadwalForm({
         setIsLoading(true);
         const res = await fetch(`/absensiteknomedia/api/jadwal/${id}`);
         const data = await res.json();
-
-        if (isMounted) {
-          setJadwal(data);
-        }
+        setJadwal(data);
       } catch (error) {
         console.error("Error fetching jadwal:", error);
       } finally {
@@ -112,7 +109,7 @@ export function DialogEditJadwalForm({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogTitle>Input Data Jadwal</DialogTitle>
-        {jadwal ? (
+        {jadwal && jadwal.guru_id && guru.length && mataPelajaran.length && kelas.length && tahunAjaran.length && jadwal.mata_pelajaran_id ? (
           <Form action={handleSubmit} className="grid gap-2 py-4">
             <div>
               <label>Guru</label>
@@ -123,7 +120,7 @@ export function DialogEditJadwalForm({
                 defaultValue={jadwal.guru_id}
                 className="w-full bg-white outline-2 p-2 rounded-sm"
               >
-                {guru.map((res: any, idx: number) => {
+                {guru?.map((res: any, idx: number) => {
                   return (
                     <option key={idx} value={res.id}>
                       {res.nama}
@@ -141,7 +138,7 @@ export function DialogEditJadwalForm({
                 className="w-full bg-white outline-2 p-2 rounded-sm"
                 defaultValue={jadwal.mata_pelajaran_id}
               >
-                {mataPelajaran.map((res: any, idx: number) => {
+                {mataPelajaran?.map((res: any, idx: number) => {
                   return (
                     <option key={idx} value={res.id}>
                       {res.nama_mapel}

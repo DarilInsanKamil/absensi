@@ -2,16 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: 'standalone',
   basePath: '/absensiteknomedia',
-  // async redirects() {
-  //   return [
-  //     {
-  //       source: '/',
-  //       destination: '/absensiteknomedia',
-  //       permanent: false,
-  //     },
-  //   ];
-  // },
+  env: {
+    LOCAL_TEST_API: process.env.LOCAL_TEST_API,
+  },
 };
 
 

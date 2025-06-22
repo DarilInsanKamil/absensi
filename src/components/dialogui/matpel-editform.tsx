@@ -74,7 +74,7 @@ export function DialogEditMatpelForm({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogTitle>Input Data Kelas</DialogTitle>
+        <DialogTitle>Input Data Matpel</DialogTitle>
         {matpel ? (
           <form onSubmit={handleSubmit} className="grid gap-2 py-4">
             <div>

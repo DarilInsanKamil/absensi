@@ -85,48 +85,50 @@ export function UsersTable({ children }: { children: Users[] }) {
           </SelectContent>
         </Select>
       </div>
-      <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md overflow-auto">
-        <thead>
-          <tr className="bg-gray-100 text-gray-700">
-            <th className="px-4 py-2 text-left">No</th>
-            <th className="px-4 py-2 text-left">Username</th>
-            <th className="px-4 py-2 text-left">Nama</th>
-            <th className="px-4 py-2 text-left">Role</th>
-            <th className="px-4 py-2 text-left">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredUsers.map((user, index) => (
-            <tr
-              key={index}
-              className="border-b border-gray-300 hover:bg-gray-100"
-            >
-              <td className="px-4 py-2">{index + 1}</td>
-              <td className="px-4 py-2">{user.username}</td>
-              <td className="px-4 py-2">{user.nama ?? "-"}</td>
-              <td className="px-4 py-2">{user.role}</td>
-              <td className="px-4 py-2 flex gap-2">
-                <Button
-                  className="bg-red-400"
-                  size="icon"
-                  variant="noShadow"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-                <DialogChangePassword
-                  id={user.id}
-                  trigger={
-                    <Button size="icon" variant="noShadow">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                  }
-                />
-              </td>
+      <div className="overflow-auto">
+        <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md overflow-auto">
+          <thead>
+            <tr className="bg-gray-100 text-gray-700">
+              <th className="px-4 py-2 text-left">No</th>
+              <th className="px-4 py-2 text-left">Username</th>
+              <th className="px-4 py-2 text-left">Nama</th>
+              <th className="px-4 py-2 text-left">Role</th>
+              <th className="px-4 py-2 text-left">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredUsers.map((user, index) => (
+              <tr
+                key={index}
+                className="border-b border-gray-300 hover:bg-gray-100"
+              >
+                <td className="px-4 py-2">{index + 1}</td>
+                <td className="px-4 py-2">{user.username}</td>
+                <td className="px-4 py-2">{user.nama ?? "-"}</td>
+                <td className="px-4 py-2">{user.role}</td>
+                <td className="px-4 py-2 flex gap-2">
+                  <Button
+                    className="bg-red-400"
+                    size="icon"
+                    variant="noShadow"
+                    onClick={() => handleDelete(user.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                  <DialogChangePassword
+                    id={user.id}
+                    trigger={
+                      <Button size="icon" variant="noShadow">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    }
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }

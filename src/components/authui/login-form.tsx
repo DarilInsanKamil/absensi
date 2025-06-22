@@ -42,7 +42,7 @@ export function LoginForm() {
   return (
     <section className="grid md:grid-cols-12 grid-cols-6 md:px-2 px-5 md:py-10">
       <div className="md:col-start-1 md:col-end-13 col-start-1 col-end-7 flex items-center flex-col mb-10">
-        {/* <div className="w-[86px] h-[86px] rounded-full bg-blue-300"></div> */}
+
         <Image src="/absensiteknomedia/logosekolah.png" width={100} height={100} alt="logo" />
         <h1 className="font-bold text-2xl mt-5">SMK TECHNO MEDIA</h1>
       </div>

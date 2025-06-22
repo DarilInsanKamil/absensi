@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 import { getJadwalByGuruId } from "@/app/libs/features/queryJadwal";
 import { cookies } from "next/headers";
@@ -14,6 +14,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { checkAbsensiStatus } from "@/app/libs/features/queryAbsensi";
 
 type Jadwal = {
   id: number;
@@ -24,6 +25,7 @@ type Jadwal = {
   nama_guru: string;
   tahun_ajaran: string;
   kelas: string;
+  is_submitted?: boolean;
 };
 
 const JadwalComponent = ({ children }: { children: Jadwal[] }) => {
@@ -42,9 +44,15 @@ const JadwalComponent = ({ children }: { children: Jadwal[] }) => {
             </p>
           </CardContent>
           <CardFooter>
-            <Link href={`/dashboard/guru/absensi/create/${res.id}`}>
-              <Button>Isi Absensi</Button>
-            </Link>
+            {res.is_submitted ? (
+              <Button variant="noShadow" disabled>
+                Absensi Sudah Diisi
+              </Button>
+            ) : (
+              <Link href={`/dashboard/guru/absensi/create/${res.id}`}>
+                <Button>Isi Absensi</Button>
+              </Link>
+            )}
           </CardFooter>
         </Card>
       ))}
@@ -62,13 +70,25 @@ const Page = async () => {
       ? (decoded.reference_id as string)
       : "";
 
-  const getData = await getJadwalByGuruId(parseInt(guruId), convertDay(date));
+  const jadwalList = await getJadwalByGuruId(
+    parseInt(guruId),
+    convertDay(date)
+  );
+
+  // Check attendance status for each schedule
+  const jadwalWithStatus = await Promise.all(
+    jadwalList.map(async (jadwal) => ({
+      ...jadwal,
+      is_submitted: await checkAbsensiStatus(jadwal.id),
+    }))
+  );
+
   return (
     <div>
-      {getData.length > 0 ? (
-        <JadwalComponent children={getData} />
+      {jadwalWithStatus.length > 0 ? (
+        <JadwalComponent children={jadwalWithStatus} />
       ) : (
-        <>Tidak ada Jadwal</>
+        <div className="text-center p-4">Tidak ada Jadwal</div>
       )}
     </div>
   );

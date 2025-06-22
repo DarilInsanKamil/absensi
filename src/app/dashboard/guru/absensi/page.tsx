@@ -53,7 +53,7 @@ const Page = async () => {
       <h1 className="text-2xl font-bold mb-6">Daftar Kelas</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {Object.values(groupedData).map((kelas: any, idx) => (
-          <Card key={idx} className="h-fit">
+          <Card key={idx}>
             <CardHeader>
               <h2 className="font-bold text-xl">{kelas.nama_kelas}</h2>
               <p className="text-lg font-medium text-muted-foreground">

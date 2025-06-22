@@ -1,14 +1,11 @@
 "use client";
 
-import { DialogGuruForm } from "@/components/dialogui/guru-form";
-import { TableGuru } from "@/components/tableui/table-guru";
 import { TableKepsekGuru } from "@/components/tableui/table-kepsek-guru";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardFooter,
-  CardHeader,
+
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import React, { Suspense, useEffect, useState } from "react";

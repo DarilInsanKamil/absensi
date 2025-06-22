@@ -1,5 +1,11 @@
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "SMK Techno Media",
+  description: "Website absensi siswa sekolah techno media",
+};
 
 export default async function DashboardLayout({
   children,

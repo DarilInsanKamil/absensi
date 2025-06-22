@@ -1,9 +1,10 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import Form from "next/form";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 
 interface Siswa {
@@ -45,10 +46,12 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       setIsSubmitting(true);
 
+      const formData = new FormData(e.currentTarget);
       // Create array to hold all attendance records
       const absensiData: AbsensiData[] = [];
       // Get current date and time
@@ -71,9 +74,6 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
           keterangan,
         });
       }
-      if (!absensiData.length) {
-        throw new Error("No attendance data to submit");
-      }
 
       // Send to API
       const response = await fetch("/absensiteknomedia/api/absensi", {
@@ -88,9 +88,9 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
         throw new Error("Failed to submit attendance");
       }
 
-      console.log(response.json());
-
       toast.success("Absensi berhasil disimpan");
+      router.refresh();
+      router.back();
     } catch (error) {
       console.error("Error submitting attendance:", error);
       toast.error("Gagal menyimpan absensi");
@@ -104,57 +104,65 @@ const AbsensiPage: React.FC<AbsensiPageProps> = ({
       <h2 className="text-xl font-bold mb-4">
         Absensi Kelas {jadwal.kelas} - {jadwal.mata_pelajaran}
       </h2>
-
-      <Form action={handleSubmit}>
-        <table className="w-full table-auto border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 border">No</th>
-              <th className="p-2 border">Nama</th>
-              <th className="p-2 border">Status</th>
-              <th className="p-2 border">Keterangan</th>
-            </tr>
-          </thead>
-          <tbody>
-            {siswaList.map((siswa: any, index: number) => (
-              <tr key={siswa.id} className="text-center border">
-                <td className="p-2 border">{index + 1}</td>
-                <td className="p-2 border text-left">{siswa.nama}</td>
-                <td className="p-2 border">
-                  {["hadir", "sakit", "izin", "alpha"].map((status) => (
-                    <label key={status} className="mr-4">
-                      <input
-                        type="radio"
-                        name={`status_${siswa.id}`}
-                        value={status}
-                        defaultChecked={status === "hadir"}
-                        required
-                        className="mr-1"
-                      />
-                      {status}
-                    </label>
-                  ))}
-                </td>
-                <td className="p-2 border">
-                  <input
-                    type="text"
-                    name={`keterangan_${siswa.id}`}
-                    className="w-full p-1 border rounded"
-                    placeholder="Optional"
-                  />
-                </td>
+      <form onSubmit={handleSubmit}>
+        <div className="overflow-auto">
+          <table className="w-full border border-gray-300">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="p-2 border">No</th>
+                <th className="p-2 border">Nama</th>
+                <th className="p-2 border">Status</th>
+                <th className="p-2 border">Keterangan</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <button
+            </thead>
+            <tbody>
+              {siswaList.map((siswa: any, index: number) => (
+                <tr key={siswa.id} className="text-center border">
+                  <td className="p-2 border">{index + 1}</td>
+                  <td className="p-2 border text-left">{siswa.nama}</td>
+                  <td className="p-2 border">
+                    {["hadir", "sakit", "izin", "alpha"].map((status) => (
+                      <label key={status} className="mr-4">
+                        <input
+                          type="radio"
+                          name={`status_${siswa.id}`}
+                          value={status}
+                          defaultChecked={status === "hadir"}
+                          required
+                          className="mr-1"
+                        />
+                        {status}
+                      </label>
+                    ))}
+                  </td>
+                  <td className="p-2 border">
+                    <input
+                      type="text"
+                      name={`keterangan_${siswa.id}`}
+                      className="w-full p-1 border rounded"
+                      placeholder="Optional"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <Button
           type="submit"
-          className="mt-4 px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
           disabled={isSubmitting}
+          variant="noShadow"
+          className="cursor-pointer"
         >
-          {isSubmitting ? "Menyimpan..." : "Simpan Absensi"}
-        </button>
-      </Form>
+          {isSubmitting ? (
+            <p className="flex gap-2 items-center">
+              Menyimpan <Loader2 className="animate-spin" />
+            </p>
+          ) : (
+            "Simpan Absensi"
+          )}
+        </Button>
+      </form>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
@@ -17,7 +17,7 @@ type Params = {
   };
 };
 
-const Page = async ({ params }: {params: Promise<{id: string}>}) => {
+const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;

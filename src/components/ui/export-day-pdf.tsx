@@ -59,7 +59,7 @@ export default function DayExportToPDF({
   };
 
   return (
-    <Button size="sm" onClick={handleExport}>
+    <Button size="sm" onClick={handleExport} variant='noShadow'>
       Export to PDF
     </Button>
   );

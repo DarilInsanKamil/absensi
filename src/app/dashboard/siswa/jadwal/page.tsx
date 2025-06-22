@@ -38,12 +38,12 @@ const Page = async () => {
   );
 
   return (
-    <div className="md:p-6 mt-5">
+    <div className="p-6 mt-5">
       <h1 className="text-2xl font-bold mb-6">Jadwal Pelajaran</h1>
       <ExportJadwalToPDF data={jadwalByHari} kelas={jadwalList[0]?.nama_kelas} />
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
         {Object.entries(jadwalByHari).map(([hari, jadwal]) => (
-          <Card key={hari} className="h-fit">
+          <Card key={hari}>
             <CardHeader className="pb-3">
               <h3 className="text-lg font-bold tracking-tight">{hari}</h3>
             </CardHeader>

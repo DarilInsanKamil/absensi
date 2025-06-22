@@ -43,7 +43,7 @@ export function DialogTahunAjaranForm({
         <Button onClick={() => setOpen(true)}>Tambah Tahun Ajaran</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogTitle>Input Data Kelas</DialogTitle>
+        <DialogTitle>Input Data Tahun Ajaran</DialogTitle>
         <Form action={handleSubmit} className="grid gap-2 py-4">
           <div>
             <label>Nama Tahun Ajaran</label>
@@ -71,7 +71,7 @@ export function DialogTahunAjaranForm({
             </div>
           </div>
           <Button type="submit" className="mt-5">
-            Tambah Kelas
+            Tambah Tahun Ajaran
           </Button>
         </Form>
       </DialogContent>

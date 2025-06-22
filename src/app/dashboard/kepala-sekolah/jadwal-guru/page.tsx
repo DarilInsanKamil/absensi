@@ -22,7 +22,7 @@ export default async function Page() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {data.map((guru) => (
-          <Card key={guru.guru_id} className="h-fit">
+          <Card key={guru.guru_id}>
             <CardHeader>
               <CardTitle className="text-lg">{guru.nama_guru}</CardTitle>
               <p className="text-sm text-muted-foreground">NIP: {guru.nip}</p>

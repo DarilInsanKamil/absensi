@@ -109,6 +109,7 @@ export default async function Page({ params }: PageProps) {
             />
           </CardFooter>
         </Card>
+
         <EditAbsensiForm initialData={absensiData} kelasId={kelasId} />
       </div>
     );

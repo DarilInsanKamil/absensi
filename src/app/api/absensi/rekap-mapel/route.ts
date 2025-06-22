@@ -17,29 +17,27 @@ export async function GET(req: Request) {
     try {
         const result = await connectionPool.query(`
             SELECT 
-                s.id as siswa_id,
-                s.nama as nama_siswa,
-                k.nama_kelas,
-                COUNT(DISTINCT a.tanggal) as jumlah_hari_absen,
-                SUM(CASE WHEN a.status = 'hadir' THEN 1 ELSE 0 END) as hadir,
-                SUM(CASE WHEN a.status = 'izin' THEN 1 ELSE 0 END) as izin,
-                SUM(CASE WHEN a.status = 'sakit' THEN 1 ELSE 0 END) as sakit,
-                SUM(CASE WHEN a.status = 'alpha' THEN 1 ELSE 0 END) as alpha
-            FROM "SISWA" s
-            JOIN "KELAS" k ON s.kelas_id = k.id
-            LEFT JOIN "ABSENSI" a ON s.id = a.siswa_id
-            LEFT JOIN "JADWAL" j ON j.id = a.jadwal_id
-                AND j.kelas_id = k.id
-                AND j.mata_pelajaran_id = $2
-            WHERE 
-                k.id = $1
-                AND EXTRACT(MONTH FROM a.tanggal) = $3
-                AND EXTRACT(YEAR FROM a.tanggal) = $4
-            GROUP BY 
-                s.id,
-                s.nama,
-                k.nama_kelas
-            ORDER BY s.nama
+    s.id as siswa_id,
+    s.nama as nama_siswa,
+    k.nama_kelas,
+    COUNT(DISTINCT a.tanggal) as jumlah_hari_absen,
+    SUM(CASE WHEN a.status = 'hadir' THEN 1 ELSE 0 END) as hadir,
+    SUM(CASE WHEN a.status = 'izin' THEN 1 ELSE 0 END) as izin,
+    SUM(CASE WHEN a.status = 'sakit' THEN 1 ELSE 0 END) as sakit,
+    SUM(CASE WHEN a.status = 'alpha' THEN 1 ELSE 0 END) as alpha
+FROM "SISWA" s
+JOIN "KELAS" k ON s.kelas_id = k.id
+LEFT JOIN "JADWAL" j ON j.kelas_id = k.id AND j.mata_pelajaran_id = $2
+LEFT JOIN "ABSENSI" a ON s.id = a.siswa_id AND a.jadwal_id = j.id
+WHERE 
+    k.id = $1
+    AND EXTRACT(MONTH FROM a.tanggal) = $3
+    AND EXTRACT(YEAR FROM a.tanggal) = $4
+GROUP BY 
+    s.id,
+    s.nama,
+    k.nama_kelas
+ORDER BY s.nama
         `, [kelas_id, mapel_id, bulan, tahun]);
 
         return new Response(JSON.stringify(result.rows));

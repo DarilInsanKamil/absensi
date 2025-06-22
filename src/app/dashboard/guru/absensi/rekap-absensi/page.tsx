@@ -65,14 +65,16 @@ const Page = () => {
             Periode: {bulan}/{tahun}
           </p>
         </CardContent>
+
         <CardFooter>
-          <ExportToPDF
+          {/* <ExportToPDF
             data={data}
             kelas={data[0]?.nama_kelas}
             mapel={data[0]?.nama_mapel}
             startDate={`${tahun}-${String(bulan).padStart(2, "0")}-01`}
             endDate={`${tahun}-${String(bulan).padStart(2, "0")}-31`}
-          />
+          /> */}
+          <p>Hello</p>
         </CardFooter>
       </Card>
 

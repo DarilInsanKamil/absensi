@@ -10,7 +10,6 @@ interface ExportProps {
   endDate: string;
   kelas?: string;
   mapel?: string;
-
 }
 
 export default function ExportToPDF({
@@ -19,7 +18,6 @@ export default function ExportToPDF({
   mapel,
   endDate,
   startDate,
- 
 }: ExportProps) {
   const handleExport = () => {
     const doc = new jsPDF();
@@ -38,7 +36,7 @@ export default function ExportToPDF({
       14,
       39
     );
-   
+
     // Add table with offset for header
     autoTable(doc, {
       startY: 45,
@@ -56,8 +54,9 @@ export default function ExportToPDF({
     doc.save(`rekap_absensi_${kelas}_${new Date().getTime()}.pdf`);
   };
 
+
   return (
-    <Button size="sm" onClick={handleExport}>
+    <Button size="sm" onClick={handleExport} variant='noShadow'>
       Export to PDF
     </Button>
   );
